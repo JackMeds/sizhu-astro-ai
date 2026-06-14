@@ -1,0 +1,23 @@
+{
+  "name": "@sizhu/mcp",
+  "version": "0.1.0",
+  "type": "module",
+  "license": "GPL-3.0",
+  "bin": {
+    "sizhu-mcp": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@sizhu/core": "file:../../packages/core",
+    "@sizhu/prompt": "file:../../packages/prompt",
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "zod": "^3.25.67"
+  },
+  "devDependencies": {
+    "@types/node": "^20.19.0",
+    "typescript": "^5.8.3"
+  }
+}

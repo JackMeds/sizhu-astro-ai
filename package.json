@@ -1,0 +1,32 @@
+{
+  "name": "sizhu-astro-ai",
+  "version": "0.0.1",
+  "description": "四柱星盘 AI：本地优先的八字紫微排盘与 AI 提示词工作台",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "license": "GPL-3.0",
+  "scripts": {
+    "dev:web": "npm run dev -w @sizhu/web",
+    "build": "npm run build -w @sizhu/core && npm run build -w @sizhu/prompt && npm run build -w @sizhu/render && npm run build -w @sizhu/mcp && npm run build -w @sizhu/web",
+    "build:web": "npm run build -w @sizhu/web",
+    "test": "npm run test -w @sizhu/core && npm run build -w @sizhu/core && npm run test -w @sizhu/prompt",
+    "typecheck": "npm run build -w @sizhu/core && npm run build -w @sizhu/prompt && npm run build -w @sizhu/render && npm run typecheck -w @sizhu/web && npm run typecheck -w @sizhu/mcp"
+  },
+  "overrides": {
+    "esbuild": "^0.28.1",
+    "fast-uri": "^4.0.0",
+    "path-to-regexp": "^8.4.2",
+    "picomatch": "^4.0.4",
+    "postcss": "^8.5.15",
+    "qs": "^6.15.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20.19.0",
+    "playwright": "^1.60.0",
+    "tsx": "^4.20.3",
+    "typescript": "^5.8.3"
+  }
+}
