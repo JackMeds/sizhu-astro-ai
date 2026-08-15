@@ -27,3 +27,28 @@ jobs:
         run: npm run typecheck
       - name: Build web
         run: npm run build:web
+
+  liuren-reference:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: tools/liuren-reference/requirements.txt
+      - name: Install pinned kinliuren oracle
+        run: python -m pip install -r tools/liuren-reference/requirements.txt
+      - name: Validate upstream README fixture
+        run: python tools/liuren-reference/oracle.py --validate-readme-fixture > /tmp/liuren-reference.json
+      - name: Show reference summary
+        run: python - <<'PY'
+          import json
+          data = json.load(open('/tmp/liuren-reference.json', encoding='utf-8'))
+          print('節氣:', data.get('節氣'))
+          print('日期:', data.get('日期'))
+          print('格局:', data.get('格局'))
+          print('三傳:', data.get('三傳'))
+          PY
