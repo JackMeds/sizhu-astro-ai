@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import { ExternalLink, HeartHandshake, Star } from "lucide-react";
 
 const orbitBranches = [..."子丑寅卯辰巳午未申酉戌亥"];
@@ -13,7 +14,7 @@ export function SponsorPlaceholder() {
           <span
             className="sponsor-branch"
             key={branch}
-            style={{ "--branch-index": index } as React.CSSProperties}
+            style={{ "--branch-index": index } as CSSProperties}
           >
             {branch}
           </span>
