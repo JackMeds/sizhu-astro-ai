@@ -2,29 +2,41 @@ import type { BaziRelationFact, BaziRelationParticipant, PillarInfo } from "./ty
 
 const SELF_PUNISH = new Set(["辰", "午", "酉", "亥"]);
 
-function pairSet(pairs: Array<[string, string]>) {
-  return new Set(pairs.map(([a, b]) => pairKey(a, b)));
-}
-
-function pairMap(rows: Array<[string, string, string]>) {
-  return new Map(rows.map(([a, b, value]) => [pairKey(a, b), value]));
-}
-
 function pairKey(a: string, b: string) {
   return [a, b].sort().join("|");
 }
 
-const STEM_COMBINATIONS = pairMap([
-  ["甲", "己", "土"], ["乙", "庚", "金"], ["丙", "辛", "水"], ["丁", "壬", "木"], ["戊", "癸", "火"]
+function relationMap<T>(rows: Array<[string, string, T]>) {
+  return new Map(rows.map(([a, b, value]) => [pairKey(a, b), value]));
+}
+
+const STEM_COMBINATIONS = relationMap([
+  ["甲", "己", { label: "甲己", element: "土" }],
+  ["乙", "庚", { label: "乙庚", element: "金" }],
+  ["丙", "辛", { label: "丙辛", element: "水" }],
+  ["丁", "壬", { label: "丁壬", element: "木" }],
+  ["戊", "癸", { label: "戊癸", element: "火" }]
 ]);
-const BRANCH_LIUHE = pairSet([["子", "丑"], ["寅", "亥"], ["卯", "戌"], ["辰", "酉"], ["巳", "申"], ["午", "未"]]);
-const BRANCH_CLASH = pairSet([["子", "午"], ["丑", "未"], ["寅", "申"], ["卯", "酉"], ["辰", "戌"], ["巳", "亥"]]);
-const BRANCH_HARM = pairSet([["子", "未"], ["丑", "午"], ["寅", "巳"], ["卯", "辰"], ["申", "亥"], ["酉", "戌"]]);
-const BRANCH_BREAK = pairSet([["子", "酉"], ["卯", "午"], ["辰", "丑"], ["未", "戌"], ["寅", "亥"], ["巳", "申"]]);
-const BRANCH_PUNISH = new Map<string, string>([
-  [pairKey("子", "卯"), "无礼之刑"],
-  [pairKey("寅", "巳"), "无恩之刑"], [pairKey("巳", "申"), "无恩之刑"], [pairKey("申", "寅"), "无恩之刑"],
-  [pairKey("丑", "戌"), "恃势之刑"], [pairKey("戌", "未"), "恃势之刑"], [pairKey("未", "丑"), "恃势之刑"]
+const BRANCH_LIUHE = relationMap([
+  ["子", "丑", "子丑"], ["寅", "亥", "寅亥"], ["卯", "戌", "卯戌"], ["辰", "酉", "辰酉"], ["巳", "申", "巳申"], ["午", "未", "午未"]
+]);
+const BRANCH_CLASH = relationMap([
+  ["子", "午", "子午"], ["丑", "未", "丑未"], ["寅", "申", "寅申"], ["卯", "酉", "卯酉"], ["辰", "戌", "辰戌"], ["巳", "亥", "巳亥"]
+]);
+const BRANCH_HARM = relationMap([
+  ["子", "未", "子未"], ["丑", "午", "丑午"], ["寅", "巳", "寅巳"], ["卯", "辰", "卯辰"], ["申", "亥", "申亥"], ["酉", "戌", "酉戌"]
+]);
+const BRANCH_BREAK = relationMap([
+  ["子", "酉", "子酉"], ["卯", "午", "卯午"], ["辰", "丑", "辰丑"], ["未", "戌", "未戌"], ["寅", "亥", "寅亥"], ["巳", "申", "巳申"]
+]);
+const BRANCH_PUNISH = relationMap([
+  ["子", "卯", { label: "子卯", family: "无礼之刑" }],
+  ["寅", "巳", { label: "寅巳", family: "无恩之刑" }],
+  ["巳", "申", { label: "巳申", family: "无恩之刑" }],
+  ["申", "寅", { label: "申寅", family: "无恩之刑" }],
+  ["丑", "戌", { label: "丑戌", family: "恃势之刑" }],
+  ["戌", "未", { label: "戌未", family: "恃势之刑" }],
+  ["丑", "未", { label: "丑未", family: "恃势之刑" }]
 ]);
 
 const THREE_HARMONY: Array<{ branches: [string, string, string]; element: string }> = [
@@ -93,13 +105,13 @@ export function createBaziRelationFacts(participants: BaziRelationParticipant[])
       }
 
       if (a.stem && b.stem) {
-        const target = STEM_COMBINATIONS.get(pairKey(a.stem, b.stem));
-        if (target) {
-          facts.push(fact("stem-combination", `${a.stem}${b.stem}合`, [a, b], {
+        const combination = STEM_COMBINATIONS.get(pairKey(a.stem, b.stem));
+        if (combination) {
+          facts.push(fact("stem-combination", `${combination.label}合`, [a, b], {
             transformation: {
-              targetElement: target,
+              targetElement: combination.element,
               status: "candidate",
-              note: `五合关系成立；“合化${target}”是否成立仍需另行检查月令、根气、透干与干扰条件。`
+              note: `五合关系成立；“合化${combination.element}”是否成立仍需另行检查月令、根气、透干与干扰条件。`
             }
           }));
         }
@@ -107,15 +119,19 @@ export function createBaziRelationFacts(participants: BaziRelationParticipant[])
 
       if (!a.branch || !b.branch) continue;
       const key = pairKey(a.branch, b.branch);
-      if (BRANCH_LIUHE.has(key)) facts.push(fact("branch-liuhe", `${a.branch}${b.branch}六合`, [a, b]));
-      if (BRANCH_CLASH.has(key)) facts.push(fact("branch-clash", `${a.branch}${b.branch}冲`, [a, b]));
-      if (BRANCH_HARM.has(key)) facts.push(fact("branch-harm", `${a.branch}${b.branch}害`, [a, b]));
-      if (BRANCH_BREAK.has(key)) facts.push(fact("branch-break", `${a.branch}${b.branch}破`, [a, b]));
+      const liuhe = BRANCH_LIUHE.get(key);
+      const clash = BRANCH_CLASH.get(key);
+      const harm = BRANCH_HARM.get(key);
+      const broken = BRANCH_BREAK.get(key);
+      if (liuhe) facts.push(fact("branch-liuhe", `${liuhe}六合`, [a, b]));
+      if (clash) facts.push(fact("branch-clash", `${clash}冲`, [a, b]));
+      if (harm) facts.push(fact("branch-harm", `${harm}害`, [a, b]));
+      if (broken) facts.push(fact("branch-break", `${broken}破`, [a, b]));
 
       const punishment = BRANCH_PUNISH.get(key);
       if (punishment) {
-        facts.push(fact("branch-punishment", `${a.branch}${b.branch}刑`, [a, b], {
-          note: `${punishment}的两支关系已出现；是否要求三支齐全才论“完整三刑”应由具体流派规则层处理。`
+        facts.push(fact("branch-punishment", `${punishment.label}刑`, [a, b], {
+          note: `${punishment.family}的两支关系已出现；是否要求三支齐全才论“完整三刑”应由具体流派规则层处理。`
         }));
       }
       if (a.branch === b.branch && SELF_PUNISH.has(a.branch)) {
