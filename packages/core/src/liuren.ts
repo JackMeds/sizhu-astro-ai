@@ -20,12 +20,26 @@ export interface LiurenCalendarInput {
   question?: string;
   reference: {
     engine: "kinliuren";
-    release: "0.1.2.9";
+    sourceCommit: "3ba45a9540f08269b56d81508a061c7d46938785";
+    historicalPyPI: "0.1.2.9";
     interface: "Liuren(solar_term, lunar_month, day_ganzhi, hour_ganzhi).result(0)";
   };
 }
 
+export interface LiurenHeavenEarthDisk {
+  engine: "sizhu-liuren-ts";
+  engineVersion: "0.1.0";
+  subsystem: "moon-general-heaven-earth";
+  referenceCommit: "3ba45a9540f08269b56d81508a061c7d46938785";
+  moonGeneral: string;
+  heavenPlate: string[];
+  earthPlate: string[];
+  earthToHeaven: Record<string, string>;
+  heavenToEarth: Record<string, string>;
+}
+
 const LUNAR_MONTH_NAMES = ["", "正", "二", "三", "四", "五", "六", "七", "八", "九", "十", "十一", "十二"];
+const EARTHLY_BRANCHES = [..."子丑寅卯辰巳午未申酉戌亥"];
 const TRADITIONAL_JIEQI: Record<string, string> = {
   小寒: "小寒",
   大寒: "大寒",
@@ -58,6 +72,21 @@ const TRADITIONAL_JIEQI: Record<string, string> = {
   冬至: "冬至"
 };
 
+const MOON_GENERAL_BY_TERM: Record<string, string> = {
+  雨水: "亥", 驚蟄: "亥",
+  春分: "戌", 清明: "戌",
+  穀雨: "酉", 立夏: "酉",
+  小滿: "申", 芒種: "申",
+  夏至: "未", 小暑: "未",
+  大暑: "午", 立秋: "午",
+  處暑: "巳", 白露: "巳",
+  秋分: "辰", 寒露: "辰",
+  霜降: "卯", 立冬: "卯",
+  小雪: "寅", 大雪: "寅",
+  冬至: "丑", 小寒: "丑",
+  大寒: "子", 立春: "子"
+};
+
 function textCall(target: unknown, method: string): string {
   try {
     const value = (target as Record<string, () => unknown>)?.[method]?.();
@@ -82,6 +111,16 @@ function jieQiName(value: unknown): string {
   return name || String(value);
 }
 
+function rotateFrom(list: string[], start: string): string[] {
+  const index = list.indexOf(start);
+  if (index < 0) throw new Error(`未知地支：${start}`);
+  return [...list.slice(index), ...list.slice(0, index)];
+}
+
+function zipRecord(keys: string[], values: string[]): Record<string, string> {
+  return Object.fromEntries(keys.map((key, index) => [key, values[index] ?? ""]));
+}
+
 function toAstroTimeInput(input: LiurenSessionInput): AstroInput {
   return {
     name: "起课",
@@ -98,8 +137,8 @@ function toAstroTimeInput(input: LiurenSessionInput): AstroInput {
 
 /**
  * Convert a civil/solar-time moment into the exact four parameters expected by kinliuren.
- * This does not compute the Da Liu Ren chart itself; it is the deterministic calendar bridge
- * used by the Python reference oracle and the future TypeScript engine.
+ * This does not compute the full Da Liu Ren chart itself; it is the deterministic calendar bridge
+ * shared by the pinned Python reference oracle and the browser TypeScript migration.
  */
 export function prepareLiurenCalendarInput(input: LiurenSessionInput): LiurenCalendarInput {
   const astroInput = toAstroTimeInput(input);
@@ -140,8 +179,41 @@ export function prepareLiurenCalendarInput(input: LiurenSessionInput): LiurenCal
     ...(input.question ? { question: input.question } : {}),
     reference: {
       engine: "kinliuren",
-      release: "0.1.2.9",
+      sourceCommit: "3ba45a9540f08269b56d81508a061c7d46938785",
+      historicalPyPI: "0.1.2.9",
       interface: "Liuren(solar_term, lunar_month, day_ganzhi, hour_ganzhi).result(0)"
     }
   };
+}
+
+/**
+ * First native TypeScript Da Liu Ren subsystem.
+ * Mirrors kinliuren.sky_pan_list() + sky_n_earth_list() / earth_n_sky_list().
+ */
+export function createLiurenHeavenEarthDisk(input: LiurenCalendarInput): LiurenHeavenEarthDisk {
+  const moonGeneral = MOON_GENERAL_BY_TERM[input.solarTerm];
+  if (!moonGeneral) throw new Error(`尚未识别节气对应月将：${input.solarTerm}`);
+  const hourBranch = input.hourGanZhi[1] ?? "";
+  const heavenPlate = rotateFrom(EARTHLY_BRANCHES, moonGeneral);
+  const earthPlate = rotateFrom(EARTHLY_BRANCHES, hourBranch);
+
+  return {
+    engine: "sizhu-liuren-ts",
+    engineVersion: "0.1.0",
+    subsystem: "moon-general-heaven-earth",
+    referenceCommit: "3ba45a9540f08269b56d81508a061c7d46938785",
+    moonGeneral,
+    heavenPlate,
+    earthPlate,
+    earthToHeaven: zipRecord(earthPlate, heavenPlate),
+    heavenToEarth: zipRecord(heavenPlate, earthPlate)
+  };
+}
+
+export function createLiurenHeavenEarthFromSession(input: LiurenSessionInput): {
+  calendar: LiurenCalendarInput;
+  disk: LiurenHeavenEarthDisk;
+} {
+  const calendar = prepareLiurenCalendarInput(input);
+  return { calendar, disk: createLiurenHeavenEarthDisk(calendar) };
 }
