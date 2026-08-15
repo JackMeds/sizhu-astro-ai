@@ -9,11 +9,22 @@ interface ExportPanelProps {
   profile: AstroProfile;
 }
 
+function appendEngineEvidence(base: string, profile: AstroProfile, format: PromptFormat) {
+  const selected = profile.ai.evidence.filter((item) => item.label === "传统规则命中");
+  if (!selected.length) return base;
+  const lines = selected.map((item) => `- ${item.label}：${item.value}`).join("\n");
+  if (format === "txt") return `${base}\n\n计算底座追加证据\n${lines}`;
+  return `${base}\n\n## 计算底座追加证据\n\n${lines}\n\n> 以上仅表示对应传统条文满足已编码的适用条件；不代表该条文是现代科学事实，也不自动推出吉凶或合化成立。`;
+}
+
 export function ExportPanel({ profile }: ExportPanelProps) {
   const [mode, setMode] = useState<PromptMode>("general");
   const [format, setFormat] = useState<PromptFormat>("markdown");
   const [status, setStatus] = useState("生成后复制给你喜欢的 AI 继续分析");
-  const content = useMemo(() => buildPrompt(profile, mode, format), [format, mode, profile]);
+  const content = useMemo(
+    () => appendEngineEvidence(buildPrompt(profile, mode, format), profile, format),
+    [format, mode, profile]
+  );
   const modeLabel = promptModes.find((item) => item.key === mode)?.label ?? "综合";
 
   async function copyCurrent() {
