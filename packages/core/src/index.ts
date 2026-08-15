@@ -1,6 +1,15 @@
 export { astroInputSchema } from "./schema.js";
 export { createBaziProfile } from "./bazi.js";
 export { createBaziRelationFacts, createNatalBaziFacts, createTransitBaziFacts, natalParticipants } from "./relations.js";
+export { auditBaziTraditionalRules, evaluateBaziTraditionalRules, getTraditionalRuleRegistry } from "./rules.js";
+export type {
+  TraditionalRuleAudit,
+  TraditionalRuleCondition,
+  TraditionalRuleConditionAudit,
+  TraditionalRuleDefinition,
+  TraditionalRuleField,
+  TraditionalRuleHit
+} from "./rules.js";
 export { createZiweiProfile, createZiweiHoroscope } from "./ziwei.js";
 export { createTransitSnapshot } from "./transit.js";
 export { createDivinationProfile } from "./divination.js";
