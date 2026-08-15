@@ -1,6 +1,7 @@
 import { astroInputSchema } from "./schema.js";
 import { createBaziProfile } from "./bazi.js";
 import { createDivinationProfile } from "./divination.js";
+import { auditBaziTraditionalRules, evaluateBaziTraditionalRules } from "./rules.js";
 import { createTimeProfile } from "./time.js";
 import { createZiweiProfile } from "./ziwei.js";
 import type { AstroInput, AstroProfile } from "./types.js";
@@ -8,6 +9,10 @@ import type { AstroInput, AstroProfile } from "./types.js";
 function createAiBlock(profile: Pick<AstroProfile, "input" | "time" | "bazi" | "ziwei">): AstroProfile["ai"] {
   const pillars = profile.bazi.pillars.map((pillar) => `${pillar.label}${pillar.ganZhi}`).join("，");
   const relationSummary = profile.bazi.facts.natal.map((item) => item.label).join("、") || "无已编码关系";
+  const traditionalRules = evaluateBaziTraditionalRules(profile.bazi.pillars);
+  const traditionalRuleSummary = traditionalRules.length
+    ? traditionalRules.map((item) => `${item.source.title}·${item.source.section}`).join("、")
+    : "无已命中的传统条文";
   const ziweiSummary = profile.ziwei.available
     ? `${profile.ziwei.fiveElementsClass || "五行局未取"}，命宫${profile.ziwei.soulPalaceBranch || "-"}，身宫${profile.ziwei.bodyPalaceBranch || "-"}`
     : "紫微不可用";
@@ -21,10 +26,11 @@ function createAiBlock(profile: Pick<AstroProfile, "input" | "time" | "bazi" | "
       { label: "生肖", value: profile.bazi.zodiac },
       { label: "日主", value: profile.bazi.dayMaster },
       { label: "八字关系事实", value: relationSummary },
+      { label: "传统规则命中", value: traditionalRuleSummary },
       { label: "紫微摘要", value: ziweiSummary },
       { label: "紫微生年四化", value: profile.ziwei.natalMutagens?.map((item) => `${item.star}${item.mutagen}@${item.palace}`).join("、") || "未取到" }
     ],
-    recommendedPromptSections: ["输入与时间口径", "四柱结构", "确定性关系事实", "五行与十神", "大运流年", "紫微十二宫与四化", "交叉校验与不确定性"]
+    recommendedPromptSections: ["输入与时间口径", "四柱结构", "确定性关系事实", "传统规则命中与适用条件", "五行与十神", "大运流年", "紫微十二宫与四化", "交叉校验与不确定性"]
   };
 }
 
@@ -33,6 +39,8 @@ export function createAstroProfile(rawInput: AstroInput): AstroProfile {
   const time = createTimeProfile(input);
   const bazi = createBaziProfile(input);
   const ziwei = createZiweiProfile(input);
+  const traditionalRuleAudits = auditBaziTraditionalRules(bazi.pillars);
+  const traditionalRuleHits = traditionalRuleAudits.filter((item) => item.status === "matched");
   const warnings: string[] = [];
 
   if (input.calendar !== "solar") {
@@ -75,6 +83,11 @@ export function createAstroProfile(rawInput: AstroInput): AstroProfile {
     raw: {
       time,
       baziCrossCheck: bazi.crossCheck,
+      traditionalRules: {
+        version: "bazi-rule-evidence-v1",
+        hits: traditionalRuleHits,
+        audits: traditionalRuleAudits
+      },
       ziwei: ziwei.raw
     },
     warnings
