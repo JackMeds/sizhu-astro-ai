@@ -3,6 +3,7 @@
 **四柱星盘 AI** 是一个本地优先、可复现的 **八字排盘 / 紫微斗数 / 真太阳时 / AI 结构化命盘** 工作台。项目把“排盘计算”和“AI 解读”分开：四柱、大运、流年、流月与紫微命盘由固定代码生成，AI 只负责解释结构化结果。
 
 - 在线使用：<https://jackmeds.github.io/sizhu-astro-ai/>
+- 指南目录：<https://jackmeds.github.io/sizhu-astro-ai/guide/>
 - 搜索索引：<https://jackmeds.github.io/sizhu-astro-ai/sitemap.xml>
 - 仓库：<https://github.com/JackMeds/sizhu-astro-ai>
 
@@ -54,6 +55,7 @@ AI 解释与写作
 
 站点提供独立可索引的说明页面：
 
+- [指南目录](https://jackmeds.github.io/sizhu-astro-ai/guide/)
 - [八字排盘怎么看](https://jackmeds.github.io/sizhu-astro-ai/guide/bazi.html)
 - [紫微斗数排盘怎么看](https://jackmeds.github.io/sizhu-astro-ai/guide/ziwei.html)
 - [真太阳时怎么算](https://jackmeds.github.io/sizhu-astro-ai/guide/solar-time.html)
