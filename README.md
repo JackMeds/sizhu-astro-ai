@@ -1,30 +1,74 @@
 # 四柱星盘 AI
 
-四柱星盘 AI 是一个本地优先的八字、紫微斗数排盘与 AI 提示词生成工作台。它把传统命盘资料整理成结构化数据，并生成适合复制到 ChatGPT、Claude、DeepSeek、豆包、通义、Kimi 等 AI 工具中的 Markdown 或纯文本提示词。
+**四柱星盘 AI** 是一个本地优先、可复现的 **八字排盘 / 紫微斗数 / 真太阳时 / AI 结构化命盘** 工作台。项目把“排盘计算”和“AI 解读”分开：四柱、大运、流年、流月与紫微命盘由固定代码生成，AI 只负责解释结构化结果。
 
-开源仓库：`https://github.com/JackMeds/sizhu-astro-ai`
+- 在线使用：<https://jackmeds.github.io/sizhu-astro-ai/>
+- 搜索索引：<https://jackmeds.github.io/sizhu-astro-ai/sitemap.xml>
+- 仓库：<https://github.com/JackMeds/sizhu-astro-ai>
 
-## 功能
+## 核心能力
 
-- 八字四柱、十神、藏干、纳音、空亡、五行分布与大运流年摘要
-- 紫微斗数十二宫资料整理
-- 综合、姻缘、事业、财运、身心、流年、XP 等 AI 提示词模式
-- Markdown / 纯文本复制与下载
-- 提示词图片复制，浏览器不支持时自动下载 SVG
+- 八字四柱、十神、藏干、纳音、空亡与五行结构概览
+- 完整大运、流年、流月浏览
+- 紫微斗数十二宫排盘与结构化原始数据
+- 三种时间口径：标准时、地方平太阳时、视太阳时（真太阳时）
+- 显式记录经度修正、均时差、是否跨时辰 / 跨日期
+- 八字与紫微共用同一套有效出生时间，避免运行机器时区造成漂移
+- AI-ready JSON、Markdown / 纯文本提示词导出
 - 浏览器本地历史记录，无需登录
-- 静态网站部署，适合 GitHub Pages、Cloudflare Pages、Vercel、Netlify 等平台
 - 本地 MCP Server 与实验性 WebMCP 页面工具
+- GitHub Actions Golden Fixture 回归测试，防止依赖升级悄悄改变命盘
+
+## 方法论
+
+项目遵循四层边界：
+
+```text
+出生输入
+  ↓
+确定性时间与历法计算
+  ↓
+八字 / 紫微结构化命盘
+  ↓
+规则与事实层（持续完善）
+  ↓
+AI 解释与写作
+```
+
+计算事实和术数解释不会混在一起。例如五行数量只作为结构统计，不直接等同于身强身弱；不同流派的规则也应在后续规则层中注明来源、条件与争议。
+
+## 时间模型
+
+`packages/core` 会保存：
+
+- 标准时
+- 地方平太阳时：按出生地经度与时区标准经线修正
+- 视太阳时（真太阳时）：地方平太阳时 + 均时差
+- 有效排盘口径
+- 修正分钟数
+- 是否跨时辰 / 是否跨日期
+
+八字和紫微统一使用这套有效时间，不再分别通过 JavaScript `Date` 隐式解释。
+
+## 搜索与学习指南
+
+站点提供独立可索引的说明页面：
+
+- [八字排盘怎么看](https://jackmeds.github.io/sizhu-astro-ai/guide/bazi.html)
+- [紫微斗数排盘怎么看](https://jackmeds.github.io/sizhu-astro-ai/guide/ziwei.html)
+- [真太阳时怎么算](https://jackmeds.github.io/sizhu-astro-ai/guide/solar-time.html)
+- [大运流年怎么看](https://jackmeds.github.io/sizhu-astro-ai/guide/dayun.html)
 
 ## 隐私模型
 
-网页端排盘、提示词生成和历史记录都在当前浏览器本地完成。历史记录保存在 localStorage 中，不会自动同步到其他设备。用户把提示词复制到第三方 AI 产品后，数据处理规则以对应产品为准。
+网页端排盘、提示词生成和历史记录都在当前浏览器本地完成。历史记录保存在 `localStorage`，不会自动同步到其他设备。只有用户主动把导出内容发送到第三方 AI 后，数据才进入对应服务的处理范围。
 
 ## 项目结构
 
 ```text
 apps/web      React + Vite 静态网站
 apps/mcp      本地 MCP Server
-packages/core 八字、紫微、资料结构化核心逻辑
+packages/core 八字、紫微、时间与资料结构化核心
 packages/prompt AI 提示词与资料导出逻辑
 packages/render 图像 / SVG 渲染辅助
 ```
@@ -36,50 +80,42 @@ npm install
 npm run dev:web
 ```
 
-默认开发服务会监听本机网络地址，当前项目常用预览端口为 `30011`。
-
 ## 构建与测试
 
 ```bash
+npm run test
 npm run typecheck
 npm run build:web
-npm run test
 ```
 
-完整构建：
-
-```bash
-npm run build
-```
+核心测试包含固定命例、子时 sect 差异、太阳时跨时辰和立春边界等回归案例。当前 `lunar-javascript` 固定为 `1.7.7`。
 
 ## AI / Agent 接入
 
-静态网站会发布 `/agents.md`，用于说明 AI/Agent 如何理解本项目能力。
+静态网站发布 `/agents.md`，用于说明 AI/Agent 如何理解项目能力。
 
 当前接入形态：
 
-- 传统 MCP Server：运行 `apps/mcp`，供支持 MCP 的本地客户端连接。
-- WebMCP 页面工具：在支持 `document.modelContext` 或 `navigator.modelContext` 的浏览器、扩展或桥接环境中注册 `sizhu.*` 工具。
-- HTTP API：暂未启用，后续可以作为单独服务部署。
+- MCP Server：运行 `apps/mcp`，供支持 MCP 的本地客户端连接
+- WebMCP：在支持 `document.modelContext` / `navigator.modelContext` 的环境注册 `sizhu.*` 工具
+- HTTP / Remote MCP：规划中
 
-WebMCP 工具：
+当前 WebMCP 工具：
 
 - `sizhu.about`
 - `sizhu.create_profile`
 - `sizhu.create_ai_prompt`
 - `sizhu.get_current_chart`
 
-## 使用的开源项目
+## 主要开源依赖
 
+- [lunar-javascript](https://github.com/6tail/lunar-javascript)
+- [iztro](https://github.com/SylarLong/iztro)
+- [lunisolar](https://github.com/waterbeside/lunisolar)
 - [React](https://react.dev/)
 - [Vite](https://vite.dev/)
 - [Tailwind CSS](https://tailwindcss.com/)
-- [Motion](https://motion.dev/)
-- [Lucide](https://lucide.dev/)
-- [lunar-javascript](https://github.com/6tail/lunar-javascript)
-- [iztro](https://iztro.com/)
-- [react-iztro](https://github.com/SylarLong/react-iztro)
 
 ## 说明
 
-命理分析内容只适合作为文化、娱乐和自我观察参考，不应替代医学、法律、投资、心理治疗或其他专业意见。
+本项目用于传统文化研究、工具开发与自我观察。术数解释不等同于现代科学结论，也不替代医学、法律、投资或其他专业判断。
