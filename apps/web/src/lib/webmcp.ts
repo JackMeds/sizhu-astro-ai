@@ -1,9 +1,11 @@
 import {
   createAstroProfile,
+  createCompleteLiurenChart,
   createLiurenBaseChart,
   createTransitSnapshot,
   type AstroInput,
   type AstroProfile,
+  type LiurenCompleteInput,
   type LiurenSessionInput
 } from "@sizhu/core";
 import { buildPrompt, type PromptFormat, type PromptMode } from "./promptBuilder";
@@ -26,6 +28,7 @@ const TOOL_NAMES = [
   "sizhu.create_profile",
   "sizhu.create_ai_prompt",
   "sizhu.get_transit_snapshot",
+  "sizhu.create_liuren_chart",
   "sizhu.create_liuren_base_chart",
   "sizhu.get_current_chart"
 ];
@@ -54,15 +57,29 @@ const birthInfoSchema = {
   required: ["birthDateTime", "gender"]
 };
 
+const liurenProperties = {
+  dateTime: { type: "string", description: "Divination/base datetime with explicit offset, e.g. 2026-08-15T09:30:00+08:00" },
+  timezone: { type: "string", default: "Asia/Shanghai" },
+  trueSolarTime: { type: "string", enum: ["none", "longitude", "apparent"], default: "none" },
+  location: { type: "object", additionalProperties: false, properties: locationProperties },
+  question: { type: "string" }
+};
+
 const liurenSchema = {
   type: "object",
   additionalProperties: false,
+  properties: liurenProperties,
+  required: ["dateTime"]
+};
+
+const liurenCompleteSchema = {
+  type: "object",
+  additionalProperties: false,
   properties: {
-    dateTime: { type: "string", description: "Divination datetime with explicit offset, e.g. 2026-08-15T09:30:00+08:00" },
-    timezone: { type: "string", default: "Asia/Shanghai" },
-    trueSolarTime: { type: "string", enum: ["none", "longitude", "apparent"], default: "none" },
-    location: { type: "object", additionalProperties: false, properties: locationProperties },
-    question: { type: "string" }
+    ...liurenProperties,
+    castingMethod: { type: "string", enum: ["time", "number", "branch"], default: "time" },
+    castingNumber: { type: "integer", minimum: 1, description: "Reported number; mapped cyclically with 1=子 ... 12=亥." },
+    castingBranch: { type: "string", enum: ["子", "丑", "寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥"] }
   },
   required: ["dateTime"]
 };
@@ -104,6 +121,16 @@ function normalizeLiurenInput(input: Record<string, unknown> = {}): LiurenSessio
   };
 }
 
+function normalizeCompleteLiurenInput(input: Record<string, unknown> = {}): LiurenCompleteInput {
+  const base = normalizeLiurenInput(input);
+  return {
+    ...base,
+    castingMethod: input.castingMethod === "number" ? "number" : input.castingMethod === "branch" ? "branch" : "time",
+    castingNumber: typeof input.castingNumber === "number" ? input.castingNumber : undefined,
+    castingBranch: typeof input.castingBranch === "string" ? input.castingBranch : undefined
+  };
+}
+
 function createProfile(input: Record<string, unknown> = {}) {
   return createAstroProfile(normalizeInput(input));
 }
@@ -135,9 +162,9 @@ export function registerWebMcpTools(getCurrentProfile: () => AstroProfile | null
         app: "四柱星盘 AI",
         repository: "https://github.com/JackMeds/sizhu-astro-ai",
         privacy: "排盘、提示词生成和历史记录均在浏览器本地完成；WebMCP 工具不会主动读取服务器数据。",
-        capabilities: ["bazi_profile", "bazi_relation_facts", "ziwei_profile", "transit_snapshot", "liuren_base_chart_beta", "ai_prompt", "current_chart"],
+        capabilities: ["bazi_profile", "bazi_relation_facts", "ziwei_profile", "transit_snapshot", "liuren_complete_chart", "ai_prompt", "current_chart"],
         tools: TOOL_NAMES,
-        note: "WebMCP 是实验性浏览器/扩展能力；大六壬 Beta 当前只包含月将、天地盘、天将、四课，不含三传/课体。"
+        note: "大六壬支持正时、报数与指定占时；工具只返回完整结构和校验证据，不在站内解课。"
       })
     },
     {
@@ -195,9 +222,16 @@ export function registerWebMcpTools(getCurrentProfile: () => AstroProfile | null
         })
     },
     {
+      name: "sizhu.create_liuren_chart",
+      title: "Create Complete Da Liu Ren Chart",
+      description: "Return a complete Da Liu Ren chart from time, reported-number, or selected-branch casting: plates, generals, Four Lessons, Three Transmissions, voids, dun-gan, six-relatives, patterns, source-gated ShenSha and engine cross-check status. No interpretation is generated.",
+      inputSchema: liurenCompleteSchema,
+      execute: (input = {}) => toToolResult(() => createCompleteLiurenChart(normalizeCompleteLiurenInput(input)))
+    },
+    {
       name: "sizhu.create_liuren_base_chart",
-      title: "Create Da Liu Ren Base Chart (Beta)",
-      description: "Return the oracle-checked Da Liu Ren beta structure: calendar inputs, month general, Heaven/Earth plates, sky generals and Four Courses. It intentionally excludes Three Transmissions and interpretation for now.",
+      title: "Create Da Liu Ren Base Chart (Compatibility)",
+      description: "Compatibility endpoint for the verified month-general, Heaven/Earth plates, sky-generals and Four-Courses structure. Prefer sizhu.create_liuren_chart for new integrations.",
       inputSchema: liurenSchema,
       execute: (input = {}) => toToolResult(() => createLiurenBaseChart(normalizeLiurenInput(input)))
     },

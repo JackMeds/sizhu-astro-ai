@@ -9,6 +9,7 @@ import "./styles/transit.css";
 import "./styles/handoff.css";
 import "./styles/sponsor.css";
 import "./styles/liuren-beta.css";
+import "./styles/liuren-complete.css";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>

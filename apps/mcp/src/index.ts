@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
-import { createAstroProfile, createLiurenBaseChart, createTransitSnapshot } from "@sizhu/core";
+import { createAstroProfile, createCompleteLiurenChart, createLiurenBaseChart, createTransitSnapshot } from "@sizhu/core";
 import { buildAiPrompt, exportProfile } from "@sizhu/prompt";
 import { z } from "zod";
 
@@ -25,16 +25,23 @@ const inputSchema = {
 };
 
 const liurenInputSchema = {
-  dateTime: z.string().describe("Divination datetime with explicit offset, e.g. 2026-08-15T09:30:00+08:00"),
+  dateTime: z.string().describe("Divination/base datetime with explicit offset, e.g. 2026-08-15T09:30:00+08:00"),
   timezone: z.string().default("Asia/Shanghai"),
   trueSolarTime: z.enum(["none", "longitude", "apparent"]).default("none"),
   location: locationSchema,
   question: z.string().optional()
 };
 
+const liurenCompleteInputSchema = {
+  ...liurenInputSchema,
+  castingMethod: z.enum(["time", "number", "branch"]).default("time"),
+  castingNumber: z.number().int().positive().optional().describe("Reported number; mapped cyclically with 1=子 ... 12=亥."),
+  castingBranch: z.enum(["子", "丑", "寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥"]).optional()
+};
+
 const server = new McpServer({
   name: "sizhu-astro-ai",
-  version: "0.3.0"
+  version: "0.4.0"
 });
 
 server.registerTool(
@@ -82,10 +89,23 @@ server.registerTool(
 );
 
 server.registerTool(
+  "sizhu.create_liuren_chart",
+  {
+    title: "Create Complete Da Liu Ren Chart",
+    description: "Generate a complete structured Da Liu Ren chart from standard-time, reported-number, or explicit-branch casting. Returns plates, generals, Four Lessons, Three Transmissions, void branches, dun-gan, six-relatives, pattern evidence, source-gated ShenSha, and engine cross-check status. This tool calculates only; it does not interpret the divination.",
+    inputSchema: liurenCompleteInputSchema
+  },
+  async (input) => {
+    const chart = createCompleteLiurenChart(input);
+    return { content: [{ type: "text", text: JSON.stringify(chart, null, 2) }] };
+  }
+);
+
+server.registerTool(
   "sizhu.create_liuren_base_chart",
   {
-    title: "Create Da Liu Ren Base Chart (Beta)",
-    description: "Generate the oracle-checked Da Liu Ren structural beta: calendar inputs, month general, Heaven/Earth plates, sky generals, and Four Courses. Three Transmissions and final interpretation are not included yet.",
+    title: "Create Da Liu Ren Base Chart (Compatibility)",
+    description: "Compatibility endpoint for the verified month-general, Heaven/Earth plates, sky-generals and Four-Courses structure. Prefer sizhu.create_liuren_chart for new integrations.",
     inputSchema: liurenInputSchema
   },
   async (input) => {

@@ -1,10 +1,12 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import {
+  createCompleteLiurenChart,
   createLiurenBaseChartFromCalendar,
   createLiurenFourCourses,
   createLiurenHeavenEarthDisk,
   createLiurenSkyGenerals,
+  liurenNumberToBranch,
   prepareLiurenCalendarInput,
   type LiurenCalendarInput
 } from "../src/index.js";
@@ -103,4 +105,56 @@ test("Liuren base chart keeps disk, generals and Four Courses in one determinist
   assert.equal(chart.disk.moonGeneral, "亥");
   assert.equal(chart.skyGenerals.alignedToHeavenPlate[0], "蛇");
   assert.equal(chart.fourCourses.first.pair, "子己");
+});
+
+test("reported-number casting wraps by twelve branches", () => {
+  assert.deepEqual(liurenNumberToBranch(1), { branch: "子", normalized: 1 });
+  assert.deepEqual(liurenNumberToBranch(12), { branch: "亥", normalized: 12 });
+  assert.deepEqual(liurenNumberToBranch(13), { branch: "子", normalized: 1 });
+  assert.deepEqual(liurenNumberToBranch(26), { branch: "丑", normalized: 2 });
+  assert.throws(() => liurenNumberToBranch(0));
+});
+
+test("complete Liuren chart returns Three Transmissions, voids, patterns and source-gated ShenSha", () => {
+  const chart = createCompleteLiurenChart({
+    dateTime: "2026-04-10T08:26:00+08:00",
+    timezone: "Asia/Shanghai",
+    castingMethod: "time",
+    question: "测试完整课"
+  });
+
+  assert.equal(chart.format, "sizhu-liuren-chart");
+  assert.equal(chart.complete.engine, "mingyu-core");
+  assert.equal(chart.complete.version, "0.1.23");
+  assert.equal(chart.complete.fourLessons.length, 4);
+  assert.equal(chart.complete.threeTransmissions.length, 3);
+  assert.equal(chart.complete.xunKong.length, 2);
+  assert.ok(chart.complete.transmissionRule.length > 0);
+  assert.ok(chart.complete.threeTransmissions.every((item) => item.branch && item.god));
+  assert.ok(chart.complete.threeTransmissions.every((item) => typeof item.dunGan === "string" && typeof item.liuQing === "string"));
+  assert.ok(chart.complete.shenSha.length > 0);
+  assert.ok(chart.complete.shenSha.every((item) => item.sources.length > 0));
+  assert.equal(chart.engineManifest.complete, "mingyu-core@0.1.23");
+  assert.equal(chart.crossCheck.status, "matched", chart.crossCheck.differences.join("\n"));
+});
+
+test("branch and number casting resolve to the selected final divination branch", () => {
+  const branchChart = createCompleteLiurenChart({
+    dateTime: "2026-04-10T08:26:00+08:00",
+    timezone: "Asia/Shanghai",
+    castingMethod: "branch",
+    castingBranch: "酉"
+  });
+  assert.equal(branchChart.casting.resolvedBranch, "酉");
+  assert.equal(branchChart.complete.divinationBranch, "酉");
+
+  const numberChart = createCompleteLiurenChart({
+    dateTime: "2026-04-10T08:26:00+08:00",
+    timezone: "Asia/Shanghai",
+    castingMethod: "number",
+    castingNumber: 26
+  });
+  assert.equal(numberChart.casting.normalizedNumber, 2);
+  assert.equal(numberChart.casting.resolvedBranch, "丑");
+  assert.equal(numberChart.complete.divinationBranch, "丑");
 });

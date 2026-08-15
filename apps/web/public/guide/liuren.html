@@ -3,44 +3,71 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>大六壬排盘 Beta：月将、天地盘、天将、四课｜四柱星盘 AI</title>
-  <meta name="description" content="四柱星盘 AI 的大六壬 Beta 说明：如何从起课时间自动生成节气、农历月、日时干支，并计算月将、天地盘、天将与四课；当前三传、课体、神煞仍在迁移中。" />
+  <title>大六壬怎么起课：正时、报数、九宗门与三传｜四柱星盘 AI</title>
+  <meta name="description" content="大六壬完整排盘指南：区分正时起课、报数起课、指定占时与九宗门取三传，说明月将、天地盘、天将、四课、三传、旬空、遁干、六亲、课体和神煞的计算结构。" />
   <meta name="robots" content="index,follow,max-image-preview:large" />
   <link rel="canonical" href="https://jackmeds.github.io/sizhu-astro-ai/guide/liuren.html" />
   <style>
-    :root{color-scheme:dark;background:#07100e;color:#e9ddc6;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans SC",sans-serif}body{margin:0}main{max-width:860px;margin:auto;padding:42px 22px 72px}a{color:#78d5bd}h1,h2{font-family:"Noto Serif SC",serif;color:#f4d28a}h1{font-size:clamp(34px,6vw,56px);line-height:1.08}h2{margin-top:38px}.lead{font-size:18px;line-height:1.8;color:#c1d2ca}.card{border:1px solid rgba(216,169,78,.2);border-radius:18px;background:#0c1714;padding:20px;margin:20px 0}code{color:#a6e6d5}li,p{line-height:1.8;color:#b7c8c0}.warn{border-left:3px solid #d8a94e;padding-left:14px;color:#e1cda8}.crumb{font-size:13px;color:#82998f}
+    :root{color-scheme:dark;background:#07100e;color:#e9ddc6;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans SC",sans-serif}body{margin:0}main{max-width:900px;margin:auto;padding:42px 22px 72px}a{color:#78d5bd}h1,h2,h3{font-family:"Noto Serif SC",serif;color:#f4d28a}h1{font-size:clamp(34px,6vw,56px);line-height:1.08}h2{margin-top:40px}.lead{font-size:18px;line-height:1.8;color:#c1d2ca}.card{border:1px solid rgba(216,169,78,.2);border-radius:18px;background:#0c1714;padding:20px;margin:20px 0}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.grid>div{border:1px solid rgba(73,179,154,.18);border-radius:14px;padding:14px;background:rgba(73,179,154,.035)}code{color:#a6e6d5}li,p{line-height:1.8;color:#b7c8c0}.warn{border-left:3px solid #d8a94e;padding-left:14px;color:#e1cda8}.crumb{font-size:13px;color:#82998f}.flow{white-space:pre-wrap;border:1px solid rgba(73,179,154,.16);border-radius:14px;padding:15px;background:#091411;color:#bde4d8;font-family:ui-monospace,monospace;line-height:1.8}@media(max-width:680px){.grid{grid-template-columns:1fr}}
   </style>
 </head>
 <body>
 <main>
-  <p class="crumb"><a href="../">四柱星盘 AI</a> / <a href="./">指南</a> / 大六壬 Beta</p>
-  <h1>大六壬排盘 Beta：先把结构算对，再谈三传与解课</h1>
-  <p class="lead">本站把大六壬作为独立的起课 session，而不是出生八字的一部分。用户只需要输入起课时间；程序会先统一时间口径，再生成六壬引擎需要的节气、农历月、日干支与时干支。</p>
+  <p class="crumb"><a href="../">四柱星盘 AI</a> / <a href="./">指南</a> / 大六壬</p>
+  <h1>大六壬怎么起课：先分清“起课入口”和“九宗门”</h1>
+  <p class="lead">大六壬里经常把“怎么起课”和“怎么取三传”混在一起说。本站把这两层拆开：起课入口只负责确定最终占时；得到占时后，不管入口是什么，都进入同一套月将、天地盘、天将、四课与三传算法。</p>
 
+  <h2>本站支持三种起课入口</h2>
+  <div class="grid">
+    <div><h3>正时起课</h3><p>直接使用实际起课时间。可选择标准时、地方平太阳时或视太阳时（真太阳时）。</p></div>
+    <div><h3>报数起课</h3><p>把用户报出的正整数按十二地支循环映射：1=子、2=丑……12=亥、13重新回到子。例如 26 → 丑。</p></div>
+    <div><h3>指定占时</h3><p>高级/复盘入口：直接指定子至亥其中一个占时支，基础日期仍用于确定日干支、月将等历法信息。</p></div>
+  </div>
+
+  <p class="warn">报数不是另一套天地盘或三传算法。它只是换一种方式得到“最终占时支”；随后仍进入同一套六壬排课。</p>
+
+  <h2>九宗门是什么？</h2>
+  <p>九宗门是传统大六壬中从四课判定初传、进而确定三传的一组取传规则。常见归纳包括：贼克、比用、涉害、遥克、昴星、别责、八专、伏吟、返吟。程序先生成四课，再按条件选择实际命中的取传法，而不是让用户在九个按钮里随意挑一个。</p>
+
+  <div class="flow">起课入口（正时 / 报数 / 指定占时）
+↓
+最终占时 + 日干支 + 月将
+↓
+天地盘
+↓
+十二天将
+↓
+四课
+↓
+九宗门条件判定
+↓
+初传 → 中传 → 末传
+↓
+旬空 / 遁干 / 六亲 / 课体 / 神煞 evidence
+↓
+结构化 JSON → 复制给你喜欢的 AI 解课</div>
+
+  <h2>完整结果现在包含什么</h2>
   <div class="card">
-    <strong>当前已经公开并做回归验证的结构</strong>
     <ul>
-      <li>月将</li>
-      <li>天地盘</li>
-      <li>天将</li>
-      <li>四课</li>
+      <li>节气、月将、日时干支与最终占时</li>
+      <li>天地盘、十二天将、贵人起点与昼夜信息</li>
+      <li>四课的上下神、天将与生克关系</li>
+      <li>三传、实际取传法、传局</li>
+      <li>旬空、三传遁干、六亲</li>
+      <li>课体 / 格局标签</li>
+      <li>带来源信息的传统神煞 evidence</li>
+      <li>多引擎重叠字段校验与版本 manifest</li>
     </ul>
   </div>
 
-  <h2>为什么标 Beta？</h2>
-  <p>因为完整大六壬还需要三传、课体以及部分神煞等结构。当前项目选择逐模块移植：每完成一块 TypeScript 算法，就与固定的 Python 参考引擎逐字段对照；未验证的部分不会在网页上伪装成完整结果。</p>
+  <h2>为什么要多引擎校验</h2>
+  <p>六壬实现之间在贵人法、昼夜界定、月将边界和部分课体细节上可能存在口径差异。本站自己的 <code>sizhu-liuren-ts</code> 保留可审计结构层，同时使用固定版本的完整 TypeScript 引擎做重叠字段比较，并在 CI 中继续运行固定 <code>kinliuren</code> Python 课例。差异不会被静默吞掉，而会写进导出结果。</p>
 
-  <h2>参考引擎怎么固定？</h2>
-  <p>迁移使用 <code>kentang2017/kinliuren</code> 的固定 source commit 作为 CI oracle。固定 commit 的可执行 <code>Liuren.result(0)</code> 是迁移回归真值；如果 README prose 与实际函数输出矛盾，两者会被记录为上游差异，而不会混为同一事实。</p>
+  <h2>为什么本站不直接“解课”</h2>
+  <p>本站目标是把“排课事实”做成稳定输入，而不是绑定某个模型。生成完整课盘后，可以点击“复制给 AI”，把结构交给 ChatGPT、Claude、DeepSeek、Kimi 或其他你喜欢的模型。提示词会要求模型不要自行重排，并先区分程序事实、传统规则与综合解释。</p>
 
-  <h2>当前计算链</h2>
-  <p><code>起课时间 → 标准时/太阳时口径 → 节气与农历月 → 日时干支 → 月将 → 天地盘 → 天将 → 四课</code></p>
-  <p class="warn">当前页面不提供六壬解课。三传与课体尚未完成前，导出的 Beta JSON 也不应被当作完整六壬课。</p>
-
-  <h2>后续顺序</h2>
-  <p>下一步会继续迁移三传与课体，再追踪神煞在上游项目中的真实来源。完成后，六壬结果同样可以复制到你喜欢的 AI 进行分析，而本站保持“只计算、不解读”的产品边界。</p>
-
-  <p><a href="../#liuren">返回大六壬 Beta 起课区</a></p>
+  <p><a href="../#liuren">返回大六壬起课区</a></p>
 </main>
 </body>
 </html>
