@@ -3,8 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>八字排盘・紫微斗数・真太阳时｜四柱星盘 AI</title>
-    <meta name="description" content="免费、本地优先的八字与紫微斗数排盘工具。支持标准时、地方平太阳时、真太阳时，大运流年流月与 AI 可读取的结构化命盘 JSON；出生资料默认只在浏览器本地处理。" />
+    <title>八字排盘・紫微斗数・真太阳时｜结果复制给你喜欢的 AI 分析</title>
+    <meta name="description" content="免费、本地优先的八字与紫微斗数排盘工具。用固定代码生成四柱、大运流年流月、紫微与关系事实，再把结构化结果复制到 ChatGPT、Claude、DeepSeek、Kimi 等你喜欢的 AI 中分析；本站本身不提供命理解读。" />
     <meta name="author" content="四柱星盘 AI" />
     <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1" />
     <link rel="canonical" href="https://jackmeds.github.io/sizhu-astro-ai/" />
@@ -16,11 +16,11 @@
     <meta property="og:locale" content="zh_CN" />
     <meta property="og:url" content="https://jackmeds.github.io/sizhu-astro-ai/" />
     <meta property="og:site_name" content="四柱星盘 AI" />
-    <meta property="og:title" content="八字排盘・紫微斗数・真太阳时｜四柱星盘 AI" />
-    <meta property="og:description" content="代码排盘、结构化 JSON、AI 解读。八字、紫微、大运流年与三种时间口径统一在同一个可审计计算底座中。" />
+    <meta property="og:title" content="八字・紫微排盘结果，复制给你喜欢的 AI 分析" />
+    <meta property="og:description" content="本站负责代码排盘、真太阳时、关系事实和结构化整理，不提供站内命理解读。生成后复制给 ChatGPT、Claude、DeepSeek、Kimi 或其他 AI 继续分析。" />
     <meta name="twitter:card" content="summary" />
-    <meta name="twitter:title" content="八字排盘・紫微斗数・真太阳时｜四柱星盘 AI" />
-    <meta name="twitter:description" content="免费、本地优先的八字与紫微排盘工具；支持真太阳时、大运流年流月和 AI 结构化导出。" />
+    <meta name="twitter:title" content="八字・紫微排盘结果，复制给你喜欢的 AI 分析" />
+    <meta name="twitter:description" content="代码排盘 + 结构化结果 + 任意 AI 解读。本站不提供命理解读。" />
     <meta name="theme-color" content="#07100e" />
 
     <script type="application/ld+json">
@@ -33,7 +33,7 @@
             "url": "https://jackmeds.github.io/sizhu-astro-ai/",
             "name": "四柱星盘 AI",
             "alternateName": ["四柱星盘", "Sizhu Astro AI"],
-            "description": "本地优先的八字、紫微斗数与 AI 结构化排盘工具。",
+            "description": "本地优先的八字、紫微斗数与 AI 结构化排盘工具。本站负责计算与资料整理，用户可把结果复制到自己喜欢的 AI 中分析。",
             "inLanguage": "zh-CN"
           },
           {
@@ -45,7 +45,7 @@
             "operatingSystem": "Web",
             "browserRequirements": "Requires JavaScript",
             "isAccessibleForFree": true,
-            "description": "八字四柱、十神、大运流年流月、紫微斗数、标准时/地方平太阳时/真太阳时与 AI 结构化命盘导出工具。",
+            "description": "八字四柱、十神、大运流年流月、紫微斗数、标准时/地方平太阳时/真太阳时与 AI 结构化命盘导出工具；本站不提供命理解读。",
             "codeRepository": "https://github.com/JackMeds/sizhu-astro-ai",
             "offers": {
               "@type": "Offer",
@@ -57,7 +57,9 @@
               "大运、流年与流月浏览",
               "紫微斗数十二宫排盘",
               "标准时、地方平太阳时、视太阳时（真太阳时）",
+              "八字关系事实与目标日期联动",
               "AI 可读取的结构化命盘资料",
+              "复制结果到用户选择的 AI 进行分析",
               "浏览器本地历史记录",
               "MCP 与 WebMCP Agent 接入"
             ]
@@ -69,13 +71,21 @@
   <body>
     <div id="root">
       <main style="max-width: 860px; margin: 0 auto; padding: 28px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; color: #18211f;">
-        <h1>四柱星盘 AI：八字排盘、紫微斗数与真太阳时工具</h1>
-        <p>免费、本地优先的传统术数计算工作台。用固定代码生成八字四柱、大运流年流月和紫微斗数资料，再把结构化结果交给 AI 解读。</p>
+        <h1>四柱星盘 AI：先排盘，再复制给你喜欢的 AI 分析</h1>
+        <p>本站是免费、本地优先的传统术数计算工具，负责用固定代码生成八字四柱、大运流年流月、紫微斗数与关系事实，并整理成 AI 容易读取的结构化资料。本站本身不提供命理解读；完成排盘后，可以把结果复制到 ChatGPT、Claude、DeepSeek、Kimi 或其他你习惯使用的 AI 中继续分析。</p>
+        <h2>使用流程</h2>
+        <ol>
+          <li>填写出生日期、时间、性别和时间口径。</li>
+          <li>由程序生成八字、紫微、大运流年流月与关系事实。</li>
+          <li>复制 Markdown、纯文本或 JSON 结果。</li>
+          <li>粘贴到你喜欢的 AI，按自己的问题继续分析和追问。</li>
+        </ol>
         <h2>主要功能</h2>
         <ul>
           <li>八字四柱、十神、藏干、纳音与大运流年流月</li>
-          <li>紫微斗数十二宫结构化资料</li>
+          <li>紫微斗数十二宫、四化与动态运限结构化资料</li>
           <li>标准时、地方平太阳时与视太阳时（真太阳时）对比</li>
+          <li>冲、合、刑、害、破、伏吟等关系事实与目标日期联动</li>
           <li>命盘 JSON、Markdown / 纯文本 AI 提示词导出</li>
           <li>出生资料和历史记录默认仅保存在当前浏览器</li>
         </ul>
