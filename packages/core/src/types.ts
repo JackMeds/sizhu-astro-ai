@@ -64,6 +64,43 @@ export interface PillarInfo {
   element: string;
 }
 
+export type BaziRelationScope = "natal" | "dayun" | "year" | "month" | "custom";
+export type BaziRelationKind =
+  | "stem-combination"
+  | "branch-liuhe"
+  | "branch-clash"
+  | "branch-harm"
+  | "branch-break"
+  | "branch-punishment"
+  | "branch-self-punishment"
+  | "three-harmony"
+  | "three-meeting"
+  | "fuyin";
+
+export interface BaziRelationParticipant {
+  scope: BaziRelationScope;
+  key?: PillarInfo["key"];
+  label: string;
+  ganZhi?: string;
+  stem?: string;
+  branch?: string;
+}
+
+export interface BaziRelationFact {
+  id: string;
+  kind: BaziRelationKind;
+  label: string;
+  status: "observed" | "candidate" | "complete";
+  participants: BaziRelationParticipant[];
+  ruleSet: "bazi-relations-v1";
+  note?: string;
+  transformation?: {
+    targetElement: string;
+    status: "candidate";
+    note: string;
+  };
+}
+
 export interface BaziProfile {
   engine: "lunar-javascript";
   lunarText: string;
@@ -73,6 +110,10 @@ export interface BaziProfile {
   dayMaster: string;
   elementCounts: Record<string, number>;
   strengthHint: string;
+  facts: {
+    version: "bazi-relations-v1";
+    natal: BaziRelationFact[];
+  };
   luck: {
     startText: string;
     dayun: Array<{
@@ -102,18 +143,77 @@ export interface BaziProfile {
   };
 }
 
-export interface ZiweiPalace {
+export interface ZiweiStar {
   name: string;
+  type: string;
+  scope: string;
+  brightness?: string;
+  mutagen?: string;
+}
+
+export interface ZiweiPalace {
+  index: number;
+  name: string;
+  isBodyPalace: boolean;
+  isOriginalPalace: boolean;
   earthlyBranch: string;
   heavenlyStem: string;
-  majorStars: string[];
-  minorStars: string[];
+  majorStars: ZiweiStar[];
+  minorStars: ZiweiStar[];
+  adjectiveStars: ZiweiStar[];
+  changsheng12: string;
+  boshi12: string;
+  jiangqian12: string;
+  suiqian12: string;
+  decadal: {
+    range: [number, number];
+    heavenlyStem: string;
+    earthlyBranch: string;
+  } | null;
+  ages: number[];
   raw: unknown;
+}
+
+export interface ZiweiHoroscopeItem {
+  index: number;
+  name: string;
+  heavenlyStem: string;
+  earthlyBranch: string;
+  palaceNames: string[];
+  mutagen: string[];
+}
+
+export interface ZiweiHoroscopeSnapshot {
+  solarDate: string;
+  lunarDate: string;
+  decadal: ZiweiHoroscopeItem;
+  age: ZiweiHoroscopeItem & { nominalAge: number };
+  yearly: ZiweiHoroscopeItem;
+  monthly: ZiweiHoroscopeItem;
+  daily: ZiweiHoroscopeItem;
+  hourly: ZiweiHoroscopeItem;
 }
 
 export interface ZiweiProfile {
   engine: "iztro";
   available: boolean;
+  solarDate?: string;
+  lunarDate?: string;
+  chineseDate?: string;
+  time?: string;
+  timeRange?: string;
+  sign?: string;
+  zodiac?: string;
+  soulPalaceBranch?: string;
+  bodyPalaceBranch?: string;
+  soulStar?: string;
+  bodyStar?: string;
+  fiveElementsClass?: string;
+  natalMutagens?: Array<{
+    palace: string;
+    star: string;
+    mutagen: string;
+  }>;
   palaces: ZiweiPalace[];
   calculation?: {
     solarDate: string;
@@ -154,7 +254,7 @@ export interface AiReadableBlock {
 export interface AstroProfile {
   meta: {
     format: "astro-ai-profile";
-    formatVersion: "1.1.0";
+    formatVersion: "1.2.0";
     generatedAt: string;
     source: "sizhu-astro-ai/core";
   };
