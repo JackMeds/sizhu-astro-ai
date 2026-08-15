@@ -90,7 +90,7 @@ function normalizeHoroscope(value: unknown): ZiweiHoroscopeSnapshot {
 function buildAstrolabe(input: AstroInput) {
   const effective = createTimeProfile(input).effective;
   const timeIndex = Math.floor(((effective.hour + 1) % 24) / 2);
-  const gender = input.gender === "male" ? "男" : "女";
+  const gender: "男" | "女" = input.gender === "male" ? "男" : "女";
   const astrolabe = astro.bySolar(effective.date, timeIndex, gender, true);
   return { effective, timeIndex, gender, astrolabe };
 }
