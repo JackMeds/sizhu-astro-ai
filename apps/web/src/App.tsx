@@ -8,6 +8,7 @@ import { EngineAudit } from "./components/EngineAudit";
 import { ExportPanel } from "./components/ExportPanel";
 import { HistoryRail } from "./components/HistoryRail";
 import { InputPanel, type FormState } from "./components/InputPanel";
+import { LiurenBetaPanel } from "./components/LiurenBetaPanel";
 import { SponsorPlaceholder } from "./components/SponsorPlaceholder";
 import { ThemeToggle } from "./components/ThemeToggle";
 import { TransitInspector } from "./components/TransitInspector";
@@ -91,7 +92,7 @@ export function App() {
         <a className="brand-lockup" href="#top" aria-label="四柱星盘 AI 首页">
           <span className="brand-seal">命</span><span><strong>四柱星盘 AI</strong><small>Deterministic Metaphysics Workbench</small></span>
         </a>
-        <nav><a href="#chart">命盘</a><a href="#guides">指南</a><a href="#support">支持</a><a href="#export">AI 导出</a><a href="#mcp">Agent</a><ThemeToggle /></nav>
+        <nav><a href="#chart">命盘</a><a href="#liuren">六壬 Beta</a><a href="#guides">指南</a><a href="#support">支持</a><a href="#export">AI 导出</a><a href="#mcp">Agent</a><ThemeToggle /></nav>
       </header>
 
       <section className="hero-workbench" id="top">
@@ -136,6 +137,8 @@ export function App() {
           )}
         </div>
       </section>
+
+      <div id="liuren"><LiurenBetaPanel /></div>
 
       <section className="guide-hub" id="guides" aria-labelledby="guide-title">
         <div className="guide-heading">
