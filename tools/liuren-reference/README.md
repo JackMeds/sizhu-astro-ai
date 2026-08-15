@@ -8,23 +8,29 @@ The web application is a TypeScript/browser-first project, while the most mature
 
 Rather than copying a large Python implementation into the browser and hoping the port is correct, the migration uses a reference-oracle workflow:
 
-1. Pin a known Python release.
+1. Pin an exact upstream source commit.
 2. Record representative Da Liu Ren fixtures.
 3. Build the browser/TypeScript implementation subsystem by subsystem.
 4. Compare the TypeScript result with the pinned reference output in CI.
 
-## Pinned reference
+## Primary pinned oracle
 
-- PyPI package: `kinliuren==0.1.2.9`
-- Stable oracle interface: `Liuren(solar_term, lunar_month, day_ganzhi, hour_ganzhi).result(0)`
 - Upstream repository: `kentang2017/kinliuren`
-- Upstream development commit observed during this migration: `3ba45a9540f08269b56d81508a061c7d46938785`
+- Exact source commit: `3ba45a9540f08269b56d81508a061c7d46938785`
+- Oracle interface: `Liuren(solar_term, lunar_month, day_ganzhi, hour_ganzhi).result(0)`
+- Runtime in CI: source checkout + Python 3.12
 
-The PyPI release is the regression oracle. A newer upstream GitHub commit may be inspected for fixes and algorithm changes, but must not silently change existing fixtures.
+The exact Git commit is the reference truth for the TypeScript migration. A future upstream change must be reviewed and fixtures intentionally updated; it must never silently change the browser engine.
+
+## Historical PyPI release
+
+`kinliuren==0.1.2.9` remains useful as a historical stable release, but it is **not** the primary oracle because it differs from the later upstream source. During migration we observed that the same public input preserved the Three Transmissions, Four Courses and Heaven/Earth disk while the PyPI release returned different pattern labels and omitted the newer `神煞` field found in the current README output.
+
+That divergence is exactly why the project pins a source commit instead of assuming “latest README” and “latest published package” are identical.
 
 ## First fixture
 
-The first fixture is the public example from the upstream README:
+The first fixture is the public example from the pinned upstream README:
 
 ```text
 solar term: 驚蟄
@@ -40,6 +46,7 @@ The oracle validates key output invariants including:
 - 末傳 = 卯
 - 一課 starts with 子己
 - 天盤 / 地盤 / 天將 each contain 12 entries
+- the output includes `神煞`
 
 ## Calendar ownership
 
