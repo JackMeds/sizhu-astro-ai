@@ -2,16 +2,17 @@ name: Refresh Liuren dependency lock
 
 on:
   push:
-    branches: [agent/liuren-complete-phase5]
+    branches:
+      - agent/liuren-complete-phase5
     paths:
       - packages/core/package.json
+      - .github/workflows/update-liuren-lock.yml
 
 permissions:
   contents: write
 
 jobs:
   refresh-lock:
-    if: ${{ !startsWith(github.event.head_commit.message, 'chore: refresh Liuren lockfile') }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout branch
@@ -25,7 +26,7 @@ jobs:
           cache: npm
       - name: Refresh package lock only
         run: npm install --package-lock-only --ignore-scripts
-      - name: Commit lockfile
+      - name: Commit lockfile if changed
         run: |
           if git diff --quiet -- package-lock.json; then
             echo "package-lock.json already current"
