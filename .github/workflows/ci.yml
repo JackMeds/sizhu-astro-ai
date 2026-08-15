@@ -49,7 +49,8 @@ jobs:
           PYTHONPATH: _oracle/kinliuren/src
         run: python tools/liuren-reference/oracle.py --validate-pinned-fixture > /tmp/liuren-reference.json
       - name: Show reference summary
-        run: python - <<'PY'
+        run: |
+          python - <<'PY'
           import json
           data = json.load(open('/tmp/liuren-reference.json', encoding='utf-8'))
           print('節氣:', data.get('節氣'))
