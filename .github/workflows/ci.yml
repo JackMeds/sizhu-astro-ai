@@ -1,8 +1,6 @@
 name: Validate core and web
 
 on:
-  push:
-    branches: [agent/liuren-complete-phase5]
   pull_request:
     branches: [main, master]
   workflow_dispatch:
@@ -16,6 +14,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref || github.ref }}
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
@@ -23,8 +23,8 @@ jobs:
           cache: npm
       - name: Install dependencies
         run: npm install --ignore-scripts
-      - name: Refresh lockfile on phase branch
-        if: github.event_name == 'push' && github.ref_name == 'agent/liuren-complete-phase5'
+      - name: Refresh lockfile on Phase 5 PR
+        if: github.event_name == 'pull_request' && github.head_ref == 'agent/liuren-complete-phase5'
         run: |
           if ! git diff --quiet -- package-lock.json; then
             git config user.name "github-actions[bot]"
