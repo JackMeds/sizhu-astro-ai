@@ -1,0 +1,295 @@
+.liuren-beta {
+  max-width: 1180px;
+  margin: 26px auto 34px;
+  padding: clamp(20px, 3vw, 34px);
+  border: 1px solid rgba(73, 179, 154, 0.22);
+  border-radius: 24px;
+  background:
+    radial-gradient(circle at 92% 8%, rgba(216, 169, 78, 0.09), transparent 26%),
+    linear-gradient(145deg, rgba(8, 20, 17, 0.97), rgba(6, 13, 12, 0.95));
+}
+
+.liuren-beta-heading {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  align-items: flex-start;
+}
+
+.liuren-beta-heading h2 {
+  margin: 3px 0 10px;
+  color: var(--gold-bright, #f4d28a);
+  font-size: clamp(25px, 3vw, 38px);
+}
+
+.liuren-beta-heading > div > p:last-child {
+  max-width: 780px;
+  margin: 0;
+  color: var(--muted, #aebeb5);
+  line-height: 1.7;
+}
+
+.liuren-beta-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  flex: 0 0 auto;
+  border: 1px solid rgba(73, 179, 154, 0.3);
+  border-radius: 999px;
+  background: rgba(73, 179, 154, 0.08);
+  padding: 8px 11px;
+  color: #bfeade;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.liuren-beta-form {
+  display: grid;
+  grid-template-columns: minmax(190px, 1.2fr) minmax(150px, 0.85fr) minmax(130px, 0.65fr) minmax(220px, 1.5fr) auto;
+  gap: 10px;
+  margin-top: 22px;
+  align-items: end;
+}
+
+.liuren-beta-form label {
+  display: grid;
+  gap: 7px;
+  color: #c8d8d1;
+  font-size: 12px;
+  font-weight: 720;
+}
+
+.liuren-beta-form label > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.liuren-beta-form input,
+.liuren-beta-form select {
+  width: 100%;
+  min-height: 42px;
+  box-sizing: border-box;
+  border: 1px solid rgba(216, 169, 78, 0.18);
+  border-radius: 11px;
+  outline: none;
+  background: rgba(0, 0, 0, 0.2);
+  color: #ecdfc8;
+  padding: 0 11px;
+  font: inherit;
+  transition: border-color 150ms ease, box-shadow 150ms ease;
+}
+
+.liuren-beta-form input:focus,
+.liuren-beta-form select:focus {
+  border-color: rgba(73, 179, 154, 0.6);
+  box-shadow: 0 0 0 3px rgba(73, 179, 154, 0.08);
+}
+
+.liuren-calc-button {
+  min-height: 42px;
+  border: 1px solid rgba(73, 179, 154, 0.48);
+  border-radius: 11px;
+  background: linear-gradient(135deg, rgba(73, 179, 154, 0.24), rgba(73, 179, 154, 0.12));
+  color: #d9f3ec;
+  padding: 0 16px;
+  font-weight: 850;
+  cursor: pointer;
+}
+
+.liuren-error,
+.liuren-copy-status {
+  margin: 12px 0 0;
+  border-radius: 10px;
+  padding: 9px 11px;
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+.liuren-error {
+  border: 1px solid rgba(255, 111, 95, 0.25);
+  background: rgba(255, 111, 95, 0.06);
+  color: #f3afa8;
+}
+
+.liuren-copy-status {
+  border: 1px solid rgba(73, 179, 154, 0.2);
+  background: rgba(73, 179, 154, 0.06);
+  color: #bfe0d7;
+}
+
+.liuren-beta-result {
+  display: grid;
+  gap: 15px;
+  margin-top: 18px;
+}
+
+.liuren-meta-grid {
+  display: grid;
+  grid-template-columns: repeat(8, minmax(78px, 1fr));
+  gap: 8px;
+}
+
+.liuren-meta-grid > span {
+  border: 1px solid rgba(216, 169, 78, 0.13);
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.15);
+  padding: 9px 8px;
+  text-align: center;
+}
+
+.liuren-meta-grid small,
+.liuren-meta-grid strong {
+  display: block;
+}
+
+.liuren-meta-grid small {
+  color: rgba(174, 190, 181, 0.66);
+  font-size: 10px;
+}
+
+.liuren-meta-grid strong {
+  margin-top: 4px;
+  color: #f0d89d;
+  font-size: 15px;
+}
+
+.liuren-disk-wrap {
+  overflow-x: auto;
+  border: 1px solid rgba(73, 179, 154, 0.16);
+  border-radius: 15px;
+  background: rgba(1, 5, 4, 0.2);
+  padding: 10px;
+}
+
+.liuren-disk-row {
+  display: grid;
+  grid-template-columns: 58px repeat(12, minmax(36px, 1fr));
+  min-width: 630px;
+  align-items: center;
+  gap: 5px;
+}
+
+.liuren-disk-row + .liuren-disk-row {
+  margin-top: 5px;
+}
+
+.liuren-disk-row strong,
+.liuren-disk-row span {
+  display: grid;
+  place-items: center;
+  min-height: 35px;
+  border-radius: 8px;
+}
+
+.liuren-disk-row strong {
+  color: #a9c9c0;
+  font-size: 11px;
+}
+
+.liuren-disk-row span {
+  border: 1px solid rgba(216, 169, 78, 0.11);
+  background: rgba(216, 169, 78, 0.035);
+  color: #ead9b8;
+  font-family: "STKaiti", "KaiTi", "Noto Serif SC", serif;
+  font-size: 15px;
+}
+
+.liuren-disk-label span {
+  color: #b4c7c1;
+  background: rgba(73, 179, 154, 0.035);
+}
+
+.liuren-general-row span {
+  color: #c7ecdf;
+  border-color: rgba(73, 179, 154, 0.13);
+  background: rgba(73, 179, 154, 0.045);
+}
+
+.liuren-courses {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 9px;
+}
+
+.liuren-courses article {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-areas:
+    "label label"
+    "pair general";
+  align-items: end;
+  border: 1px solid rgba(216, 169, 78, 0.16);
+  border-radius: 14px;
+  background: rgba(0, 0, 0, 0.14);
+  padding: 12px;
+}
+
+.liuren-courses small { grid-area: label; color: #879e96; }
+.liuren-courses strong {
+  grid-area: pair;
+  margin-top: 5px;
+  color: #f4d28a;
+  font-family: "STKaiti", "KaiTi", "Noto Serif SC", serif;
+  font-size: 25px;
+}
+.liuren-courses span {
+  grid-area: general;
+  color: #9fd7c8;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.liuren-beta-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px;
+  border-top: 1px solid rgba(216, 169, 78, 0.1);
+  padding-top: 12px;
+}
+
+.liuren-beta-footer p {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  color: #9eb3ab;
+  font-size: 12px;
+}
+
+.liuren-beta-footer button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex: 0 0 auto;
+  border: 1px solid rgba(216, 169, 78, 0.22);
+  border-radius: 999px;
+  background: rgba(216, 169, 78, 0.06);
+  color: #ead5aa;
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+@media (max-width: 1000px) {
+  .liuren-beta-form {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .liuren-question { grid-column: 1 / -1; }
+  .liuren-calc-button { grid-column: 1 / -1; }
+  .liuren-meta-grid { grid-template-columns: repeat(4, 1fr); }
+}
+
+@media (max-width: 620px) {
+  .liuren-beta-heading,
+  .liuren-beta-footer {
+    display: grid;
+  }
+  .liuren-beta-badge { justify-self: start; }
+  .liuren-beta-form { grid-template-columns: 1fr; }
+  .liuren-question,
+  .liuren-calc-button { grid-column: auto; }
+  .liuren-meta-grid { grid-template-columns: repeat(2, 1fr); }
+  .liuren-courses { grid-template-columns: repeat(2, 1fr); }
+  .liuren-beta-footer button { justify-self: start; }
+}
