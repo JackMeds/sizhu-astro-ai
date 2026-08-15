@@ -44,10 +44,10 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Validate pinned upstream README fixture
+      - name: Validate pinned executable fixture
         env:
           PYTHONPATH: _oracle/kinliuren/src
-        run: python tools/liuren-reference/oracle.py --validate-readme-fixture > /tmp/liuren-reference.json
+        run: python tools/liuren-reference/oracle.py --validate-pinned-fixture > /tmp/liuren-reference.json
       - name: Show reference summary
         run: python - <<'PY'
           import json
@@ -56,5 +56,5 @@ jobs:
           print('日期:', data.get('日期'))
           print('格局:', data.get('格局'))
           print('三傳:', data.get('三傳'))
-          print('神煞數:', len(data.get('神煞', {})))
+          print('核心 result 含神煞:', '神煞' in data)
           PY
