@@ -225,6 +225,29 @@ export interface ZiweiProfile {
   error?: string;
 }
 
+export interface TransitSnapshot {
+  format: "astro-transit-snapshot";
+  formatVersion: "1.0.0";
+  targetDate: string;
+  targetYear: number;
+  bazi: {
+    dayun: {
+      startYear: number | null;
+      startAge: number | null;
+      ganZhi: string;
+      tenGod: string;
+    } | null;
+    year: {
+      year: number | null;
+      age: number | null;
+      ganZhi: string;
+      tenGod: string;
+    } | null;
+    facts: BaziRelationFact[];
+  };
+  ziwei: ZiweiHoroscopeSnapshot;
+}
+
 export interface DivinationProfile {
   liuren?: {
     available: boolean;
