@@ -11,7 +11,10 @@
 
 - 八字四柱、十神、藏干、纳音、空亡与五行结构概览
 - 完整大运、流年、流月浏览
-- 紫微斗数十二宫排盘与结构化原始数据
+- 程序化识别天干五合、六合、冲、害、破、刑、自刑、伏吟、三合/三会候选等关系事实
+- 五合只标记“合化候选”，不在事实层自动宣称合化成立
+- 紫微斗数命宫/身宫、命主身主、五行局、十二宫、星曜亮度/四化与大限结构化数据
+- 目标日期联动：同屏查看八字大运/流年关系事实与紫微大限、小限、流年、流月、流日、流时
 - 三种时间口径：标准时、地方平太阳时、视太阳时（真太阳时）
 - 显式记录经度修正、均时差、是否跨时辰 / 跨日期
 - 八字与紫微共用同一套有效出生时间，避免运行机器时区造成漂移
@@ -22,8 +25,6 @@
 
 ## 方法论
 
-项目遵循四层边界：
-
 ```text
 出生输入
   ↓
@@ -31,16 +32,18 @@
   ↓
 八字 / 紫微结构化命盘
   ↓
-规则与事实层（持续完善）
+结构事实层
+  ↓
+传统规则与条件判断（持续完善）
   ↓
 AI 解释与写作
 ```
 
-计算事实和术数解释不会混在一起。例如五行数量只作为结构统计，不直接等同于身强身弱；不同流派的规则也应在后续规则层中注明来源、条件与争议。
+计算事实和术数解释不会混在一起。例如五行数量只作为结构统计，不直接等同于身强身弱；`丁壬合` 可以由程序确定，但“是否合化木”仍需要检查月令、根气、透干、干扰条件与具体流派规则。
 
 ## 时间模型
 
-`packages/core` 会保存：
+`packages/core` 保存：
 
 - 标准时
 - 地方平太阳时：按出生地经度与时区标准经线修正
@@ -51,9 +54,22 @@ AI 解释与写作
 
 八字和紫微统一使用这套有效时间，不再分别通过 JavaScript `Date` 隐式解释。
 
+## 结构事实与运限 API
+
+主要入口：
+
+```ts
+createAstroProfile(input)
+createTransitSnapshot(input, "2027-06-15")
+createTransitBaziFacts(pillars, transit)
+createZiweiHoroscope(input, "2027-06-15")
+```
+
+`createTransitSnapshot` 会把目标日期的八字大运/流年关系事实和紫微动态范围放进同一个稳定 JSON，方便网页、MCP 与 AI 使用同一份数据。
+
 ## 搜索与学习指南
 
-站点提供独立可索引的说明页面：
+站点提供独立可索引页面：
 
 - [指南目录](https://jackmeds.github.io/sizhu-astro-ai/guide/)
 - [八字排盘怎么看](https://jackmeds.github.io/sizhu-astro-ai/guide/bazi.html)
@@ -61,7 +77,7 @@ AI 解释与写作
 - [真太阳时怎么算](https://jackmeds.github.io/sizhu-astro-ai/guide/solar-time.html)
 - [大运流年怎么看](https://jackmeds.github.io/sizhu-astro-ai/guide/dayun.html)
 
-首页和指南页都设置了 canonical、描述性标题与摘要，并通过 `sitemap.xml` 暴露给搜索引擎。正式上线后可以把 sitemap 提交到 Google Search Console / Bing Webmaster Tools，加快首次发现和重新抓取。
+首页和指南页都设置 canonical、描述性标题与摘要，并通过 `sitemap.xml` 和 `robots.txt` 暴露给搜索引擎。正式上线后可以把 sitemap 提交到 Google Search Console / Bing Webmaster Tools，加快首次发现和重新抓取。
 
 ## 隐私模型
 
@@ -72,7 +88,7 @@ AI 解释与写作
 ```text
 apps/web      React + Vite 静态网站
 apps/mcp      本地 MCP Server
-packages/core 八字、紫微、时间与资料结构化核心
+packages/core 八字、紫微、时间、关系事实与运限结构化核心
 packages/prompt AI 提示词与资料导出逻辑
 packages/render 图像 / SVG 渲染辅助
 ```
@@ -92,7 +108,7 @@ npm run typecheck
 npm run build:web
 ```
 
-核心测试包含固定命例、子时 sect 差异、太阳时跨时辰和立春边界等回归案例。当前 `lunar-javascript` 固定为 `1.7.7`。
+核心测试包含固定命例、子时 sect 差异、太阳时跨时辰、立春边界、八字关系事实、紫微标准化字段和目标日期运限 snapshot。当前 `lunar-javascript` 固定为 `1.7.7`。
 
 ## AI / Agent 接入
 
@@ -109,6 +125,7 @@ npm run build:web
 - `sizhu.about`
 - `sizhu.create_profile`
 - `sizhu.create_ai_prompt`
+- `sizhu.get_transit_snapshot`
 - `sizhu.get_current_chart`
 
 ## 主要开源依赖

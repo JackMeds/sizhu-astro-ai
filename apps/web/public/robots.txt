@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://jackmeds.github.io/sizhu-astro-ai/sitemap.xml

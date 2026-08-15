@@ -2,13 +2,16 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { motion } from "motion/react";
 import { createAstroProfile, type AstroProfile } from "@sizhu/core";
 import { ArrowUpRight, Braces, Cpu, LockKeyhole, PencilLine, Sparkles } from "lucide-react";
+import { BaziFactsPanel } from "./components/BaziFactsPanel";
 import { BaziPlate } from "./components/BaziPlate";
 import { EngineAudit } from "./components/EngineAudit";
 import { ExportPanel } from "./components/ExportPanel";
 import { HistoryRail } from "./components/HistoryRail";
 import { InputPanel, type FormState } from "./components/InputPanel";
 import { ThemeToggle } from "./components/ThemeToggle";
+import { TransitInspector } from "./components/TransitInspector";
 import { ZiweiPlate } from "./components/ZiweiPlate";
+import { ZiweiSummaryPanel } from "./components/ZiweiSummaryPanel";
 import { loadHistory, saveHistory, toHistoryItem, type HistoryItem } from "./lib/history";
 import { localDateTimeToOffset } from "./lib/utils";
 import { registerWebMcpTools } from "./lib/webmcp";
@@ -24,7 +27,7 @@ const guideBase = `${import.meta.env.BASE_URL}guide/`;
 const qaItems = [
   { question: "这次排盘为什么比普通 AI 对话稳定？", answer: "四柱、大运、流年、流月与紫微十二宫由固定代码引擎计算。AI 只负责解释结构化结果，不再凭上下文临时手算。" },
   { question: "标准时、地方平太阳时、真太阳时有什么区别？", answer: "标准时使用钟表时间；地方平太阳时按出生地经度与时区标准经线的差修正；真太阳时在此基础上再加入均时差。三套时间都会保存在导出资料中，正式命盘使用你选择的口径。" },
-  { question: "为什么不直接用五行数量判断身强身弱？", answer: "五行计数只适合做结构概览。旺衰还要看月令、通根、透干、制化、调候与流派规则，因此核心只提供数据，不把简单计数伪装成最终命理判断。" },
+  { question: "关系事实和命理解读有什么区别？", answer: "冲、合、刑、害、破、伏吟等可以先由程序识别；是否合化、力量大小、吉凶和事件含义属于规则与解释层，不能在计算阶段偷换成结论。" },
   { question: "出生信息会上传吗？", answer: "当前网页排盘、提示词生成和历史记录都在浏览器本地完成；历史保存在 localStorage。只有当你主动把导出内容交给其他 AI 时，才进入对应产品的数据处理范围。" }
 ];
 
@@ -94,8 +97,8 @@ export function App() {
           <div>
             <p className="hero-kicker"><Sparkles size={14} /> 可复现的传统术数计算底座</p>
             <h1>先把盘算准，<br /><em>再让 AI 真正去解。</em></h1>
-            <p className="hero-description">免费、本地优先的八字与紫微斗数排盘工具。同一份出生数据由固定引擎生成四柱、大运流年流月与紫微资料；标准时、地方平太阳时、真太阳时、修正量、引擎和警告全部留痕。</p>
-            <div className="hero-badges"><span><Cpu size={14} />代码排盘</span><span><Braces size={14} />结构化 JSON</span><span><LockKeyhole size={14} />本地优先</span></div>
+            <p className="hero-description">免费、本地优先的八字与紫微斗数排盘工具。同一份出生数据由固定引擎生成四柱、大运流年流月与紫微资料；关系事实、时间口径、修正量、引擎和警告全部留痕。</p>
+            <div className="hero-badges"><span><Cpu size={14} />代码排盘</span><span><Braces size={14} />事实与解释分层</span><span><LockKeyhole size={14} />本地优先</span></div>
           </div>
           <aside className="hero-signature"><small>当前命盘</small><strong>{signature}</strong><span>{profile ? `${profile.input.name} · ${profile.time.effective.label}` : "输入出生信息后开始"}</span></aside>
         </motion.div>
@@ -118,12 +121,15 @@ export function App() {
             <motion.div animate={{ opacity: 1, y: 0 }} className="center-stack" id="chart" initial={{ opacity: 0, y: 14 }}>
               <EngineAudit profile={profile} />
               <BaziPlate profile={profile} />
+              <BaziFactsPanel profile={profile} />
+              <TransitInspector profile={profile} />
+              <ZiweiSummaryPanel profile={profile} />
               <ZiweiPlate profile={profile} />
             </motion.div>
           ) : (
             <section className="empty-stage">
               <div className="empty-orbit"><i /><i /><i /><span>四柱</span></div>
-              <div><p className="eyeline">Ready</p><h2>这里不是“AI 猜命盘”。</h2><p>左侧输入出生资料后，先由计算内核生成可追溯命盘，再输出给 AI 做分析。尤其接近子时、节气或时辰边界时，时间口径会明确展示。</p></div>
+              <div><p className="eyeline">Ready</p><h2>这里不是“AI 猜命盘”。</h2><p>左侧输入出生资料后，先由计算内核生成可追溯命盘，再输出关系事实与结构化紫微数据给 AI 做分析。尤其接近子时、节气或时辰边界时，时间口径会明确展示。</p></div>
             </section>
           )}
         </div>
