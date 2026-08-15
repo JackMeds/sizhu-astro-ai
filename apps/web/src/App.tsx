@@ -27,16 +27,18 @@ const agentGuideHref = `${import.meta.env.BASE_URL}agents.md`;
 const guideBase = `${import.meta.env.BASE_URL}guide/`;
 
 const qaItems = [
-  { question: "这个网站会直接给我算命结论吗？", answer: "不会。本站负责用固定代码排盘、校验时间口径、整理八字与紫微结构化资料；生成后把结果复制给你喜欢的 AI，例如 ChatGPT、Claude、DeepSeek、Kimi 等，再由你选择的 AI 进行分析。" },
-  { question: "这次排盘为什么比普通 AI 对话稳定？", answer: "四柱、大运、流年、流月与紫微十二宫由固定代码引擎计算。AI 只负责解释结构化结果，不再凭上下文临时手算。" },
+  { question: "这个网站会直接给我算命结论吗？", answer: "不会。本站负责用固定代码排盘、校验时间口径、整理八字、紫微与大六壬结构化资料；生成后把结果复制给你喜欢的 AI，例如 ChatGPT、Claude、DeepSeek、Kimi 等，再由你选择的 AI 进行分析。" },
+  { question: "这次排盘为什么比普通 AI 对话稳定？", answer: "四柱、大运、流年、流月、紫微十二宫与六壬课盘由固定代码引擎计算。AI 只负责解释结构化结果，不再凭上下文临时手算。" },
   { question: "标准时、地方平太阳时、真太阳时有什么区别？", answer: "标准时使用钟表时间；地方平太阳时按出生地经度与时区标准经线的差修正；真太阳时在此基础上再加入均时差。三套时间都会保存在导出资料中，正式命盘使用你选择的口径。" },
   { question: "关系事实和命理解读有什么区别？", answer: "冲、合、刑、害、破、伏吟等可以先由程序识别；是否合化、力量大小、吉凶和事件含义属于规则与解释层，不能在计算阶段偷换成结论。" },
-  { question: "出生信息会上传吗？", answer: "当前网页排盘、提示词生成和历史记录都在浏览器本地完成；历史保存在 localStorage。只有当你主动把导出内容交给其他 AI 时，才进入对应产品的数据处理范围。" }
+  { question: "大六壬的起课方式和九宗门是一回事吗？", answer: "不是。正时、报数、指定占时属于“如何得到最终占时”的入口；九宗门属于四课生成后决定初传与三传的取传规则。本站把这两层分开计算。" },
+  { question: "出生信息会上传吗？", answer: "当前网页排盘、起课、提示词生成和历史记录都在浏览器本地完成；历史保存在 localStorage。只有当你主动把导出内容交给其他 AI 时，才进入对应产品的数据处理范围。" }
 ];
 
 const guideItems = [
   { href: "bazi.html", kicker: "BaZi", title: "八字排盘怎么看", text: "四柱、十神、藏干与计算事实应该怎样和 AI 解读分开。" },
   { href: "ziwei.html", kicker: "Zi Wei", title: "紫微斗数排盘怎么看", text: "十二宫、主星、四化与运限如何整理成 AI 能稳定读取的数据。" },
+  { href: "liuren.html", kicker: "Da Liu Ren", title: "大六壬怎么起课", text: "正时、报数、指定占时、九宗门、三传与多引擎校验。" },
   { href: "solar-time.html", kicker: "Time", title: "真太阳时到底怎么算", text: "区分标准时、地方平太阳时、经度修正与均时差。" },
   { href: "dayun.html", kicker: "Luck Cycle", title: "大运流年怎么一起看", text: "本命、大运、流年、流月为什么必须放在同一个时间层级里。" }
 ];
@@ -65,7 +67,7 @@ export function App() {
   const [formError, setFormError] = useState("");
   const [inputExpanded, setInputExpanded] = useState(true);
   const profileRef = useRef<AstroProfile | null>(null);
-  const signature = useMemo(() => profile?.bazi.pillars.map((pillar) => pillar.ganZhi).join(" · ") ?? "八字 · 紫微 · 运限 · AI-ready JSON", [profile]);
+  const signature = useMemo(() => profile?.bazi.pillars.map((pillar) => pillar.ganZhi).join(" · ") ?? "八字 · 紫微 · 六壬 · AI-ready JSON", [profile]);
 
   useEffect(() => { localStorage.setItem(DRAFT_KEY, JSON.stringify(form)); }, [form]);
   useEffect(() => { profileRef.current = profile; }, [profile]);
@@ -92,7 +94,7 @@ export function App() {
         <a className="brand-lockup" href="#top" aria-label="四柱星盘 AI 首页">
           <span className="brand-seal">命</span><span><strong>四柱星盘 AI</strong><small>Deterministic Metaphysics Workbench</small></span>
         </a>
-        <nav><a href="#chart">命盘</a><a href="#liuren">六壬 Beta</a><a href="#guides">指南</a><a href="#support">支持</a><a href="#export">AI 导出</a><a href="#mcp">Agent</a><ThemeToggle /></nav>
+        <nav><a href="#chart">命盘</a><a href="#liuren">六壬</a><a href="#guides">指南</a><a href="#support">支持</a><a href="#export">AI 导出</a><a href="#mcp">Agent</a><ThemeToggle /></nav>
       </header>
 
       <section className="hero-workbench" id="top">
@@ -100,7 +102,7 @@ export function App() {
           <div>
             <p className="hero-kicker"><Sparkles size={14} /> 可复现的传统术数计算底座</p>
             <h1>先把盘算准，<br /><em>再交给你喜欢的 AI。</em></h1>
-            <p className="hero-description">本站负责用固定代码生成八字、紫微、大运流年流月和关系事实，并把时间口径、修正量、引擎与警告全部留痕。<strong>我们不在站内提供命理解读</strong>：生成后直接复制给你喜欢的 AI，例如 ChatGPT、Claude、DeepSeek、Kimi 等，再让它按你的问题继续分析。</p>
+            <p className="hero-description">本站负责用固定代码生成八字、紫微、大运流年流月、大六壬和关系事实，并把时间口径、修正量、引擎与警告全部留痕。<strong>我们不在站内提供命理解读或六壬解课</strong>：生成后直接复制给你喜欢的 AI，例如 ChatGPT、Claude、DeepSeek、Kimi 等，再让它按你的问题继续分析。</p>
             <div className="hero-badges"><span><Cpu size={14} />代码排盘</span><span><Braces size={14} />复制给任意 AI</span><span><LockKeyhole size={14} />本地优先</span></div>
           </div>
           <aside className="hero-signature"><small>使用流程</small><strong>{profile ? signature : "排盘 → 复制 → AI 分析"}</strong><span>{profile ? `${profile.input.name} · ${profile.time.effective.label}` : "本站负责计算，你选择 AI 来解读"}</span></aside>
