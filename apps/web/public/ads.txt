@@ -1,0 +1,2 @@
+# No advertising network is active yet.
+# When a real ad provider is approved, replace this file with the provider-authorized ads.txt records.
