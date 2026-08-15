@@ -1,6 +1,7 @@
 export { astroInputSchema } from "./schema.js";
 export { createBaziProfile } from "./bazi.js";
-export { createZiweiProfile } from "./ziwei.js";
+export { createBaziRelationFacts, createNatalBaziFacts, createTransitBaziFacts, natalParticipants } from "./relations.js";
+export { createZiweiProfile, createZiweiHoroscope } from "./ziwei.js";
 export { createDivinationProfile } from "./divination.js";
 export { createTimeProfile, getEffectiveBirthDate } from "./time.js";
 export { createAstroProfile } from "./profile.js";
@@ -9,6 +10,10 @@ export type {
   AstroInput,
   AstroProfile,
   BaziProfile,
+  BaziRelationFact,
+  BaziRelationKind,
+  BaziRelationParticipant,
+  BaziRelationScope,
   CalendarType,
   DivinationKind,
   DivinationProfile,
@@ -17,6 +22,9 @@ export type {
   TimeProfile,
   TrueSolarTimeMode,
   WallClockTime,
+  ZiweiHoroscopeItem,
+  ZiweiHoroscopeSnapshot,
   ZiweiPalace,
-  ZiweiProfile
+  ZiweiProfile,
+  ZiweiStar
 } from "./types.js";
