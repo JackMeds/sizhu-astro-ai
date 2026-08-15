@@ -1,103 +1,70 @@
-# 四柱星盘 AI Agent Guide
+# 四柱星盘 AI — Agent Guide
 
-四柱星盘 AI 是一个本地优先的静态命盘与 AI 提示词工作台。网页端用于生成八字、紫微斗数结构化资料，并把这些资料整理成适合 ChatGPT、Claude、DeepSeek、豆包、通义、Kimi 等工具读取的提示词。
+四柱星盘 AI 是一个本地优先、确定性优先的八字与紫微斗数计算工作台。Agent 应把本项目视为“计算底座”，而不是一段让模型自由发挥的命理提示词。
 
-开源仓库：`https://github.com/JackMeds/sizhu-astro-ai`
+## 核心原则
 
-## 能力边界
+1. **先计算，后解释。** 四柱、大运、流年、流月与紫微数据优先来自 `@sizhu/core`。
+2. **时间口径必须显式。** `profile.time` 会同时保留标准时、地方平太阳时、视太阳时（真太阳时）和实际采用的有效时间。
+3. **不要把五行数量直接当成旺衰。** `elementCounts` 是结构统计，不是最终身强身弱判断。
+4. **保留不确定性。** 如果太阳时校正导致跨时辰 / 跨日期，或输入缺失经度，应把 warning 一并交给用户。
+5. **解释层不得篡改排盘事实。** AI 可以比较传统规则和流派，但不能为了贴合叙事重算四柱。
 
-- 静态网页：排盘、提示词生成、历史记录均在浏览器本地完成。
-- 传统 MCP Server：由本地 `apps/mcp` 进程提供，适合 Claude Desktop、Codex、Cursor 等 MCP 客户端连接。
-- WebMCP：由网页在支持 `modelContext` 的浏览器、扩展或 Chrome DevTools MCP 桥接环境中注册工具。
-- HTTP API：当前未启用，后续可单独部署到 Vercel、Cloudflare Workers、Netlify Functions 或自有服务器。
+## Canonical profile
 
-普通浏览器访问页面时，WebMCP 工具通常不会显示；这不是错误。
+主要入口：
 
-## WebMCP Tools
+```ts
+createAstroProfile(input)
+```
 
-当运行环境支持 `document.modelContext` 或 `navigator.modelContext` 时，页面会注册以下只读工具：
+返回对象包含：
+
+- `input`：原始排盘输入
+- `time`：三套时间口径和有效出生时间
+- `bazi`：四柱、十神、藏干、纳音、空亡、大运、流年、流月
+- `ziwei`：紫微十二宫与原始 iztro 数据
+- `divination`：六壬 / 六爻适配位置（当前仍在扩展）
+- `ai`：面向 AI 的摘要和证据块
+- `warnings`：需要向用户暴露的不确定性
+
+## Web / WebMCP
+
+网页会在支持 `document.modelContext` / `navigator.modelContext` 的环境注册：
 
 - `sizhu.about`
 - `sizhu.create_profile`
 - `sizhu.create_ai_prompt`
 - `sizhu.get_current_chart`
 
-这些工具不会主动读取远程服务器数据。`sizhu.get_current_chart` 只返回当前网页内已经生成的命盘；如果页面还没有生成命盘，会返回 `needsInput: true`。
+传统 MCP Server 位于 `apps/mcp`。
 
-## BirthInfo Schema
+## 搜索与文档入口
 
-```json
-{
-  "name": "静仪",
-  "gender": "female",
-  "birthDateTime": "1995-03-12T14:20:00+08:00",
-  "calendar": "solar",
-  "timezone": "Asia/Shanghai",
-  "trueSolarTime": "longitude",
-  "location": {
-    "name": "上海市黄浦区",
-    "longitude": 121.49,
-    "latitude": 31.23
-  },
-  "sect": 1
-}
-```
+- 网站：<https://jackmeds.github.io/sizhu-astro-ai/>
+- 指南：<https://jackmeds.github.io/sizhu-astro-ai/guide/>
+- Sitemap：<https://jackmeds.github.io/sizhu-astro-ai/sitemap.xml>
+- 八字指南：<https://jackmeds.github.io/sizhu-astro-ai/guide/bazi.html>
+- 紫微指南：<https://jackmeds.github.io/sizhu-astro-ai/guide/ziwei.html>
+- 真太阳时指南：<https://jackmeds.github.io/sizhu-astro-ai/guide/solar-time.html>
+- 大运流年指南：<https://jackmeds.github.io/sizhu-astro-ai/guide/dayun.html>
 
-字段说明：
+## 推荐的 Agent 工作流
 
-- `gender`: `male` 或 `female`
-- `calendar`: `solar` 或 `lunar`
-- `trueSolarTime`: `none` 表示标准时，`longitude` 表示按经度记录真太阳时策略
-- `sect`: `1` 或 `2`，用于记录排盘流派选择
+当用户询问“我的八字 / 紫微 / 某年运势”时：
 
-## Examples
+1. 收集或读取出生时间、性别、时区、时间口径；需要太阳时修正时补经度。
+2. 调用项目计算接口生成 canonical profile。
+3. 检查 `warnings`、`time.shichenChanged` 和 `time.dateChanged`。
+4. 从 `bazi` / `ziwei` 提取目标时间范围的数据。
+5. 最后才进入传统术数解释，并明确区分“程序计算事实”和“解释判断”。
 
-生成结构化命盘：
+## 当前技术栈
 
-```json
-{
-  "name": "静仪",
-  "gender": "female",
-  "birthDateTime": "1995-03-12T14:20:00+08:00",
-  "calendar": "solar",
-  "timezone": "Asia/Shanghai",
-  "trueSolarTime": "none",
-  "sect": 1
-}
-```
+- `lunar-javascript` 1.7.7：八字、运限与历法
+- `iztro`：紫微斗数
+- `lunisolar`：交叉校验
+- React + Vite：网页
+- MCP SDK：本地 Agent 接入
 
-生成 AI 提示词：
-
-```json
-{
-  "name": "静仪",
-  "gender": "female",
-  "birthDateTime": "1995-03-12T14:20:00+08:00",
-  "calendar": "solar",
-  "timezone": "Asia/Shanghai",
-  "trueSolarTime": "none",
-  "sect": 1,
-  "promptMode": "general",
-  "format": "markdown"
-}
-```
-
-提示词模式：
-
-- `general`: 综合
-- `relationship`: 姻缘
-- `career`: 事业
-- `wealth`: 财运
-- `health`: 身心
-- `yearly`: 流年
-- `xp`: 成人亲密偏好脑暴，必须遵守成年人、自愿、可撤回同意和安全边界
-
-## Privacy
-
-四柱星盘 AI 的网页端不需要登录。出生信息、命盘结果和历史记录默认只保存在当前浏览器中。复制提示词或图片后，用户可以自行粘贴到第三方 AI 产品；第三方产品的数据处理规则由对应产品决定。
-
-## Notes For Agents
-
-- 不要把命理输出写成医学、法律、投资或安全承诺。
-- 不要编造缺失字段；遇到真太阳时、历法、流派或经度不完整时，先说明不确定性。
-- XP 模式只用于成年人自愿语境下的亲密偏好脑暴，不输出未成年人、非自愿、胁迫、违法伤害或现实危险行为指导。
+Golden Fixture 会固定关键命例、子时 sect 和立春边界，避免依赖升级悄悄改变排盘结果。
