@@ -10,8 +10,16 @@ export type {
   TraditionalRuleField,
   TraditionalRuleHit
 } from "./rules.js";
-export { prepareLiurenCalendarInput } from "./liuren.js";
-export type { LiurenCalendarInput, LiurenSessionInput } from "./liuren.js";
+export {
+  createLiurenHeavenEarthDisk,
+  createLiurenHeavenEarthFromSession,
+  prepareLiurenCalendarInput
+} from "./liuren.js";
+export type {
+  LiurenCalendarInput,
+  LiurenHeavenEarthDisk,
+  LiurenSessionInput
+} from "./liuren.js";
 export { createZiweiProfile, createZiweiHoroscope } from "./ziwei.js";
 export { createTransitSnapshot } from "./transit.js";
 export { createDivinationProfile } from "./divination.js";
