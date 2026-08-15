@@ -11,14 +11,24 @@ export type {
   TraditionalRuleHit
 } from "./rules.js";
 export {
+  createLiurenBaseChart,
+  createLiurenBaseChartFromCalendar,
+  createLiurenFourCourses,
   createLiurenHeavenEarthDisk,
   createLiurenHeavenEarthFromSession,
+  createLiurenSkyGenerals,
   prepareLiurenCalendarInput
 } from "./liuren.js";
 export type {
+  LiurenBaseChart,
   LiurenCalendarInput,
+  LiurenCourse,
+  LiurenDayNight,
+  LiurenFourCourses,
+  LiurenGeneralDirection,
   LiurenHeavenEarthDisk,
-  LiurenSessionInput
+  LiurenSessionInput,
+  LiurenSkyGenerals
 } from "./liuren.js";
 export { createZiweiProfile, createZiweiHoroscope } from "./ziwei.js";
 export { createTransitSnapshot } from "./transit.js";
