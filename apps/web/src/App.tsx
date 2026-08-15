@@ -9,6 +9,7 @@ import { ExportPanel } from "./components/ExportPanel";
 import { HistoryRail } from "./components/HistoryRail";
 import { InputPanel, type FormState } from "./components/InputPanel";
 import { ThemeToggle } from "./components/ThemeToggle";
+import { TransitInspector } from "./components/TransitInspector";
 import { ZiweiPlate } from "./components/ZiweiPlate";
 import { ZiweiSummaryPanel } from "./components/ZiweiSummaryPanel";
 import { loadHistory, saveHistory, toHistoryItem, type HistoryItem } from "./lib/history";
@@ -121,6 +122,7 @@ export function App() {
               <EngineAudit profile={profile} />
               <BaziPlate profile={profile} />
               <BaziFactsPanel profile={profile} />
+              <TransitInspector profile={profile} />
               <ZiweiSummaryPanel profile={profile} />
               <ZiweiPlate profile={profile} />
             </motion.div>
