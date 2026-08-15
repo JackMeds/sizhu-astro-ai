@@ -227,7 +227,7 @@ function compareOverlap(native: LiurenBaseChart, raw: ReturnType<typeof generate
   if (String(raw.ganzhi?.hour ?? "") !== native.calendar.hourGanZhi) differences.push(`时干支：native=${native.calendar.hourGanZhi} / mingyu=${raw.ganzhi?.hour ?? "-"}`);
   if (String(raw.monthLeader ?? "") !== native.disk.moonGeneral) differences.push(`月将：native=${native.disk.moonGeneral} / mingyu=${raw.monthLeader ?? "-"}`);
 
-  const rawPlate = Array.isArray(raw.heavenlyPlate) ? raw.heavenlyPlate as LooseRecord[] : [];
+  const rawPlate = Array.isArray(raw.heavenlyPlate) ? raw.heavenlyPlate as unknown as LooseRecord[] : [];
   for (const item of rawPlate) {
     const under = String(item.under ?? "");
     const upper = String(item.branch ?? "");
@@ -235,7 +235,7 @@ function compareOverlap(native: LiurenBaseChart, raw: ReturnType<typeof generate
   }
 
   const nativeCourses = new Map(native.fourCourses.upstreamOrder.map((item) => [item.label, item]));
-  const rawLessons = Array.isArray(raw.fourLessons) ? raw.fourLessons as LooseRecord[] : [];
+  const rawLessons = Array.isArray(raw.fourLessons) ? raw.fourLessons as unknown as LooseRecord[] : [];
   for (const lesson of rawLessons) {
     const rawName = String(lesson.name ?? "");
     const name = normalizeCourseName(rawName);
@@ -258,7 +258,7 @@ export function createCompleteLiurenChart(input: LiurenCompleteInput): LiurenCom
   const dayStem = String(raw.ganzhi?.day ?? native.calendar.dayGanZhi)[0] ?? "";
   const dayGanZhi = String(raw.ganzhi?.day ?? native.calendar.dayGanZhi);
 
-  const rawTransmissions = Array.isArray(raw.threeTransmissions) ? raw.threeTransmissions as LooseRecord[] : [];
+  const rawTransmissions = Array.isArray(raw.threeTransmissions) ? raw.threeTransmissions as unknown as LooseRecord[] : [];
   const threeTransmissions: LiurenTransmissionNormalized[] = rawTransmissions.map((item: LooseRecord, index: number) => ({
     stage: (String(item.stage ?? ["初传", "中传", "末传"][index]) as LiurenTransmissionNormalized["stage"]),
     branch: String(item.branch ?? ""),
@@ -272,7 +272,7 @@ export function createCompleteLiurenChart(input: LiurenCompleteInput): LiurenCom
     liuQing: liuQing(dayStem, String(item.branch ?? ""))
   }));
 
-  const rawLessons = Array.isArray(raw.fourLessons) ? raw.fourLessons as LooseRecord[] : [];
+  const rawLessons = Array.isArray(raw.fourLessons) ? raw.fourLessons as unknown as LooseRecord[] : [];
   const fourLessons = rawLessons.map((item: LooseRecord) => ({
     name: String(item.name ?? ""),
     upper: String(item.upper ?? ""),
@@ -282,7 +282,7 @@ export function createCompleteLiurenChart(input: LiurenCompleteInput): LiurenCom
     ...(item.note ? { note: String(item.note) } : {})
   }));
 
-  const rawShenSha = Array.isArray(raw.shenShaFacts) ? raw.shenShaFacts as LooseRecord[] : [];
+  const rawShenSha = Array.isArray(raw.shenShaFacts) ? raw.shenShaFacts as unknown as LooseRecord[] : [];
   const shenSha = rawShenSha.map((item: LooseRecord) => ({
     name: String(item.name ?? ""),
     target: String(item.target ?? ""),
