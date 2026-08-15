@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>大六壬排盘 Beta：月将、天地盘、天将、四课｜四柱星盘 AI</title>
+  <meta name="description" content="四柱星盘 AI 的大六壬 Beta 说明：如何从起课时间自动生成节气、农历月、日时干支，并计算月将、天地盘、天将与四课；当前三传、课体、神煞仍在迁移中。" />
+  <meta name="robots" content="index,follow,max-image-preview:large" />
+  <link rel="canonical" href="https://jackmeds.github.io/sizhu-astro-ai/guide/liuren.html" />
+  <style>
+    :root{color-scheme:dark;background:#07100e;color:#e9ddc6;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans SC",sans-serif}body{margin:0}main{max-width:860px;margin:auto;padding:42px 22px 72px}a{color:#78d5bd}h1,h2{font-family:"Noto Serif SC",serif;color:#f4d28a}h1{font-size:clamp(34px,6vw,56px);line-height:1.08}h2{margin-top:38px}.lead{font-size:18px;line-height:1.8;color:#c1d2ca}.card{border:1px solid rgba(216,169,78,.2);border-radius:18px;background:#0c1714;padding:20px;margin:20px 0}code{color:#a6e6d5}li,p{line-height:1.8;color:#b7c8c0}.warn{border-left:3px solid #d8a94e;padding-left:14px;color:#e1cda8}.crumb{font-size:13px;color:#82998f}
+  </style>
+</head>
+<body>
+<main>
+  <p class="crumb"><a href="../">四柱星盘 AI</a> / <a href="./">指南</a> / 大六壬 Beta</p>
+  <h1>大六壬排盘 Beta：先把结构算对，再谈三传与解课</h1>
+  <p class="lead">本站把大六壬作为独立的起课 session，而不是出生八字的一部分。用户只需要输入起课时间；程序会先统一时间口径，再生成六壬引擎需要的节气、农历月、日干支与时干支。</p>
+
+  <div class="card">
+    <strong>当前已经公开并做回归验证的结构</strong>
+    <ul>
+      <li>月将</li>
+      <li>天地盘</li>
+      <li>天将</li>
+      <li>四课</li>
+    </ul>
+  </div>
+
+  <h2>为什么标 Beta？</h2>
+  <p>因为完整大六壬还需要三传、课体以及部分神煞等结构。当前项目选择逐模块移植：每完成一块 TypeScript 算法，就与固定的 Python 参考引擎逐字段对照；未验证的部分不会在网页上伪装成完整结果。</p>
+
+  <h2>参考引擎怎么固定？</h2>
+  <p>迁移使用 <code>kentang2017/kinliuren</code> 的固定 source commit 作为 CI oracle。固定 commit 的可执行 <code>Liuren.result(0)</code> 是迁移回归真值；如果 README prose 与实际函数输出矛盾，两者会被记录为上游差异，而不会混为同一事实。</p>
+
+  <h2>当前计算链</h2>
+  <p><code>起课时间 → 标准时/太阳时口径 → 节气与农历月 → 日时干支 → 月将 → 天地盘 → 天将 → 四课</code></p>
+  <p class="warn">当前页面不提供六壬解课。三传与课体尚未完成前，导出的 Beta JSON 也不应被当作完整六壬课。</p>
+
+  <h2>后续顺序</h2>
+  <p>下一步会继续迁移三传与课体，再追踪神煞在上游项目中的真实来源。完成后，六壬结果同样可以复制到你喜欢的 AI 进行分析，而本站保持“只计算、不解读”的产品边界。</p>
+
+  <p><a href="../#liuren">返回大六壬 Beta 起课区</a></p>
+</main>
+</body>
+</html>
