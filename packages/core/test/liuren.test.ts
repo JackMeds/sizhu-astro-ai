@@ -1,9 +1,30 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import {
+  createLiurenBaseChartFromCalendar,
+  createLiurenFourCourses,
   createLiurenHeavenEarthDisk,
-  prepareLiurenCalendarInput
+  createLiurenSkyGenerals,
+  prepareLiurenCalendarInput,
+  type LiurenCalendarInput
 } from "../src/index.js";
+
+function pinnedFixture(): LiurenCalendarInput {
+  return {
+    engineInputVersion: "kinliuren-calendar-input-v1",
+    effectiveDateTime: "fixture",
+    solarTerm: "驚蟄",
+    lunarMonth: "二",
+    dayGanZhi: "己未",
+    hourGanZhi: "甲午",
+    reference: {
+      engine: "kinliuren",
+      sourceCommit: "3ba45a9540f08269b56d81508a061c7d46938785",
+      historicalPyPI: "0.1.2.9",
+      interface: "Liuren(solar_term, lunar_month, day_ganzhi, hour_ganzhi).result(0)"
+    }
+  };
+}
 
 test("liuren calendar bridge derives engine inputs from a civil datetime", () => {
   const result = prepareLiurenCalendarInput({
@@ -32,21 +53,8 @@ test("liuren calendar bridge preserves an optional divination question without i
   assert.equal("interpretation" in result, false);
 });
 
-test("first native Liuren subsystem matches the pinned upstream README heaven-earth fixture", () => {
-  const disk = createLiurenHeavenEarthDisk({
-    engineInputVersion: "kinliuren-calendar-input-v1",
-    effectiveDateTime: "fixture",
-    solarTerm: "驚蟄",
-    lunarMonth: "二",
-    dayGanZhi: "己未",
-    hourGanZhi: "甲午",
-    reference: {
-      engine: "kinliuren",
-      sourceCommit: "3ba45a9540f08269b56d81508a061c7d46938785",
-      historicalPyPI: "0.1.2.9",
-      interface: "Liuren(solar_term, lunar_month, day_ganzhi, hour_ganzhi).result(0)"
-    }
-  });
+test("native Liuren heaven-earth disk matches the pinned executable fixture", () => {
+  const disk = createLiurenHeavenEarthDisk(pinnedFixture());
 
   assert.equal(disk.moonGeneral, "亥");
   assert.deepEqual(disk.heavenPlate, ["亥", "子", "丑", "寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌"]);
@@ -55,4 +63,44 @@ test("first native Liuren subsystem matches the pinned upstream README heaven-ea
   assert.equal(disk.earthToHeaven.巳, "戌");
   assert.equal(disk.heavenToEarth.亥, "午");
   assert.equal(disk.referenceCommit, "3ba45a9540f08269b56d81508a061c7d46938785");
+});
+
+test("native Liuren sky generals match the pinned executable fixture", () => {
+  const fixture = pinnedFixture();
+  const disk = createLiurenHeavenEarthDisk(fixture);
+  const generals = createLiurenSkyGenerals(fixture, disk);
+
+  assert.equal(generals.dayOrNight, "晝");
+  assert.equal(generals.noblemanHeavenBranch, "子");
+  assert.equal(generals.noblemanEarthBranch, "未");
+  assert.equal(generals.direction, "逆佈");
+  assert.deepEqual(generals.alignedToHeavenPlate, ["蛇", "貴", "后", "陰", "玄", "常", "虎", "空", "龍", "勾", "合", "雀"]);
+  assert.equal(generals.byHeavenBranch.子, "貴");
+  assert.equal(generals.byHeavenBranch.巳, "虎");
+});
+
+test("native Liuren Four Courses match the pinned executable fixture", () => {
+  const fixture = pinnedFixture();
+  const disk = createLiurenHeavenEarthDisk(fixture);
+  const generals = createLiurenSkyGenerals(fixture, disk);
+  const courses = createLiurenFourCourses(fixture, disk, generals);
+
+  assert.deepEqual(
+    courses.upstreamOrder.map((course) => [course.pair, course.general]),
+    [["巳子", "虎"], ["子未", "貴"], ["巳子", "虎"], ["子己", "貴"]]
+  );
+  assert.equal(courses.first.pair, "子己");
+  assert.equal(courses.second.pair, "巳子");
+  assert.equal(courses.third.pair, "子未");
+  assert.equal(courses.fourth.pair, "巳子");
+});
+
+test("Liuren base chart keeps disk, generals and Four Courses in one deterministic bundle", () => {
+  const chart = createLiurenBaseChartFromCalendar(pinnedFixture());
+
+  assert.equal(chart.engine, "sizhu-liuren-ts");
+  assert.equal(chart.engineVersion, "0.2.0");
+  assert.equal(chart.disk.moonGeneral, "亥");
+  assert.equal(chart.skyGenerals.alignedToHeavenPlate[0], "蛇");
+  assert.equal(chart.fourCourses.first.pair, "子己");
 });

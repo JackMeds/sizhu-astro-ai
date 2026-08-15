@@ -1,4 +1,11 @@
-import { createAstroProfile, createTransitSnapshot, type AstroInput, type AstroProfile } from "@sizhu/core";
+import {
+  createAstroProfile,
+  createLiurenBaseChart,
+  createTransitSnapshot,
+  type AstroInput,
+  type AstroProfile,
+  type LiurenSessionInput
+} from "@sizhu/core";
 import { buildPrompt, type PromptFormat, type PromptMode } from "./promptBuilder";
 
 type ToolDefinition = {
@@ -19,10 +26,17 @@ const TOOL_NAMES = [
   "sizhu.create_profile",
   "sizhu.create_ai_prompt",
   "sizhu.get_transit_snapshot",
+  "sizhu.create_liuren_base_chart",
   "sizhu.get_current_chart"
 ];
 
 let webMcpRegistered = false;
+
+const locationProperties = {
+  name: { type: "string" },
+  longitude: { type: "number", minimum: -180, maximum: 180 },
+  latitude: { type: "number", minimum: -90, maximum: 90 }
+};
 
 const birthInfoSchema = {
   type: "object",
@@ -34,18 +48,23 @@ const birthInfoSchema = {
     calendar: { type: "string", enum: ["solar", "lunar"], default: "solar" },
     timezone: { type: "string", default: "Asia/Shanghai" },
     trueSolarTime: { type: "string", enum: ["none", "longitude", "apparent"], default: "none" },
-    location: {
-      type: "object",
-      additionalProperties: false,
-      properties: {
-        name: { type: "string" },
-        longitude: { type: "number", minimum: -180, maximum: 180 },
-        latitude: { type: "number", minimum: -90, maximum: 90 }
-      }
-    },
+    location: { type: "object", additionalProperties: false, properties: locationProperties },
     sect: { type: "integer", enum: [1, 2], default: 1 }
   },
   required: ["birthDateTime", "gender"]
+};
+
+const liurenSchema = {
+  type: "object",
+  additionalProperties: false,
+  properties: {
+    dateTime: { type: "string", description: "Divination datetime with explicit offset, e.g. 2026-08-15T09:30:00+08:00" },
+    timezone: { type: "string", default: "Asia/Shanghai" },
+    trueSolarTime: { type: "string", enum: ["none", "longitude", "apparent"], default: "none" },
+    location: { type: "object", additionalProperties: false, properties: locationProperties },
+    question: { type: "string" }
+  },
+  required: ["dateTime"]
 };
 
 function getModelContext(): ModelContextLike | null {
@@ -54,17 +73,34 @@ function getModelContext(): ModelContextLike | null {
   return documentContext ?? navigatorContext ?? null;
 }
 
+function normalizeTimeMode(input: unknown): AstroInput["trueSolarTime"] {
+  return input === "apparent" ? "apparent" : input === "longitude" ? "longitude" : "none";
+}
+
+function normalizeLocation(input: unknown): AstroInput["location"] {
+  return typeof input === "object" && input !== null ? (input as AstroInput["location"]) : undefined;
+}
+
 function normalizeInput(input: Record<string, unknown> = {}): AstroInput {
-  const timeMode = input.trueSolarTime === "apparent" ? "apparent" : input.trueSolarTime === "longitude" ? "longitude" : "none";
   return {
     name: typeof input.name === "string" && input.name.trim() ? input.name : "未命名",
     gender: input.gender === "male" ? "male" : "female",
     birthDateTime: typeof input.birthDateTime === "string" ? input.birthDateTime : "",
     calendar: input.calendar === "lunar" ? "lunar" : "solar",
     timezone: typeof input.timezone === "string" ? input.timezone : "Asia/Shanghai",
-    trueSolarTime: timeMode,
-    location: typeof input.location === "object" && input.location !== null ? (input.location as AstroInput["location"]) : undefined,
+    trueSolarTime: normalizeTimeMode(input.trueSolarTime),
+    location: normalizeLocation(input.location),
     sect: input.sect === 2 ? 2 : 1
+  };
+}
+
+function normalizeLiurenInput(input: Record<string, unknown> = {}): LiurenSessionInput {
+  return {
+    dateTime: typeof input.dateTime === "string" ? input.dateTime : "",
+    timezone: typeof input.timezone === "string" ? input.timezone : "Asia/Shanghai",
+    trueSolarTime: normalizeTimeMode(input.trueSolarTime),
+    location: normalizeLocation(input.location),
+    question: typeof input.question === "string" && input.question.trim() ? input.question.trim() : undefined
   };
 }
 
@@ -99,9 +135,9 @@ export function registerWebMcpTools(getCurrentProfile: () => AstroProfile | null
         app: "四柱星盘 AI",
         repository: "https://github.com/JackMeds/sizhu-astro-ai",
         privacy: "排盘、提示词生成和历史记录均在浏览器本地完成；WebMCP 工具不会主动读取服务器数据。",
-        capabilities: ["bazi_profile", "bazi_relation_facts", "ziwei_profile", "transit_snapshot", "ai_prompt", "current_chart"],
+        capabilities: ["bazi_profile", "bazi_relation_facts", "ziwei_profile", "transit_snapshot", "liuren_base_chart_beta", "ai_prompt", "current_chart"],
         tools: TOOL_NAMES,
-        note: "WebMCP 是实验性浏览器/扩展能力；普通浏览器访问页面时不会显示这些工具。"
+        note: "WebMCP 是实验性浏览器/扩展能力；大六壬 Beta 当前只包含月将、天地盘、天将、四课，不含三传/课体。"
       })
     },
     {
@@ -157,6 +193,13 @@ export function registerWebMcpTools(getCurrentProfile: () => AstroProfile | null
           const targetHour = typeof input.targetHour === "number" ? input.targetHour : undefined;
           return createTransitSnapshot(normalizeInput(input), targetDate, targetHour);
         })
+    },
+    {
+      name: "sizhu.create_liuren_base_chart",
+      title: "Create Da Liu Ren Base Chart (Beta)",
+      description: "Return the oracle-checked Da Liu Ren beta structure: calendar inputs, month general, Heaven/Earth plates, sky generals and Four Courses. It intentionally excludes Three Transmissions and interpretation for now.",
+      inputSchema: liurenSchema,
+      execute: (input = {}) => toToolResult(() => createLiurenBaseChart(normalizeLiurenInput(input)))
     },
     {
       name: "sizhu.get_current_chart",

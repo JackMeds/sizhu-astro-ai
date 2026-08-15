@@ -1,9 +1,17 @@
 #!/usr/bin/env node
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
-import { createAstroProfile, createTransitSnapshot } from "@sizhu/core";
+import { createAstroProfile, createLiurenBaseChart, createTransitSnapshot } from "@sizhu/core";
 import { buildAiPrompt, exportProfile } from "@sizhu/prompt";
 import { z } from "zod";
+
+const locationSchema = z
+  .object({
+    name: z.string().optional(),
+    longitude: z.number().min(-180).max(180).optional(),
+    latitude: z.number().min(-90).max(90).optional()
+  })
+  .optional();
 
 const inputSchema = {
   name: z.string().default("未命名"),
@@ -12,19 +20,21 @@ const inputSchema = {
   calendar: z.enum(["solar", "lunar"]).default("solar"),
   timezone: z.string().default("Asia/Shanghai"),
   trueSolarTime: z.enum(["none", "longitude", "apparent"]).default("none"),
-  location: z
-    .object({
-      name: z.string().optional(),
-      longitude: z.number().min(-180).max(180).optional(),
-      latitude: z.number().min(-90).max(90).optional()
-    })
-    .optional(),
+  location: locationSchema,
   sect: z.union([z.literal(1), z.literal(2)]).default(1)
+};
+
+const liurenInputSchema = {
+  dateTime: z.string().describe("Divination datetime with explicit offset, e.g. 2026-08-15T09:30:00+08:00"),
+  timezone: z.string().default("Asia/Shanghai"),
+  trueSolarTime: z.enum(["none", "longitude", "apparent"]).default("none"),
+  location: locationSchema,
+  question: z.string().optional()
 };
 
 const server = new McpServer({
   name: "sizhu-astro-ai",
-  version: "0.2.0"
+  version: "0.3.0"
 });
 
 server.registerTool(
@@ -68,6 +78,19 @@ server.registerTool(
     const { targetDate, targetHour, ...birthInput } = input;
     const snapshot = createTransitSnapshot(birthInput, targetDate, targetHour);
     return { content: [{ type: "text", text: JSON.stringify(snapshot, null, 2) }] };
+  }
+);
+
+server.registerTool(
+  "sizhu.create_liuren_base_chart",
+  {
+    title: "Create Da Liu Ren Base Chart (Beta)",
+    description: "Generate the oracle-checked Da Liu Ren structural beta: calendar inputs, month general, Heaven/Earth plates, sky generals, and Four Courses. Three Transmissions and final interpretation are not included yet.",
+    inputSchema: liurenInputSchema
+  },
+  async (input) => {
+    const chart = createLiurenBaseChart(input);
+    return { content: [{ type: "text", text: JSON.stringify(chart, null, 2) }] };
   }
 );
 
