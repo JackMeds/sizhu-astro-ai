@@ -116,6 +116,8 @@ const GENERAL_SHORT: Record<string, string> = {
   青龙: "龍", 青龍: "龍", 天空: "空", 白虎: "虎", 太常: "常", 玄武: "玄", 太阴: "陰", 太陰: "陰", 天后: "后"
 };
 
+type LooseRecord = Record<string, unknown>;
+
 function jiazi(): string[] {
   return Array.from({ length: 60 }, (_, index) => `${STEMS[index % 10]}${BRANCHES[index % 12]}`);
 }
@@ -212,13 +214,20 @@ function normalizeGod(value: string): string {
   return GENERAL_SHORT[value] ?? value;
 }
 
+function normalizeCourseName(value: string): "一課" | "二課" | "三課" | "四課" | "" {
+  const normalized = value.replaceAll("课", "課");
+  return ["一課", "二課", "三課", "四課"].includes(normalized)
+    ? normalized as "一課" | "二課" | "三課" | "四課"
+    : "";
+}
+
 function compareOverlap(native: LiurenBaseChart, raw: ReturnType<typeof generateLiuren>): string[] {
   const differences: string[] = [];
   if (String(raw.ganzhi?.day ?? "") !== native.calendar.dayGanZhi) differences.push(`日干支：native=${native.calendar.dayGanZhi} / mingyu=${raw.ganzhi?.day ?? "-"}`);
   if (String(raw.ganzhi?.hour ?? "") !== native.calendar.hourGanZhi) differences.push(`时干支：native=${native.calendar.hourGanZhi} / mingyu=${raw.ganzhi?.hour ?? "-"}`);
   if (String(raw.monthLeader ?? "") !== native.disk.moonGeneral) differences.push(`月将：native=${native.disk.moonGeneral} / mingyu=${raw.monthLeader ?? "-"}`);
 
-  const rawPlate = Array.isArray(raw.heavenlyPlate) ? raw.heavenlyPlate : [];
+  const rawPlate = Array.isArray(raw.heavenlyPlate) ? raw.heavenlyPlate as LooseRecord[] : [];
   for (const item of rawPlate) {
     const under = String(item.under ?? "");
     const upper = String(item.branch ?? "");
@@ -226,16 +235,18 @@ function compareOverlap(native: LiurenBaseChart, raw: ReturnType<typeof generate
   }
 
   const nativeCourses = new Map(native.fourCourses.upstreamOrder.map((item) => [item.label, item]));
-  const rawLessons = Array.isArray(raw.fourLessons) ? raw.fourLessons : [];
+  const rawLessons = Array.isArray(raw.fourLessons) ? raw.fourLessons as LooseRecord[] : [];
   for (const lesson of rawLessons) {
-    const name = String(lesson.name ?? "");
-    const current = nativeCourses.get(name as "一課" | "二課" | "三課" | "四課");
+    const rawName = String(lesson.name ?? "");
+    const name = normalizeCourseName(rawName);
+    if (!name) continue;
+    const current = nativeCourses.get(name);
     if (!current) continue;
     const upper = String(lesson.upper ?? "");
     const lower = String(lesson.lower ?? "");
-    if (current.upper !== upper || current.lower !== lower) differences.push(`${name}：native=${current.upper}${current.lower} / mingyu=${upper}${lower}`);
+    if (current.upper !== upper || current.lower !== lower) differences.push(`${rawName}：native=${current.upper}${current.lower} / mingyu=${upper}${lower}`);
     const god = normalizeGod(String(lesson.god ?? ""));
-    if (god && current.general !== god) differences.push(`${name}天将：native=${current.general} / mingyu=${god}`);
+    if (god && current.general !== god) differences.push(`${rawName}天将：native=${current.general} / mingyu=${god}`);
   }
   return [...new Set(differences)];
 }
@@ -247,7 +258,8 @@ export function createCompleteLiurenChart(input: LiurenCompleteInput): LiurenCom
   const dayStem = String(raw.ganzhi?.day ?? native.calendar.dayGanZhi)[0] ?? "";
   const dayGanZhi = String(raw.ganzhi?.day ?? native.calendar.dayGanZhi);
 
-  const threeTransmissions: LiurenTransmissionNormalized[] = (Array.isArray(raw.threeTransmissions) ? raw.threeTransmissions : []).map((item, index) => ({
+  const rawTransmissions = Array.isArray(raw.threeTransmissions) ? raw.threeTransmissions as LooseRecord[] : [];
+  const threeTransmissions: LiurenTransmissionNormalized[] = rawTransmissions.map((item: LooseRecord, index: number) => ({
     stage: (String(item.stage ?? ["初传", "中传", "末传"][index]) as LiurenTransmissionNormalized["stage"]),
     branch: String(item.branch ?? ""),
     god: String(item.god ?? ""),
@@ -260,7 +272,8 @@ export function createCompleteLiurenChart(input: LiurenCompleteInput): LiurenCom
     liuQing: liuQing(dayStem, String(item.branch ?? ""))
   }));
 
-  const fourLessons = (Array.isArray(raw.fourLessons) ? raw.fourLessons : []).map((item) => ({
+  const rawLessons = Array.isArray(raw.fourLessons) ? raw.fourLessons as LooseRecord[] : [];
+  const fourLessons = rawLessons.map((item: LooseRecord) => ({
     name: String(item.name ?? ""),
     upper: String(item.upper ?? ""),
     lower: String(item.lower ?? ""),
@@ -269,7 +282,8 @@ export function createCompleteLiurenChart(input: LiurenCompleteInput): LiurenCom
     ...(item.note ? { note: String(item.note) } : {})
   }));
 
-  const shenSha = (Array.isArray(raw.shenShaFacts) ? raw.shenShaFacts : []).map((item) => ({
+  const rawShenSha = Array.isArray(raw.shenShaFacts) ? raw.shenShaFacts as LooseRecord[] : [];
+  const shenSha = rawShenSha.map((item: LooseRecord) => ({
     name: String(item.name ?? ""),
     target: String(item.target ?? ""),
     ...(item.targetType ? { targetType: String(item.targetType) } : {}),
@@ -277,7 +291,7 @@ export function createCompleteLiurenChart(input: LiurenCompleteInput): LiurenCom
     ...(item.basis ? { basis: String(item.basis) } : {}),
     ...(item.input ? { input: String(item.input) } : {}),
     ...(item.rule ? { rule: String(item.rule) } : {}),
-    sources: Array.isArray(item.sources) ? item.sources.map(String) : [],
+    sources: Array.isArray(item.sources) ? item.sources.map(String) : item.source ? [String(item.source)] : [],
     limitations: Array.isArray(item.limitations) ? item.limitations.map(String) : []
   }));
 
@@ -328,7 +342,7 @@ export function createCompleteLiurenChart(input: LiurenCompleteInput): LiurenCom
     },
     crossCheck: {
       status: differences.length ? "differences" : "matched",
-      overlapChecks: 3 + (Array.isArray(raw.heavenlyPlate) ? raw.heavenlyPlate.length : 0) + (Array.isArray(raw.fourLessons) ? raw.fourLessons.length * 2 : 0),
+      overlapChecks: 3 + rawPlateLength(raw) + rawLessons.length * 2,
       differences
     },
     engineManifest: {
@@ -338,4 +352,8 @@ export function createCompleteLiurenChart(input: LiurenCompleteInput): LiurenCom
     },
     warnings
   };
+}
+
+function rawPlateLength(raw: ReturnType<typeof generateLiuren>): number {
+  return Array.isArray(raw.heavenlyPlate) ? raw.heavenlyPlate.length : 0;
 }
