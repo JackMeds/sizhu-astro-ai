@@ -7,6 +7,10 @@ import type { AstroInput, AstroProfile } from "./types.js";
 
 function createAiBlock(profile: Pick<AstroProfile, "input" | "time" | "bazi" | "ziwei">): AstroProfile["ai"] {
   const pillars = profile.bazi.pillars.map((pillar) => `${pillar.label}${pillar.ganZhi}`).join("，");
+  const relationSummary = profile.bazi.facts.natal.map((item) => item.label).join("、") || "无已编码关系";
+  const ziweiSummary = profile.ziwei.available
+    ? `${profile.ziwei.fiveElementsClass || "五行局未取"}，命宫${profile.ziwei.soulPalaceBranch || "-"}，身宫${profile.ziwei.bodyPalaceBranch || "-"}`
+    : "紫微不可用";
   return {
     summary: `${profile.input.name}，${profile.input.gender === "male" ? "男命" : "女命"}，采用${profile.time.effective.label}排盘，四柱为${pillars}。日主${profile.bazi.dayMaster}。五行统计仅作结构展示，不直接等同于旺衰。`,
     evidence: [
@@ -16,9 +20,11 @@ function createAiBlock(profile: Pick<AstroProfile, "input" | "time" | "bazi" | "
       { label: "阴历", value: profile.bazi.lunarText },
       { label: "生肖", value: profile.bazi.zodiac },
       { label: "日主", value: profile.bazi.dayMaster },
-      { label: "紫微可用", value: profile.ziwei.available ? "是" : "否" }
+      { label: "八字关系事实", value: relationSummary },
+      { label: "紫微摘要", value: ziweiSummary },
+      { label: "紫微生年四化", value: profile.ziwei.natalMutagens?.map((item) => `${item.star}${item.mutagen}@${item.palace}`).join("、") || "未取到" }
     ],
-    recommendedPromptSections: ["输入与时间口径", "四柱结构", "五行与十神", "大运流年", "紫微十二宫", "交叉校验与不确定性"]
+    recommendedPromptSections: ["输入与时间口径", "四柱结构", "确定性关系事实", "五行与十神", "大运流年", "紫微十二宫与四化", "交叉校验与不确定性"]
   };
 }
 
@@ -56,7 +62,7 @@ export function createAstroProfile(rawInput: AstroInput): AstroProfile {
   return {
     meta: {
       format: "astro-ai-profile",
-      formatVersion: "1.1.0",
+      formatVersion: "1.2.0",
       generatedAt: new Date().toISOString(),
       source: "sizhu-astro-ai/core"
     },
