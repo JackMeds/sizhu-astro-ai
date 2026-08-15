@@ -30,6 +30,13 @@ export type {
   LiurenSessionInput,
   LiurenSkyGenerals
 } from "./liuren.js";
+export { createCompleteLiurenChart, liurenNumberToBranch } from "./liuren-complete.js";
+export type {
+  LiurenCastingMethod,
+  LiurenCompleteChart,
+  LiurenCompleteInput,
+  LiurenTransmissionNormalized
+} from "./liuren-complete.js";
 export { createZiweiProfile, createZiweiHoroscope } from "./ziwei.js";
 export { createTransitSnapshot } from "./transit.js";
 export { createDivinationProfile } from "./divination.js";
