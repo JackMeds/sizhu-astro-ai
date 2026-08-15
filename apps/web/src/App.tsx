@@ -25,6 +25,7 @@ const agentGuideHref = `${import.meta.env.BASE_URL}agents.md`;
 const guideBase = `${import.meta.env.BASE_URL}guide/`;
 
 const qaItems = [
+  { question: "这个网站会直接给我算命结论吗？", answer: "不会。本站负责用固定代码排盘、校验时间口径、整理八字与紫微结构化资料；生成后把结果复制给你喜欢的 AI，例如 ChatGPT、Claude、DeepSeek、Kimi 等，再由你选择的 AI 进行分析。" },
   { question: "这次排盘为什么比普通 AI 对话稳定？", answer: "四柱、大运、流年、流月与紫微十二宫由固定代码引擎计算。AI 只负责解释结构化结果，不再凭上下文临时手算。" },
   { question: "标准时、地方平太阳时、真太阳时有什么区别？", answer: "标准时使用钟表时间；地方平太阳时按出生地经度与时区标准经线的差修正；真太阳时在此基础上再加入均时差。三套时间都会保存在导出资料中，正式命盘使用你选择的口径。" },
   { question: "关系事实和命理解读有什么区别？", answer: "冲、合、刑、害、破、伏吟等可以先由程序识别；是否合化、力量大小、吉凶和事件含义属于规则与解释层，不能在计算阶段偷换成结论。" },
@@ -96,11 +97,11 @@ export function App() {
         <motion.div className="intro-copy intro-copy-v2" initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }}>
           <div>
             <p className="hero-kicker"><Sparkles size={14} /> 可复现的传统术数计算底座</p>
-            <h1>先把盘算准，<br /><em>再让 AI 真正去解。</em></h1>
-            <p className="hero-description">免费、本地优先的八字与紫微斗数排盘工具。同一份出生数据由固定引擎生成四柱、大运流年流月与紫微资料；关系事实、时间口径、修正量、引擎和警告全部留痕。</p>
-            <div className="hero-badges"><span><Cpu size={14} />代码排盘</span><span><Braces size={14} />事实与解释分层</span><span><LockKeyhole size={14} />本地优先</span></div>
+            <h1>先把盘算准，<br /><em>再交给你喜欢的 AI。</em></h1>
+            <p className="hero-description">本站负责用固定代码生成八字、紫微、大运流年流月和关系事实，并把时间口径、修正量、引擎与警告全部留痕。<strong>我们不在站内提供命理解读</strong>：生成后直接复制给你喜欢的 AI，例如 ChatGPT、Claude、DeepSeek、Kimi 等，再让它按你的问题继续分析。</p>
+            <div className="hero-badges"><span><Cpu size={14} />代码排盘</span><span><Braces size={14} />复制给任意 AI</span><span><LockKeyhole size={14} />本地优先</span></div>
           </div>
-          <aside className="hero-signature"><small>当前命盘</small><strong>{signature}</strong><span>{profile ? `${profile.input.name} · ${profile.time.effective.label}` : "输入出生信息后开始"}</span></aside>
+          <aside className="hero-signature"><small>使用流程</small><strong>{profile ? signature : "排盘 → 复制 → AI 分析"}</strong><span>{profile ? `${profile.input.name} · ${profile.time.effective.label}` : "本站负责计算，你选择 AI 来解读"}</span></aside>
         </motion.div>
 
         <div className={profile ? "workbench-grid" : "workbench-grid empty-workbench"}>
@@ -129,7 +130,7 @@ export function App() {
           ) : (
             <section className="empty-stage">
               <div className="empty-orbit"><i /><i /><i /><span>四柱</span></div>
-              <div><p className="eyeline">Ready</p><h2>这里不是“AI 猜命盘”。</h2><p>左侧输入出生资料后，先由计算内核生成可追溯命盘，再输出关系事实与结构化紫微数据给 AI 做分析。尤其接近子时、节气或时辰边界时，时间口径会明确展示。</p></div>
+              <div><p className="eyeline">How it works</p><h2>我们算盘，你选 AI 来解。</h2><p>输入出生资料后，计算内核先生成可追溯命盘、关系事实和结构化紫微数据。完成后复制结果或提示词，粘贴到你习惯使用的 AI 继续分析；本站本身不输出命理解读。尤其接近子时、节气或时辰边界时，时间口径会明确展示。</p></div>
             </section>
           )}
         </div>
