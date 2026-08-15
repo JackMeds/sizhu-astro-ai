@@ -16,8 +16,9 @@ const sampleInput: AstroInput = {
 test("createAstroProfile returns stable AI-readable top-level shape", () => {
   const profile = createAstroProfile(sampleInput);
   assert.deepEqual(Object.keys(profile), ["meta", "input", "time", "bazi", "ziwei", "divination", "ai", "raw", "warnings"]);
-  assert.equal(profile.meta.formatVersion, "1.1.0");
+  assert.equal(profile.meta.formatVersion, "1.2.0");
   assert.equal(profile.bazi.pillars.length, 4);
+  assert.equal(profile.bazi.facts.version, "bazi-relations-v1");
   assert.ok(profile.ai.summary.includes("四柱"));
   assert.doesNotThrow(() => JSON.stringify(profile));
 });
@@ -30,12 +31,13 @@ test("explicit +08 wall time is preserved independent of runtime timezone", () =
   assert.equal(profile.time.timezoneOffsetMinutes, 480);
 });
 
-test("bazi profile includes core pillars, ten gods, element counts, and neutral strength note", () => {
+test("bazi profile includes core pillars, ten gods, element counts, facts, and neutral strength note", () => {
   const profile = createAstroProfile(sampleInput);
   const day = profile.bazi.pillars.find((pillar) => pillar.key === "day");
   assert.ok(day);
   assert.equal(day?.tenGod, "日主");
   assert.ok(Object.keys(profile.bazi.elementCounts).includes("木"));
+  assert.ok(Array.isArray(profile.bazi.facts.natal));
   assert.ok(profile.bazi.strengthHint.includes("不直接等同"));
 });
 
@@ -50,6 +52,8 @@ test("ziwei uses the exact effective wall date and shichen from the shared time 
   assert.equal(profile.ziwei.engine, "iztro");
   assert.equal(profile.ziwei.calculation?.solarDate, profile.time.effective.date);
   assert.equal(profile.ziwei.calculation?.shichen, profile.time.effective.shichen);
+  assert.equal(typeof profile.ziwei.soulPalaceBranch, "string");
+  assert.equal(typeof profile.ziwei.bodyPalaceBranch, "string");
 });
 
 test("local mean solar time longitude correction can cross a shichen boundary", () => {
