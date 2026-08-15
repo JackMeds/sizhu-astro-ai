@@ -59,6 +59,8 @@ AI 解释与写作
 - [真太阳时怎么算](https://jackmeds.github.io/sizhu-astro-ai/guide/solar-time.html)
 - [大运流年怎么看](https://jackmeds.github.io/sizhu-astro-ai/guide/dayun.html)
 
+首页和指南页都设置了 canonical、描述性标题与摘要，并通过 `sitemap.xml` 暴露给搜索引擎。正式上线后可以把 sitemap 提交到 Google Search Console / Bing Webmaster Tools，加快首次发现和重新抓取。
+
 ## 隐私模型
 
 网页端排盘、提示词生成和历史记录都在当前浏览器本地完成。历史记录保存在 `localStorage`，不会自动同步到其他设备。只有用户主动把导出内容发送到第三方 AI 后，数据才进入对应服务的处理范围。
