@@ -2,6 +2,7 @@ import { LunarUtil, Solar } from "lunar-javascript";
 import lunisolar from "lunisolar";
 import type { AstroInput, BaziProfile, PillarInfo } from "./types.js";
 import { createTimeProfile } from "./time.js";
+import { createNatalBaziFacts } from "./relations.js";
 
 const STEM_ELEMENTS: Record<string, string> = {
   甲: "木", 乙: "木", 丙: "火", 丁: "火", 戊: "土", 己: "土", 庚: "金", 辛: "金", 壬: "水", 癸: "水"
@@ -140,6 +141,10 @@ export function createBaziProfile(input: AstroInput): BaziProfile {
     solarText: solar.toYmdHms(), zodiac: lunar.getYearShengXiao(), pillars, dayMaster: dayStem,
     elementCounts: countElements(pillars),
     strengthHint: "五行计数仅用于结构展示，不直接等同于日主旺衰。旺衰与喜用需结合月令、通根、透干、制化、调候及具体流派规则进一步判断。",
+    facts: {
+      version: "bazi-relations-v1",
+      natal: createNatalBaziFacts(pillars)
+    },
     luck: buildLuck(bazi, input),
     crossCheck: crossCheckWithLunisolar(effective.isoLocal)
   };
