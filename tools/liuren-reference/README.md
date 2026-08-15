@@ -4,12 +4,12 @@ This directory contains the **reference engine only** for the Da Liu Ren migrati
 
 ## Why it exists
 
-The web application is a TypeScript/browser-first project, while the most mature implementation currently used as our reference is [`kentang2017/kinliuren`](https://github.com/kentang2017/kinliuren), a Python project under the MIT License.
+The web application is a TypeScript/browser-first project, while the implementation currently used as our reference is [`kentang2017/kinliuren`](https://github.com/kentang2017/kinliuren), a Python project under the MIT License.
 
 Rather than copying a large Python implementation into the browser and hoping the port is correct, the migration uses a reference-oracle workflow:
 
 1. Pin an exact upstream source commit.
-2. Record representative Da Liu Ren fixtures.
+2. Record representative Da Liu Ren fixtures from executable behavior.
 3. Build the browser/TypeScript implementation subsystem by subsystem.
 4. Compare the TypeScript result with the pinned reference output in CI.
 
@@ -20,17 +20,22 @@ Rather than copying a large Python implementation into the browser and hoping th
 - Oracle interface: `Liuren(solar_term, lunar_month, day_ganzhi, hour_ganzhi).result(0)`
 - Runtime in CI: source checkout + Python 3.12
 
-The exact Git commit is the reference truth for the TypeScript migration. A future upstream change must be reviewed and fixtures intentionally updated; it must never silently change the browser engine.
+The exact Git commit's **executable callable result** is the reference truth for the TypeScript migration. A future upstream change must be reviewed and fixtures intentionally updated; it must never silently change the browser engine.
 
-## Historical PyPI release
+## Upstream documentation divergence discovered during migration
 
-`kinliuren==0.1.2.9` remains useful as a historical stable release, but it is **not** the primary oracle because it differs from the later upstream source. During migration we observed that the same public input preserved the Three Transmissions, Four Courses and Heaven/Earth disk while the PyPI release returned different pattern labels and omitted the newer `神煞` field found in the current README output.
+For the public input `驚蟄 / 二 / 己未 / 甲午`, both the historical PyPI `kinliuren==0.1.2.9` package and the pinned GitHub source callable returned the same core result shape we observed in CI:
 
-That divergence is exactly why the project pins a source commit instead of assuming “latest README” and “latest published package” are identical.
+- `格局 = [返吟, 絕嗣]`
+- 三傳 = 巳 → 戌 → 卯
+- 四課 / 天地盤 are present
+- `Liuren.result(0)` does **not** contain a top-level `神煞` field
 
-## First fixture
+The README at the pinned commit shows a richer sample for the same input with different pattern labels and a `神煞` block. Therefore README prose/sample output is treated as documentation evidence, not as an executable oracle. The migration will follow callable source behavior unless a specific extra subsystem is independently identified and tested.
 
-The first fixture is the public example from the pinned upstream README:
+## First executable fixture
+
+Input:
 
 ```text
 solar term: 驚蟄
@@ -39,17 +44,28 @@ day: 己未
 hour: 甲午
 ```
 
-The oracle validates key output invariants including:
+Pinned callable invariants:
 
+- 格局 = 返吟、絕嗣
 - 初傳 = 巳
 - 中傳 = 戌
 - 末傳 = 卯
 - 一課 starts with 子己
 - 天盤 / 地盤 / 天將 each contain 12 entries
-- the output includes `神煞`
+- top-level `神煞` is absent from `Liuren.result(0)`
 
 ## Calendar ownership
 
 Users should **not** have to manually enter the four kinliuren parameters. `@sizhu/core` owns calendar conversion through `prepareLiurenCalendarInput(...)`, using the same explicit standard/local-mean/apparent-solar-time model as the rest of the project.
+
+## Browser migration order
+
+The native TypeScript engine is being ported in small audited slices:
+
+1. 月將 + 天地盤
+2. 天將
+3. 四課
+4. 三傳 / 課體
+5. any extra 神煞 subsystem only after its actual upstream source path is identified
 
 The Python oracle is a CI/reference dependency. It is not intended to become a runtime dependency of the static GitHub Pages application.
