@@ -1,0 +1,19 @@
+.export-intro {
+  margin: -2px 0 12px;
+  padding: 11px 12px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--accent) 5%, var(--surface-subtle));
+  color: var(--text-secondary);
+  font: 12px/1.7 var(--font-sans);
+}
+
+.export-intro strong {
+  color: var(--text-primary);
+  font-weight: 800;
+}
+
+.hero-description strong {
+  color: var(--text-primary);
+  font-weight: 800;
+}

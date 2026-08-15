@@ -27,3 +27,35 @@ jobs:
         run: npm run typecheck
       - name: Build web
         run: npm run build:web
+
+  liuren-reference:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@v4
+      - name: Checkout pinned kinliuren source
+        uses: actions/checkout@v4
+        with:
+          repository: kentang2017/kinliuren
+          ref: 3ba45a9540f08269b56d81508a061c7d46938785
+          path: _oracle/kinliuren
+          persist-credentials: false
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Validate pinned executable fixture
+        env:
+          PYTHONPATH: _oracle/kinliuren/src
+        run: python tools/liuren-reference/oracle.py --validate-pinned-fixture > /tmp/liuren-reference.json
+      - name: Show reference summary
+        run: |
+          python - <<'PY'
+          import json
+          data = json.load(open('/tmp/liuren-reference.json', encoding='utf-8'))
+          print('節氣:', data.get('節氣'))
+          print('日期:', data.get('日期'))
+          print('格局:', data.get('格局'))
+          print('三傳:', data.get('三傳'))
+          print('核心 result 含神煞:', '神煞' in data)
+          PY
