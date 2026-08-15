@@ -29,7 +29,10 @@ export function loadHistory(): HistoryItem[] {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return [];
     const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? parsed.slice(0, 12) : [];
+    if (!Array.isArray(parsed)) return [];
+    // v1.1 adds an auditable time profile. Older cached records are intentionally
+    // excluded instead of pretending they were produced by the new calculation chain.
+    return parsed.filter((item) => item?.profile?.time?.engine === "sizhu-time-v2").slice(0, 12);
   } catch {
     return [];
   }

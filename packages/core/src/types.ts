@@ -1,6 +1,6 @@
 export type Gender = "male" | "female";
 export type CalendarType = "solar" | "lunar";
-export type TrueSolarTimeMode = "none" | "longitude";
+export type TrueSolarTimeMode = "none" | "longitude" | "apparent";
 export type DivinationKind = "liuren" | "liuyao";
 
 export interface AstroInput {
@@ -16,6 +16,39 @@ export interface AstroInput {
   };
   trueSolarTime: TrueSolarTimeMode;
   sect: 1 | 2;
+}
+
+export interface WallClockTime {
+  year: number;
+  month: number;
+  day: number;
+  hour: number;
+  minute: number;
+  second: number;
+  date: string;
+  time: string;
+  isoLocal: string;
+  shichen: string;
+}
+
+export interface TimeProfile {
+  engine: "sizhu-time-v2";
+  timezone: string;
+  inputText: string;
+  timezoneOffsetMinutes: number;
+  standardMeridianLongitude: number;
+  longitudeCorrectionMinutes: number | null;
+  equationOfTimeMinutes: number;
+  standard: WallClockTime;
+  localMeanSolar: WallClockTime;
+  apparentSolar: WallClockTime;
+  effective: WallClockTime & {
+    mode: TrueSolarTimeMode;
+    label: string;
+    correctionMinutes: number;
+  };
+  shichenChanged: boolean;
+  dateChanged: boolean;
 }
 
 export interface PillarInfo {
@@ -82,6 +115,12 @@ export interface ZiweiProfile {
   engine: "iztro";
   available: boolean;
   palaces: ZiweiPalace[];
+  calculation?: {
+    solarDate: string;
+    timeIndex: number;
+    shichen: string;
+    gender: "男" | "女";
+  };
   raw?: unknown;
   error?: string;
 }
@@ -115,11 +154,12 @@ export interface AiReadableBlock {
 export interface AstroProfile {
   meta: {
     format: "astro-ai-profile";
-    formatVersion: "1.0.0";
+    formatVersion: "1.1.0";
     generatedAt: string;
     source: "sizhu-astro-ai/core";
   };
   input: AstroInput;
+  time: TimeProfile;
   bazi: BaziProfile;
   ziwei: ZiweiProfile;
   divination: DivinationProfile;

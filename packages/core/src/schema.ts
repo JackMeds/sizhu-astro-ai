@@ -13,7 +13,7 @@ export const astroInputSchema = z.object({
       latitude: z.number().optional()
     })
     .optional(),
-  trueSolarTime: z.enum(["none", "longitude"]).default("none"),
+  trueSolarTime: z.enum(["none", "longitude", "apparent"]).default("none"),
   sect: z.union([z.literal(1), z.literal(2)]).default(1)
 });
 
