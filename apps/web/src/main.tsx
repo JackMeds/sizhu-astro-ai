@@ -8,6 +8,7 @@ import "./styles/evidence.css";
 import "./styles/transit.css";
 import "./styles/handoff.css";
 import "./styles/sponsor.css";
+import "./styles/liuren-beta.css";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
