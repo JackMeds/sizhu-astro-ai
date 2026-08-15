@@ -5,6 +5,7 @@ import "./styles/app.css";
 import "./styles/refresh.css";
 import "./styles/seo.css";
 import "./styles/evidence.css";
+import "./styles/transit.css";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
