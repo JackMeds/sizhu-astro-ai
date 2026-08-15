@@ -8,6 +8,7 @@ import { EngineAudit } from "./components/EngineAudit";
 import { ExportPanel } from "./components/ExportPanel";
 import { HistoryRail } from "./components/HistoryRail";
 import { InputPanel, type FormState } from "./components/InputPanel";
+import { SponsorPlaceholder } from "./components/SponsorPlaceholder";
 import { ThemeToggle } from "./components/ThemeToggle";
 import { TransitInspector } from "./components/TransitInspector";
 import { ZiweiPlate } from "./components/ZiweiPlate";
@@ -90,7 +91,7 @@ export function App() {
         <a className="brand-lockup" href="#top" aria-label="四柱星盘 AI 首页">
           <span className="brand-seal">命</span><span><strong>四柱星盘 AI</strong><small>Deterministic Metaphysics Workbench</small></span>
         </a>
-        <nav><a href="#chart">命盘</a><a href="#guides">指南</a><a href="#export">AI 导出</a><a href="#mcp">Agent</a><ThemeToggle /></nav>
+        <nav><a href="#chart">命盘</a><a href="#guides">指南</a><a href="#support">支持</a><a href="#export">AI 导出</a><a href="#mcp">Agent</a><ThemeToggle /></nav>
       </header>
 
       <section className="hero-workbench" id="top">
@@ -149,6 +150,8 @@ export function App() {
           ))}
         </div>
       </section>
+
+      <div id="support"><SponsorPlaceholder /></div>
 
       <section className="qa-panel qa-panel-v2" aria-labelledby="qa-title">
         <div className="qa-heading"><p className="eyeline">Methodology</p><h2 id="qa-title">为什么这样排盘</h2><span>把“计算事实”和“术数解释”分开，是这个项目最重要的原则。</span></div>
