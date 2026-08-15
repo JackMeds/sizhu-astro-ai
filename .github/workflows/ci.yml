@@ -31,17 +31,22 @@ jobs:
   liuren-reference:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout project
         uses: actions/checkout@v4
+      - name: Checkout pinned kinliuren source
+        uses: actions/checkout@v4
+        with:
+          repository: kentang2017/kinliuren
+          ref: 3ba45a9540f08269b56d81508a061c7d46938785
+          path: _oracle/kinliuren
+          persist-credentials: false
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-          cache: pip
-          cache-dependency-path: tools/liuren-reference/requirements.txt
-      - name: Install pinned kinliuren oracle
-        run: python -m pip install -r tools/liuren-reference/requirements.txt
-      - name: Validate upstream README fixture
+      - name: Validate pinned upstream README fixture
+        env:
+          PYTHONPATH: _oracle/kinliuren/src
         run: python tools/liuren-reference/oracle.py --validate-readme-fixture > /tmp/liuren-reference.json
       - name: Show reference summary
         run: python - <<'PY'
@@ -51,4 +56,5 @@ jobs:
           print('日期:', data.get('日期'))
           print('格局:', data.get('格局'))
           print('三傳:', data.get('三傳'))
+          print('神煞數:', len(data.get('神煞', {})))
           PY
