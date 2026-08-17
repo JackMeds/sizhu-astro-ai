@@ -10,6 +10,8 @@ import "./styles/handoff.css";
 import "./styles/sponsor.css";
 import "./styles/liuren-beta.css";
 import "./styles/liuren-complete.css";
+import "./styles/product-v3.css";
+import "./styles/product-v3-fixes.css";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
