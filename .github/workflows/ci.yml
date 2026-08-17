@@ -27,6 +27,12 @@ jobs:
         run: npm run typecheck
       - name: Build web
         run: npm run build:web
+      - name: Upload visual QA preview
+        uses: actions/upload-artifact@v4
+        with:
+          name: ux-preview
+          path: apps/web/dist
+          retention-days: 1
 
   liuren-reference:
     runs-on: ubuntu-latest
