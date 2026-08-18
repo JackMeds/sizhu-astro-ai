@@ -3,6 +3,7 @@ import { ArrowUpRight, Check, Copy, Download, ImageDown, ServerCog, Sparkles } f
 import type { AstroProfile } from "@sizhu/core";
 import { Button } from "./Button";
 import { copySvgAsPng, copyText, downloadText } from "@/lib/utils";
+import { showFeedback } from "@/lib/feedback";
 import {
   buildPrompt,
   promptModes,
@@ -21,7 +22,11 @@ const aiDestinations = [
   { name: "Kimi", href: "https://www.kimi.com/" },
   { name: "Gemini", href: "https://gemini.google.com/app" }
 ];
-const primaryModes = promptModes.filter((item) => item.key !== "xp");
+
+function displayModeLabel(mode: PromptMode) {
+  if (mode === "xp") return "XP（性癖）";
+  return promptModes.find((item) => item.key === mode)?.label ?? "综合";
+}
 
 function appendEngineEvidence(base: string, profile: AstroProfile, format: PromptFormat, system: PromptSystem) {
   if (system === "ziwei") return base;
@@ -38,12 +43,13 @@ export function ExportPanel({ profile }: ExportPanelProps) {
   const [format, setFormat] = useState<PromptFormat>("markdown");
   const [status, setStatus] = useState("默认用八字 + 紫微综合资料；不想选也可以直接复制。");
   const [copied, setCopied] = useState(false);
+  const effectiveSystem = mode === "xp" ? "combined" : system;
   const content = useMemo(
-    () => appendEngineEvidence(buildPrompt(profile, mode, format, system), profile, format, system),
-    [format, mode, profile, system]
+    () => appendEngineEvidence(buildPrompt(profile, mode, format, effectiveSystem), profile, format, effectiveSystem),
+    [effectiveSystem, format, mode, profile]
   );
-  const modeLabel = promptModes.find((item) => item.key === mode)?.label ?? "综合";
-  const systemLabel = promptSystems.find((item) => item.key === system)?.label ?? "八字 + 紫微";
+  const modeLabel = displayModeLabel(mode);
+  const systemLabel = promptSystems.find((item) => item.key === effectiveSystem)?.label ?? "八字 + 紫微";
 
   function resetCopied() { setCopied(false); }
 
@@ -51,27 +57,43 @@ export function ExportPanel({ profile }: ExportPanelProps) {
     try {
       await copyText(content);
       setCopied(true);
-      setStatus(`${systemLabel} · ${modeLabel}资料已复制。现在打开你喜欢的 AI，直接粘贴即可。`);
+      const message = `${systemLabel} · ${modeLabel}资料已复制，可以直接粘贴到你喜欢的 AI。`;
+      setStatus(message);
+      showFeedback("success", "复制成功", message);
     } catch (error) {
       setCopied(false);
-      setStatus(error instanceof Error ? error.message : "复制失败，请在高级导出里手动复制文本");
+      const message = error instanceof Error ? error.message : "复制失败，请在高级导出里手动复制文本";
+      setStatus(message);
+      showFeedback("error", "复制失败", message);
     }
   }
+
   function downloadCurrent() {
     const ext = format === "markdown" ? "md" : "txt";
-    downloadText(`ai-prompt-${profile.input.name}-${system}-${mode}.${ext}`, content, "text/plain;charset=utf-8");
-    setStatus(`${systemLabel} · ${modeLabel}分析资料已下载`);
+    downloadText(`ai-prompt-${profile.input.name}-${effectiveSystem}-${mode}.${ext}`, content, "text/plain;charset=utf-8");
+    const message = `${systemLabel} · ${modeLabel}分析资料已下载。`;
+    setStatus(message);
+    showFeedback("success", "下载成功", message);
   }
+
   async function copyPromptImage() {
     const svg = renderPromptSvg(`${systemLabel} · ${modeLabel}分析提示词`, content);
     try {
       const didCopy = await copySvgAsPng(svg);
-      if (didCopy) { setStatus(`${systemLabel} · ${modeLabel}提示词图片已复制`); return; }
-      downloadText(`ai-prompt-${profile.input.name}-${system}-${mode}.svg`, svg, "image/svg+xml;charset=utf-8");
-      setStatus("当前浏览器不支持复制图片，已改为下载 SVG");
-    } catch {
-      downloadText(`ai-prompt-${profile.input.name}-${system}-${mode}.svg`, svg, "image/svg+xml;charset=utf-8");
-      setStatus("图片复制失败，已改为下载 SVG");
+      if (didCopy) {
+        const message = `${systemLabel} · ${modeLabel}提示词图片已复制。`;
+        setStatus(message);
+        showFeedback("success", "复制成功", message);
+        return;
+      }
+      downloadText(`ai-prompt-${profile.input.name}-${effectiveSystem}-${mode}.svg`, svg, "image/svg+xml;charset=utf-8");
+      const message = "当前浏览器不支持复制图片，已自动改为下载 SVG。";
+      setStatus(message);
+      showFeedback("success", "已改为下载", message);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "图片复制失败";
+      setStatus(message);
+      showFeedback("error", "复制失败", message);
     }
   }
 
@@ -83,23 +105,42 @@ export function ExportPanel({ profile }: ExportPanelProps) {
       </div>
       <p className="export-intro">命盘已经由程序算好。你<strong>不需要看懂全部专业术语</strong>。默认直接把八字和紫微一起交给 AI；如果你只想看其中一套，也可以一键切换。</p>
 
-      <div className="handoff-step"><span>1</span><div><strong>让 AI 看哪一套？</strong><small>第一次用保持“八字 + 紫微”即可。</small></div></div>
+      <div className="handoff-step"><span>1</span><div><strong>让 AI 看哪一套？</strong><small>{mode === "xp" ? "XP（性癖）会自动使用八字 + 紫微完整资料。" : "第一次用保持“八字 + 紫微”即可。"}</small></div></div>
       <div className="system-switch-v3">
         {promptSystems.map((item) => (
-          <button className={system === item.key ? "active" : ""} key={item.key} onClick={() => { setSystem(item.key); resetCopied(); }} type="button">
+          <button
+            className={effectiveSystem === item.key ? "active" : ""}
+            disabled={mode === "xp" && item.key !== "combined"}
+            key={item.key}
+            onClick={() => { setSystem(item.key); resetCopied(); }}
+            type="button"
+          >
             <strong>{item.label}</strong><small>{item.hint}</small>
           </button>
         ))}
       </div>
 
-      <div className="handoff-step"><span>2</span><div><strong>你最想问什么？</strong><small>综合适合第一次使用，其他选项会让 AI 更聚焦。</small></div></div>
+      <div className="handoff-step"><span>2</span><div><strong>你最想问什么？</strong><small>综合适合第一次使用；XP（性癖）会调用原来的成人亲密偏好提示词。</small></div></div>
       <div className="mode-switch mode-switch-v3">
-        {primaryModes.map((item) => <button className={mode === item.key ? "active" : ""} key={item.key} onClick={() => { setMode(item.key); resetCopied(); }} type="button">{item.label}</button>)}
+        {promptModes.map((item) => (
+          <button
+            className={mode === item.key ? "active" : ""}
+            key={item.key}
+            onClick={() => {
+              setMode(item.key);
+              if (item.key === "xp") setSystem("combined");
+              resetCopied();
+            }}
+            type="button"
+          >
+            {item.key === "xp" ? "XP（性癖）" : item.label}
+          </button>
+        ))}
       </div>
 
       <div className="handoff-step"><span>3</span><div><strong>复制完整资料</strong><small>程序已经自动整理所选体系、时间口径和必要计算依据。</small></div></div>
-      <Button className="copy-prompt-button copy-prompt-button-v3" title="复制并交给你喜欢的 AI" onClick={copyCurrent} variant="primary">
-        {copied ? <Check size={20} /> : <Sparkles size={20} />}{copied ? "已复制，可以去 AI 了" : `复制${systemLabel} · ${modeLabel}资料给 AI`}
+      <Button className={`copy-prompt-button copy-prompt-button-v3 ${copied ? "is-copied" : ""}`} title="复制并交给你喜欢的 AI" onClick={copyCurrent} variant="primary">
+        {copied ? <Check size={20} /> : <Sparkles size={20} />}{copied ? "已复制 ✓" : `复制${systemLabel} · ${modeLabel}资料给 AI`}
       </Button>
 
       <div className={`ai-launcher ${copied ? "is-ready" : ""}`}>
@@ -111,9 +152,8 @@ export function ExportPanel({ profile }: ExportPanelProps) {
       <p className="status-line status-line-v3">{status}</p>
 
       <details className="advanced-export">
-        <summary>高级导出 <small>格式、预览、下载与特殊分析方向</small></summary>
+        <summary>高级导出 <small>格式、预览、下载</small></summary>
         <div className="advanced-export-inner">
-          <div className="advanced-mode-row"><span>特殊方向（始终使用完整命盘资料）</span><button className={mode === "xp" ? "active" : ""} onClick={() => { setMode("xp"); resetCopied(); }} type="button">XP / 私密偏好</button></div>
           <div className="export-switch">{(["markdown", "txt"] as PromptFormat[]).map((item) => <button className={format === item ? "active" : ""} key={item} onClick={() => setFormat(item)} type="button">{item === "markdown" ? "Markdown" : "纯文本"}</button>)}</div>
           <pre className="export-preview">{content}</pre>
           <div className="export-actions">
