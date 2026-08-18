@@ -12,6 +12,8 @@
     "dev:web": "npm run dev -w @sizhu/web",
     "build": "npm run build -w @sizhu/core && npm run build -w @sizhu/prompt && npm run build -w @sizhu/render && npm run build -w @sizhu/mcp && npm run build -w @sizhu/web",
     "build:web": "npm run build -w @sizhu/web",
+    "build:mcp": "npm run build -w @sizhu/core && npm run build -w @sizhu/prompt && npm run build -w @sizhu/mcp",
+    "start:mcp": "node apps/mcp/dist/index.js",
     "test": "npm run test -w @sizhu/core && npm run build -w @sizhu/core && npm run test -w @sizhu/prompt",
     "typecheck": "npm run build -w @sizhu/core && npm run build -w @sizhu/prompt && npm run build -w @sizhu/render && npm run typecheck -w @sizhu/web && npm run typecheck -w @sizhu/mcp"
   },

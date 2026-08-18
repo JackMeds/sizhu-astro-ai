@@ -25,6 +25,8 @@ jobs:
         run: npm run test
       - name: Typecheck workspaces
         run: npm run typecheck
+      - name: Build MCP quick start
+        run: npm run build:mcp
       - name: Build web
         run: npm run build:web
 

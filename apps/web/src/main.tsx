@@ -13,6 +13,7 @@ import "./styles/liuren-beta.css";
 import "./styles/liuren-complete.css";
 import "./styles/product-v3.css";
 import "./styles/product-v3-fixes.css";
+import "./styles/agent-access.css";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
