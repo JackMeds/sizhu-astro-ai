@@ -25,14 +25,10 @@ jobs:
         run: npm run test
       - name: Typecheck workspaces
         run: npm run typecheck
+      - name: Build MCP quick start
+        run: npm run build:mcp
       - name: Build web
         run: npm run build:web
-      - name: Upload visual QA preview
-        uses: actions/upload-artifact@v4
-        with:
-          name: phase8-preview
-          path: apps/web/dist
-          retention-days: 1
 
   liuren-reference:
     runs-on: ubuntu-latest
