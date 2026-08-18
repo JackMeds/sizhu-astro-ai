@@ -17,6 +17,7 @@ import {
   Sparkles,
   UserRound
 } from "lucide-react";
+import { AgentAccessPanel } from "./components/AgentAccessPanel";
 import { ExportPanel } from "./components/ExportPanel";
 import { HistoryRail } from "./components/HistoryRail";
 import { InputPanel, type FormState } from "./components/InputPanel";
@@ -56,7 +57,8 @@ const guideItems = [
   { href: "ziwei.html", kicker: "Zi Wei", title: "紫微斗数排盘怎么看", text: "十二宫、主星、四化与运限如何整理成 AI 能稳定读取的数据。" },
   { href: "liuren.html", kicker: "Da Liu Ren", title: "大六壬怎么起课", text: "正时、报数、指定占时、九宗门、三传与多引擎校验。" },
   { href: "solar-time.html", kicker: "Time", title: "真太阳时到底怎么算", text: "区分标准时、地方平太阳时、经度修正与均时差。" },
-  { href: "dayun.html", kicker: "Luck Cycle", title: "大运流年怎么一起看", text: "本命、大运、流年、流月为什么必须放在同一个时间层级里。" }
+  { href: "dayun.html", kicker: "Luck Cycle", title: "大运流年怎么一起看", text: "本命、大运、流年、流月为什么必须放在同一个时间层级里。" },
+  { href: "agent.html", kicker: "Agent / MCP", title: "让 AI 直接调用排盘", text: "WebMCP、本地 stdio MCP、Codex 快速安装与工具清单。" }
 ];
 
 function buildProfile(form: FormState): AstroProfile {
@@ -122,7 +124,7 @@ export function App() {
           <span className="brand-seal">命</span><span><strong>四柱星盘 AI</strong><small>Deterministic Metaphysics Workbench</small></span>
         </a>
         <nav>
-          <a href="#birth">出生命盘</a><a href="#liuren">六壬问事</a><a href="#guides">使用指南</a>
+          <a href="#birth">出生命盘</a><a href="#liuren">六壬问事</a><a href="#guides">使用指南</a><a href="#agent-access">Agent 接入</a>
           {profile ? <a className="nav-ai-link" href="#export">交给 AI</a> : null}
           <a aria-label="GitHub" className="nav-icon-link" href="https://github.com/JackMeds/sizhu-astro-ai" target="_blank" rel="noreferrer"><Github size={17} /></a>
           <ThemeToggle />
@@ -197,6 +199,8 @@ export function App() {
         </div>
       </motion.section>
 
+      <motion.div initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: .08 }} transition={{ duration: .4 }}><AgentAccessPanel /></motion.div>
+
       <motion.div id="support" initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: .12 }}><SponsorPlaceholder /></motion.div>
 
       <section className="qa-panel qa-panel-v2" aria-labelledby="qa-title">
@@ -206,7 +210,7 @@ export function App() {
 
       <HistoryRail items={history} onClear={clearHistory} onSelect={selectHistory} />
       <footer id="mcp" className="footer-strip">
-        <div className="footer-copy"><strong>四柱星盘 AI · local-first deterministic chart engine</strong><span>开源仓库：<a href="https://github.com/JackMeds/sizhu-astro-ai" target="_blank" rel="noreferrer">JackMeds/sizhu-astro-ai</a></span><span>AI/Agent：<a href={agentGuideHref} target="_blank" rel="noreferrer">agents.md</a></span><span>搜索索引：<a href={`${import.meta.env.BASE_URL}sitemap.xml`}>sitemap.xml</a></span></div>
+        <div className="footer-copy"><strong>四柱星盘 AI · local-first deterministic chart engine</strong><span>开源仓库：<a href="https://github.com/JackMeds/sizhu-astro-ai" target="_blank" rel="noreferrer">JackMeds/sizhu-astro-ai</a></span><span>Agent 接入：<a href="#agent-access">快速配置</a> · <a href={agentGuideHref} target="_blank" rel="noreferrer">agents.md</a></span><span>搜索索引：<a href={`${import.meta.env.BASE_URL}sitemap.xml`}>sitemap.xml</a></span></div>
         <div className="footer-links"><span>Core:</span><a href="https://github.com/6tail/lunar-javascript" target="_blank" rel="noreferrer">lunar-javascript</a><a href="https://iztro.com/" target="_blank" rel="noreferrer">iztro</a><a href="https://github.com/waterbeside/lunisolar" target="_blank" rel="noreferrer">lunisolar</a></div>
       </footer>
 
