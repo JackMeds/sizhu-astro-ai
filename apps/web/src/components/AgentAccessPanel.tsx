@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { CheckCircle2, Clipboard, Code2, ExternalLink, MonitorSmartphone, TerminalSquare, Wrench } from "lucide-react";
+import { CheckCircle2, Clipboard, Code2, ExternalLink, MonitorSmartphone, SquareTerminal, Wrench } from "lucide-react";
 import { copyText } from "@/lib/utils";
 import { showFeedback } from "@/lib/feedback";
 
@@ -69,7 +69,7 @@ export function AgentAccessPanel() {
 
       <div className="agent-access-tabs" role="tablist" aria-label="Agent 接入方式">
         <button className={tab === "webmcp" ? "active" : ""} onClick={() => setTab("webmcp")} type="button"><MonitorSmartphone size={16} />网页 WebMCP</button>
-        <button className={tab === "codex" ? "active" : ""} onClick={() => setTab("codex")} type="button"><TerminalSquare size={16} />Codex 一键接入</button>
+        <button className={tab === "codex" ? "active" : ""} onClick={() => setTab("codex")} type="button"><SquareTerminal size={16} />Codex 一键接入</button>
         <button className={tab === "generic" ? "active" : ""} onClick={() => setTab("generic")} type="button"><Code2 size={16} />通用 MCP</button>
       </div>
 
