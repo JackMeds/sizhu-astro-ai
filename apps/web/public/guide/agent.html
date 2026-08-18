@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Agent / MCP 接入：WebMCP、Codex 与本地 MCP｜四柱星盘 AI</title>
+  <meta name="description" content="四柱星盘 AI 的 Agent / MCP 接入指南：网页 WebMCP、本地 stdio MCP、Codex 一键注册、通用 mcpServers 配置和工具清单。" />
+  <meta name="robots" content="index,follow,max-image-preview:large" />
+  <link rel="canonical" href="https://jackmeds.github.io/sizhu-astro-ai/guide/agent.html" />
+  <style>
+    :root{color-scheme:dark;background:#07100e;color:#e9ddc6;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans SC",sans-serif}body{margin:0}main{max-width:960px;margin:auto;padding:42px 22px 72px}a{color:#78d5bd}h1,h2,h3{font-family:"Noto Serif SC",serif;color:#f4d28a}h1{font-size:clamp(34px,6vw,56px);line-height:1.08}h2{margin-top:40px}.lead{font-size:18px;line-height:1.8;color:#c1d2ca}.card{border:1px solid rgba(216,169,78,.2);border-radius:18px;background:#0c1714;padding:20px;margin:20px 0}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.grid>div{border:1px solid rgba(73,179,154,.18);border-radius:14px;padding:14px;background:rgba(73,179,154,.035)}code{color:#a6e6d5}li,p{line-height:1.8;color:#b7c8c0}.warn{border-left:3px solid #d8a94e;padding-left:14px;color:#e1cda8}.ok{border-left:3px solid #49b39a;padding-left:14px;color:#c8eee4}.crumb{font-size:13px;color:#82998f}.code{position:relative;white-space:pre-wrap;overflow-wrap:anywhere;border:1px solid rgba(73,179,154,.16);border-radius:14px;padding:42px 15px 15px;background:#091411;color:#d8eee7;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;line-height:1.7}.copy{position:absolute;right:8px;top:8px;border:1px solid rgba(120,213,189,.25);border-radius:9px;background:#10211c;color:#bfeade;padding:6px 9px;cursor:pointer}.tools{display:flex;flex-wrap:wrap;gap:6px}.tools code{border:1px solid rgba(73,179,154,.18);border-radius:8px;background:#0f1e19;padding:5px 7px}.tabs{display:flex;gap:7px;flex-wrap:wrap;margin:12px 0}.tabs button{border:1px solid rgba(120,213,189,.2);border-radius:999px;background:#0c1714;color:#b7c8c0;padding:7px 10px;cursor:pointer}.tabs button.active{border-color:#49b39a;color:#e9fff8;background:#123029}@media(max-width:680px){.grid{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+<main>
+  <p class="crumb"><a href="../">四柱星盘 AI</a> / <a href="./">指南</a> / Agent / MCP</p>
+  <h1>让 AI 直接调用八字、紫微和大六壬计算</h1>
+  <p class="lead">如果你只是普通用户，网页里的“复制给 AI”已经够用。如果你使用 Codex、Claude Desktop、Cursor 或其他支持 MCP / Agent 工具调用的客户端，可以直接把本站的确定性计算能力接进去，让 AI 先调用工具排盘，再进行解释。</p>
+
+  <h2>先分清三种接入方式</h2>
+  <div class="grid">
+    <div><h3>网页 WebMCP</h3><p>网页本身通过 <code>document.modelContext</code>（并兼容部分 <code>navigator.modelContext</code> 实现）注册 <code>sizhu.*</code> 工具。支持该能力的浏览器 / Agent 打开网站即可发现工具。</p></div>
+    <div><h3>本地 MCP</h3><p><code>apps/mcp</code> 是标准 stdio MCP Server。适合 Codex、Claude Desktop、Cursor 等能够启动本地 MCP 进程的客户端。</p></div>
+    <div><h3>Remote MCP</h3><p>公开的 HTTP / Remote MCP endpoint 目前还没有上线。不要把 GitHub Pages 网站地址误当成 Remote MCP URL。</p></div>
+  </div>
+
+  <p class="warn">WebMCP 目前仍属于实验性的网页 Agent 接口。没有检测到 WebMCP 时，本站网页仍然可以正常排盘；需要稳定 Agent 接入时优先使用本地 stdio MCP。</p>
+
+  <h2>Codex：两步接入</h2>
+  <p>需要 Git、Node.js / npm，以及已经安装好的 Codex。下面命令会把项目固定放到用户目录，方便后续更新。</p>
+  <div class="tabs"><button class="active" data-os="win">Windows PowerShell</button><button data-os="unix">macOS / Linux</button></div>
+
+  <div data-block="win">
+    <h3>1. 安装 / 更新并构建 MCP</h3>
+    <div class="code" id="win-install"><button class="copy" data-copy="win-install">复制</button>$dir="$env:LOCALAPPDATA\sizhu-astro-ai"; if (Test-Path "$dir\.git") { git -C $dir pull --ff-only } else { git clone https://github.com/JackMeds/sizhu-astro-ai.git $dir }; npm --prefix $dir install; npm --prefix $dir run build:mcp</div>
+    <h3>2. 注册到 Codex</h3>
+    <div class="code" id="win-codex"><button class="copy" data-copy="win-codex">复制</button>codex mcp add sizhu -- npm --prefix "$env:LOCALAPPDATA\sizhu-astro-ai" run start:mcp</div>
+  </div>
+
+  <div data-block="unix" hidden>
+    <h3>1. 安装 / 更新并构建 MCP</h3>
+    <div class="code" id="unix-install"><button class="copy" data-copy="unix-install">复制</button>DIR="$HOME/.local/share/sizhu-astro-ai"; if [ -d "$DIR/.git" ]; then git -C "$DIR" pull --ff-only; else git clone https://github.com/JackMeds/sizhu-astro-ai.git "$DIR"; fi; npm --prefix "$DIR" install &amp;&amp; npm --prefix "$DIR" run build:mcp</div>
+    <h3>2. 注册到 Codex</h3>
+    <div class="code" id="unix-codex"><button class="copy" data-copy="unix-codex">复制</button>codex mcp add sizhu -- npm --prefix "$HOME/.local/share/sizhu-astro-ai" run start:mcp</div>
+  </div>
+  <p class="ok">注册后，在 Codex 中使用 <code>/mcp</code> 查看已连接的服务器和工具。</p>
+
+  <h2>通用 stdio MCP 配置</h2>
+  <p>先运行上面的安装命令，然后在支持 <code>mcpServers</code> 风格配置的客户端中加入下面的配置。把路径替换成你机器上的绝对路径。</p>
+  <div class="code" id="generic-json"><button class="copy" data-copy="generic-json">复制</button>{
+  "mcpServers": {
+    "sizhu": {
+      "command": "npm",
+      "args": [
+        "--prefix",
+        "/ABSOLUTE/PATH/TO/sizhu-astro-ai",
+        "run",
+        "start:mcp"
+      ]
+    }
+  }
+}</div>
+
+  <h2>WebMCP：网页直接注册的工具</h2>
+  <p>网站打开后，如果当前浏览器 / Agent 支持 WebMCP，会注册这些主要入口：</p>
+  <div class="tools">
+    <code>sizhu.about</code><code>sizhu.create_profile</code><code>sizhu.create_ai_prompt</code><code>sizhu.get_transit_snapshot</code><code>sizhu.create_liuren_chart</code><code>sizhu.create_liuren_base_chart</code><code>sizhu.get_current_chart</code>
+  </div>
+  <p>这些工具直接复用网页的本地计算逻辑。出生资料、起课输入和提示词生成不需要先上传到本站服务器。</p>
+
+  <h2>本地 MCP 当前工具</h2>
+  <div class="tools">
+    <code>sizhu.create_bazi_profile</code><code>sizhu.create_ziwei_profile</code><code>sizhu.get_transit_snapshot</code><code>sizhu.create_liuren_chart</code><code>sizhu.create_liuren_base_chart</code><code>sizhu.create_ai_prompt</code><code>sizhu.export_profile_markdown</code>
+  </div>
+
+  <h2>Agent 应该怎么使用这些工具</h2>
+  <div class="card">
+    <ol>
+      <li>先调用程序工具排盘，不让模型手算四柱、紫微运限或六壬三传。</li>
+      <li>检查 <code>warnings</code>、时间口径和六壬 <code>crossCheck</code>。</li>
+      <li>区分程序计算事实、传统规则与综合解释。</li>
+      <li>需要完整方法边界时，让 Agent 阅读 <a href="../agents.md">agents.md</a>。</li>
+    </ol>
+  </div>
+
+  <p><a href="../#agent-access">返回首页 Agent 接入区</a> · <a href="https://github.com/JackMeds/sizhu-astro-ai">查看 GitHub 仓库</a></p>
+</main>
+<script>
+  document.querySelectorAll('[data-os]').forEach(btn=>btn.addEventListener('click',()=>{
+    document.querySelectorAll('[data-os]').forEach(x=>x.classList.toggle('active',x===btn));
+    document.querySelectorAll('[data-block]').forEach(x=>x.hidden=x.dataset.block!==btn.dataset.os);
+  }));
+  document.querySelectorAll('[data-copy]').forEach(btn=>btn.addEventListener('click',async()=>{
+    const el=document.getElementById(btn.dataset.copy); if(!el)return;
+    const clone=el.cloneNode(true); clone.querySelector('.copy')?.remove();
+    try{await navigator.clipboard.writeText(clone.textContent.trim()); const old=btn.textContent; btn.textContent='已复制 ✓'; setTimeout(()=>btn.textContent=old,1800);}catch{btn.textContent='复制失败';}
+  }));
+</script>
+</body>
+</html>
