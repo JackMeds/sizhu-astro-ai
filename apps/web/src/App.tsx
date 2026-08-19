@@ -210,7 +210,7 @@ export function App() {
 
       <HistoryRail items={history} onClear={clearHistory} onSelect={selectHistory} />
       <footer id="mcp" className="footer-strip">
-        <div className="footer-copy"><strong>四柱星盘 AI · local-first deterministic chart engine</strong><span>开源仓库：<a href="https://github.com/JackMeds/sizhu-astro-ai" target="_blank" rel="noreferrer">JackMeds/sizhu-astro-ai</a></span><span>Agent 接入：<a href="#agent-access">快速配置</a> · <a href={agentGuideHref} target="_blank" rel="noreferrer">agents.md</a></span><span>搜索索引：<a href={`${import.meta.env.BASE_URL}sitemap.xml`}>sitemap.xml</a></span></div>
+        <div className="footer-copy"><strong>四柱星盘 AI · local-first deterministic chart engine</strong><span>开源仓库：<a href="https://github.com/JackMeds/sizhu-astro-ai" target="_blank" rel="noreferrer">JackMeds/sizhu-astro-ai</a></span><span>Agent 接入：<a href="#agent-access">快速配置</a> · <a href={agentGuideHref} target="_blank" rel="noreferrer">agents.md</a></span><span>本站使用隐私友好的匿名访问统计了解页面使用情况，不上传出生资料、命盘或占问内容。</span></div>
         <div className="footer-links"><span>Core:</span><a href="https://github.com/6tail/lunar-javascript" target="_blank" rel="noreferrer">lunar-javascript</a><a href="https://iztro.com/" target="_blank" rel="noreferrer">iztro</a><a href="https://github.com/waterbeside/lunisolar" target="_blank" rel="noreferrer">lunisolar</a></div>
       </footer>
 

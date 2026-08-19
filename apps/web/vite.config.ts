@@ -3,11 +3,10 @@ import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "vite";
 
-const repoBase = process.env.GITHUB_REPOSITORY?.split("/")[1];
-const base = process.env.GITHUB_ACTIONS && repoBase ? `/${repoBase}/` : "/";
-
 export default defineConfig({
-  base,
+  // GitHub Pages serves the custom domain from the origin root, not the
+  // repository project-path used by the legacy github.io URL.
+  base: "/",
   plugins: [react(), tailwindcss()],
   server: {
     allowedHosts: ["mc.upcraft.cn"]
