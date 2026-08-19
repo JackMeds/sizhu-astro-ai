@@ -2,9 +2,9 @@
 
 **四柱星盘 AI** 是一个本地优先、可复现的 **八字排盘 / 紫微斗数 / 真太阳时 / 大六壬 / AI 结构化命盘** 工作台。项目把“排盘计算”和“AI 解读”分开：命盘与术数结构由固定代码生成，本站不直接给出命理解读；用户可把结果复制到自己喜欢的 AI（如 ChatGPT、Claude、DeepSeek、Kimi 等）继续分析。
 
-- 在线使用：<https://jackmeds.github.io/sizhu-astro-ai/>
-- 指南目录：<https://jackmeds.github.io/sizhu-astro-ai/guide/>
-- 搜索索引：<https://jackmeds.github.io/sizhu-astro-ai/sitemap.xml>
+- 在线使用：<https://astrocopy.jackmeds.top/>
+- 指南目录：<https://astrocopy.jackmeds.top/guide/>
+- 搜索索引：<https://astrocopy.jackmeds.top/sitemap.xml>
 - 仓库：<https://github.com/JackMeds/sizhu-astro-ai>
 
 ## 核心能力
@@ -127,12 +127,12 @@ createCompleteLiurenChart({
 
 站点提供独立可索引页面：
 
-- [指南目录](https://jackmeds.github.io/sizhu-astro-ai/guide/)
-- [八字排盘怎么看](https://jackmeds.github.io/sizhu-astro-ai/guide/bazi.html)
-- [紫微斗数排盘怎么看](https://jackmeds.github.io/sizhu-astro-ai/guide/ziwei.html)
-- [真太阳时怎么算](https://jackmeds.github.io/sizhu-astro-ai/guide/solar-time.html)
-- [大运流年怎么看](https://jackmeds.github.io/sizhu-astro-ai/guide/dayun.html)
-- [大六壬起课与九宗门](https://jackmeds.github.io/sizhu-astro-ai/guide/liuren.html)
+- [指南目录](https://astrocopy.jackmeds.top/guide/)
+- [八字排盘怎么看](https://astrocopy.jackmeds.top/guide/bazi.html)
+- [紫微斗数排盘怎么看](https://astrocopy.jackmeds.top/guide/ziwei.html)
+- [真太阳时怎么算](https://astrocopy.jackmeds.top/guide/solar-time.html)
+- [大运流年怎么看](https://astrocopy.jackmeds.top/guide/dayun.html)
+- [大六壬起课与九宗门](https://astrocopy.jackmeds.top/guide/liuren.html)
 
 首页和指南页都设置 canonical、描述性标题与摘要，并通过 `sitemap.xml` 和 `robots.txt` 暴露给搜索引擎。
 

@@ -3,7 +3,7 @@ import { CheckCircle2, Clipboard, Code2, ExternalLink, MonitorSmartphone, Square
 import { copyText } from "@/lib/utils";
 import { showFeedback } from "@/lib/feedback";
 
-const siteUrl = "https://jackmeds.github.io/sizhu-astro-ai/";
+const siteUrl = "https://astrocopy.jackmeds.top/";
 const repoUrl = "https://github.com/JackMeds/sizhu-astro-ai";
 
 const unixInstall = `DIR="$HOME/.local/share/sizhu-astro-ai"; if [ -d "$DIR/.git" ]; then git -C "$DIR" pull --ff-only; else git clone https://github.com/JackMeds/sizhu-astro-ai.git "$DIR"; fi; npm --prefix "$DIR" install && npm --prefix "$DIR" run build:mcp`;

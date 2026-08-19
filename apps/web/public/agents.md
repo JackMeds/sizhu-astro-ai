@@ -96,15 +96,15 @@ Agent 应优先使用归一后的 `sizhu-liuren-chart`，而不是直接把第�
 
 ## 搜索与文档入口
 
-- 网站：<https://jackmeds.github.io/sizhu-astro-ai/>
-- 指南：<https://jackmeds.github.io/sizhu-astro-ai/guide/>
-- Sitemap：<https://jackmeds.github.io/sizhu-astro-ai/sitemap.xml>
-- Robots：<https://jackmeds.github.io/sizhu-astro-ai/robots.txt>
-- 八字指南：<https://jackmeds.github.io/sizhu-astro-ai/guide/bazi.html>
-- 紫微指南：<https://jackmeds.github.io/sizhu-astro-ai/guide/ziwei.html>
-- 真太阳时指南：<https://jackmeds.github.io/sizhu-astro-ai/guide/solar-time.html>
-- 大运流年指南：<https://jackmeds.github.io/sizhu-astro-ai/guide/dayun.html>
-- 大六壬指南：<https://jackmeds.github.io/sizhu-astro-ai/guide/liuren.html>
+- 网站：<https://astrocopy.jackmeds.top/>
+- 指南：<https://astrocopy.jackmeds.top/guide/>
+- Sitemap：<https://astrocopy.jackmeds.top/sitemap.xml>
+- Robots：<https://astrocopy.jackmeds.top/robots.txt>
+- 八字指南：<https://astrocopy.jackmeds.top/guide/bazi.html>
+- 紫微指南：<https://astrocopy.jackmeds.top/guide/ziwei.html>
+- 真太阳时指南：<https://astrocopy.jackmeds.top/guide/solar-time.html>
+- 大运流年指南：<https://astrocopy.jackmeds.top/guide/dayun.html>
+- 大六壬指南：<https://astrocopy.jackmeds.top/guide/liuren.html>
 
 ## 推荐的 Agent 工作流
 
