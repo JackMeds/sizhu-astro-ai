@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://astrocopy.jackmeds.top/</loc><lastmod>2026-08-19</lastmod><changefreq>weekly</changefreq><priority>1.0</priority></url>
-  <url><loc>https://astrocopy.jackmeds.top/guide/</loc><lastmod>2026-08-19</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://astrocopy.jackmeds.top/</loc><lastmod>2026-08-20</lastmod><changefreq>weekly</changefreq><priority>1.0</priority></url>
+  <url><loc>https://astrocopy.jackmeds.top/bazi/</loc><lastmod>2026-08-20</lastmod><changefreq>weekly</changefreq><priority>0.95</priority></url>
+  <url><loc>https://astrocopy.jackmeds.top/ziwei/</loc><lastmod>2026-08-20</lastmod><changefreq>weekly</changefreq><priority>0.95</priority></url>
+  <url><loc>https://astrocopy.jackmeds.top/liuren/</loc><lastmod>2026-08-20</lastmod><changefreq>weekly</changefreq><priority>0.95</priority></url>
+  <url><loc>https://astrocopy.jackmeds.top/true-solar-time/</loc><lastmod>2026-08-20</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://astrocopy.jackmeds.top/about/</loc><lastmod>2026-08-20</lastmod><changefreq>monthly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://astrocopy.jackmeds.top/guide/</loc><lastmod>2026-08-20</lastmod><changefreq>monthly</changefreq><priority>0.85</priority></url>
   <url><loc>https://astrocopy.jackmeds.top/guide/bazi.html</loc><lastmod>2026-08-19</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://astrocopy.jackmeds.top/guide/ziwei.html</loc><lastmod>2026-08-19</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://astrocopy.jackmeds.top/guide/solar-time.html</loc><lastmod>2026-08-19</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://astrocopy.jackmeds.top/guide/dayun.html</loc><lastmod>2026-08-19</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://astrocopy.jackmeds.top/guide/liuren.html</loc><lastmod>2026-08-19</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://astrocopy.jackmeds.top/guide/agent.html</loc><lastmod>2026-08-19</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://astrocopy.jackmeds.top/guide/agent.html</loc><lastmod>2026-08-19</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
 </urlset>
