@@ -21,8 +21,8 @@
 | P0-006 | P0 | DONE | state 返回 pinned 和 recent activities | Bridge | Agent 读到人类最新选择 |
 | P0-007 | P0 | DONE | 统一工具 error result | hook、Bridge、tests | 所有失败 `isError: true` |
 | P0-008 | P0 | DONE | 主 Demo WebMCP E2E | E2E | create→focus→compare→human→read→undo |
-| P0-009 | P0 | TODO | 英文 UI 残留扫描 | i18n、components | 关键路径无硬编码中文控件 |
-| P0-010 | P0 | TODO | 国际时间 E2E | core tests、E2E | IANA/DST/half/quarter 全通过 |
+| P0-009 | P0 | DOING | 英文 UI 残留扫描 | i18n、components | 关键路径无硬编码中文控件 |
+| P0-010 | P0 | DOING | 国际时间 E2E | core tests、E2E | IANA/DST/half/quarter 全通过 |
 | P0-011 | P0 | TODO | 真实 ChatGPT 浏览器测试 | STATUS、QA | 有完整验证记录 |
 | P0-012 | P0 | TODO | 独立 preview 部署 | deployment | HTTPS、English、Privacy 可访问 |
 | P0-013 | P0 | TODO | 录制 90 秒 Demo | Demo doc | 页面变化清晰、无真实数据 |

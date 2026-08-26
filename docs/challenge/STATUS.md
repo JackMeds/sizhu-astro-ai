@@ -117,3 +117,29 @@ Completed and verified on 2026-08-26. P0-004 through P0-008 are `DONE`.
 ### Next gate
 
 Complete P0-009 and P0-010 next: remove hard-coded Chinese from the English demo route and add browser-level international-time coverage. Then run P0-011 in the real ChatGPT challenge browser before deployment work. Do not merge `main` as part of this phase.
+
+## Phase 3 — P0-009 and P0-010 local result
+
+Completed locally on 2026-08-26; remote CI is required before these backlog items become `DONE`.
+
+### Implemented
+
+- The English result-ready card, result tabs, overview guidance, custom Zi Wei heading/metadata/legend, transit heading/toolbars, dynamic-scope labels, and comparison controls now use the shared dictionaries.
+- Domain values such as Heavenly Stems, Earthly Branches, star names and upstream relation labels remain intact; English UI labels surround them instead of rewriting computed data.
+- Browser assertions reject regressions to the known hard-coded Chinese result, tab, Zi Wei, and transit headings.
+- Birth-chart tool results now expose the normalized `timezoneOffsetMinutes` and `standardLocalTime` needed to audit international input handling.
+- The production E2E creates valid charts in `America/New_York` (-240 minutes during DST), `Asia/Kolkata` (+330), and `Asia/Kathmandu` (+345).
+- The same E2E rejects the nonexistent `2026-03-08T02:30:00` New York wall time and proves the rejected call does not replace the current chart.
+
+### Local validation
+
+- Web dictionary parity and workspace/WebMCP tests: passed (14 web tests)
+- Web typecheck: passed
+- `npm run build:web`: passed
+- `npm run test:webmcp`: passed, including English UI assertions and the international-time matrix
+- Visual evidence: `artifacts/e2e/webmcp-ziwei-focus.png` and `webmcp-human-pin.png` now show English headings and controls
+- Current web bundle: 1,751.30 kB JavaScript / 561.72 kB gzip, still with Vite's large-chunk warning
+
+### Next gate
+
+Run the complete local validation chain, push this slice, require all PR checks to pass, and then mark P0-009 and P0-010 `DONE`. P0-011 remains a manual real-ChatGPT-browser gate.

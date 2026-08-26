@@ -70,6 +70,10 @@ Invalid tool inputs return `isError: true` and do not mutate the workspace. Undo
 field-aware: reverting an older Agent comparison restores its comparison set without
 overwriting a newer human selection or pin.
 
+The production browser test also creates charts with New York daylight saving time,
+India's 30-minute offset, and Kathmandu's 45-minute offset, and rejects a nonexistent
+New York DST-gap wall time without replacing the current chart.
+
 The existing local stdio MCP server remains available for clients such as Codex and other MCP-compatible desktop tools.
 
 ## Core capabilities
