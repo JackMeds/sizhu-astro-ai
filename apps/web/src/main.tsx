@@ -2,6 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { App } from "./App";
 import { FeedbackToast } from "./components/FeedbackToast";
+import { WorkspaceProvider } from "./lib/workspace";
 import "./styles/app.css";
 import "./styles/refresh.css";
 import "./styles/seo.css";
@@ -14,10 +15,13 @@ import "./styles/liuren-complete.css";
 import "./styles/product-v3.css";
 import "./styles/product-v3-fixes.css";
 import "./styles/agent-access.css";
+import "./styles/workspace.css";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <App />
-    <FeedbackToast />
+    <WorkspaceProvider>
+      <App />
+      <FeedbackToast />
+    </WorkspaceProvider>
   </React.StrictMode>
 );

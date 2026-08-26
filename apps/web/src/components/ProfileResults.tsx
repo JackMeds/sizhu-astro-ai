@@ -2,6 +2,7 @@ import * as Tabs from "@radix-ui/react-tabs";
 import { motion } from "motion/react";
 import { ArrowDown, CheckCircle2, Orbit, ShieldCheck, Sparkles } from "lucide-react";
 import type { AstroProfile } from "@sizhu/core";
+import { useWorkspace, type WorkspaceView } from "@/lib/workspace";
 import { BaziFactsPanel } from "./BaziFactsPanel";
 import { BaziPlate } from "./BaziPlate";
 import { EngineAudit } from "./EngineAudit";
@@ -14,8 +15,20 @@ interface ProfileResultsProps {
 }
 
 export function ProfileResults({ profile }: ProfileResultsProps) {
+  const { state, dispatch } = useWorkspace();
   const signature = profile.bazi.pillars.map((pillar) => pillar.ganZhi).join(" · ");
   const evidence = profile.ai.evidence.slice(0, 4);
+
+  function selectView(value: string) {
+    const view = value as WorkspaceView;
+    dispatch({
+      type: "set-view",
+      view,
+      actor: "user",
+      label: "You switched the chart view",
+      detail: view
+    });
+  }
 
   return (
     <motion.section
@@ -42,7 +55,7 @@ export function ProfileResults({ profile }: ProfileResultsProps) {
         </a>
       </div>
 
-      <Tabs.Root className="progressive-results" defaultValue="overview">
+      <Tabs.Root className="progressive-results" value={state.activeView} onValueChange={selectView}>
         <Tabs.List className="progressive-tab-list" aria-label="命盘结果分类">
           <Tabs.Trigger value="overview">概览</Tabs.Trigger>
           <Tabs.Trigger value="bazi">八字</Tabs.Trigger>
