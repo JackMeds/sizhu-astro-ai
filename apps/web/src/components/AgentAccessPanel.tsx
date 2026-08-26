@@ -1,5 +1,13 @@
 import { useMemo, useState } from "react";
-import { CheckCircle2, Clipboard, Code2, ExternalLink, MonitorSmartphone, SquareTerminal, Wrench } from "lucide-react";
+import {
+  CheckCircle2,
+  Clipboard,
+  Code2,
+  ExternalLink,
+  MonitorSmartphone,
+  SquareTerminal,
+  Wrench
+} from "lucide-react";
 import { copyText } from "@/lib/utils";
 import { showFeedback } from "@/lib/feedback";
 
@@ -26,12 +34,12 @@ const genericJson = `{
 }`;
 
 const webMcpTools = [
-  "sizhu.about",
-  "sizhu.create_profile",
-  "sizhu.create_ai_prompt",
-  "sizhu.get_transit_snapshot",
-  "sizhu.create_liuren_chart",
-  "sizhu.get_current_chart"
+  "astrocopy.about",
+  "astrocopy.create_birth_chart",
+  "astrocopy.get_workspace_state",
+  "astrocopy.inspect_chart",
+  "astrocopy.inspect_transit",
+  "astrocopy.compare_transits"
 ];
 
 export function AgentAccessPanel() {
@@ -61,8 +69,8 @@ export function AgentAccessPanel() {
       <div className="agent-access-heading">
         <div>
           <p className="eyeline"><Wrench size={14} /> Agent / MCP Access</p>
-          <h2 id="agent-access-title">让 AI 直接调用排盘工具</h2>
-          <p>除了网页里“复制给 AI”，也可以让支持工具调用的 Agent 直接使用八字、紫微、大运流年和完整大六壬计算。WebMCP 走当前网页；本地 MCP 走标准 stdio server。</p>
+          <h2 id="agent-access-title">让 AI 和你操作同一个命盘工作区</h2>
+          <p>WebMCP 工具会复用当前网页的计算与状态：Agent 创建命盘、切换视图或比较年份时，变化会直接显示在页面上，并进入可撤销的工作区记录。本地 MCP 仍保留为标准 stdio 计算接口。</p>
         </div>
         <a className="agent-guide-link" href={`${import.meta.env.BASE_URL}guide/agent.html`}>完整接入指南 <ExternalLink size={15} /></a>
       </div>
@@ -77,13 +85,28 @@ export function AgentAccessPanel() {
         <div className="agent-access-content">
           <div className={`webmcp-status ${webMcpAvailable ? "ok" : "warn"}`}>
             <CheckCircle2 size={18} />
-            <div><strong>{webMcpAvailable ? "当前浏览器检测到 WebMCP" : "当前浏览器未检测到原生 WebMCP"}</strong><span>{webMcpAvailable ? "打开本站后，页面会自动注册 sizhu.* 工具；不需要额外安装本站。" : "网站仍可正常使用；WebMCP 属于实验性网页能力，可改用下面的本地 MCP。"}</span></div>
+            <div>
+              <strong>{webMcpAvailable ? "当前浏览器检测到 WebMCP" : "当前浏览器未检测到原生 WebMCP"}</strong>
+              <span>{webMcpAvailable
+                ? "页面会自动注册 astrocopy.* 工具；建立命盘后，运限和视图工具会动态出现。"
+                : "网站仍可正常手动使用；WebMCP 属于实验性网页能力，也可以改用下面的本地 MCP。"}</span>
+            </div>
           </div>
           <div className="agent-quick-grid">
-            <article><small>1 · 打开网页</small><strong>直接使用当前站点</strong><p>支持 WebMCP 的浏览器或 Agent 打开网站后，会发现页面注册的工具。</p><button onClick={() => copy(siteUrl, "网站地址")} type="button"><Clipboard size={14} />复制网站地址</button></article>
-            <article><small>2 · 可调用工具</small><strong>{webMcpTools.length} 个主要入口</strong><p className="tool-cloud">{webMcpTools.map((tool) => <code key={tool}>{tool}</code>)}</p><button onClick={() => copy(webMcpTools.join("\n"), "WebMCP 工具列表")} type="button"><Clipboard size={14} />复制工具列表</button></article>
+            <article>
+              <small>1 · 打开网页</small>
+              <strong>直接使用当前站点</strong>
+              <p>支持 WebMCP 的浏览器或 Agent 打开网站后，会发现当前页面注册的协作工具。</p>
+              <button onClick={() => copy(siteUrl, "网站地址")} type="button"><Clipboard size={14} />复制网站地址</button>
+            </article>
+            <article>
+              <small>2 · 共享工作区工具</small>
+              <strong>{webMcpTools.length} 个主要入口</strong>
+              <p className="tool-cloud">{webMcpTools.map((tool) => <code key={tool}>{tool}</code>)}</p>
+              <button onClick={() => copy(webMcpTools.join("\n"), "WebMCP 工具列表")} type="button"><Clipboard size={14} />复制工具列表</button>
+            </article>
           </div>
-          <p className="agent-note">WebMCP 是网页内工具注册，不等于远程 MCP URL；本站目前没有公开的 Remote MCP HTTP endpoint。</p>
+          <p className="agent-note">创建命盘前只暴露基础入口；建立命盘后才注册查看、运限和比较工具。Agent 的页面改动会显示在右侧 Workspace activity 中，并可撤销。</p>
         </div>
       ) : null}
 
