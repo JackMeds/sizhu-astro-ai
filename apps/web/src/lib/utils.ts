@@ -1,3 +1,4 @@
+import { zonedLocalDateTimeToOffset } from "@sizhu/core";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
@@ -7,8 +8,7 @@ export function cn(...inputs: ClassValue[]) {
 
 export function localDateTimeToOffset(value: string, timezone = "Asia/Shanghai") {
   if (!value) return new Date().toISOString();
-  if (timezone === "Asia/Shanghai") return `${value}:00+08:00`;
-  return new Date(value).toISOString();
+  return zonedLocalDateTimeToOffset(value, timezone);
 }
 
 export function downloadText(filename: string, content: string, mime = "text/plain;charset=utf-8") {
