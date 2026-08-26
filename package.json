@@ -14,7 +14,7 @@
     "build:web": "npm run build -w @sizhu/web",
     "build:mcp": "npm run build -w @sizhu/core && npm run build -w @sizhu/prompt && npm run build -w @sizhu/mcp",
     "start:mcp": "node apps/mcp/dist/index.js",
-    "test": "npm run test -w @sizhu/core && npm run build -w @sizhu/core && npm run test -w @sizhu/prompt",
+    "test": "npm run test -w @sizhu/core && npm run build -w @sizhu/core && npm run test -w @sizhu/prompt && npm run test -w @sizhu/web",
     "typecheck": "npm run build -w @sizhu/core && npm run build -w @sizhu/prompt && npm run build -w @sizhu/render && npm run typecheck -w @sizhu/web && npm run typecheck -w @sizhu/mcp"
   },
   "overrides": {
