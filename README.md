@@ -1,204 +1,239 @@
-# 四柱星盘 AI
+# AstroCopy
 
-**四柱星盘 AI** 是一个本地优先、可复现的 **八字排盘 / 紫微斗数 / 真太阳时 / 大六壬 / AI 结构化命盘** 工作台。项目把“排盘计算”和“AI 解读”分开：命盘与术数结构由固定代码生成，本站不直接给出命理解读；用户可把结果复制到自己喜欢的 AI（如 ChatGPT、Claude、DeepSeek、Kimi 等）继续分析。
+**A deterministic, bilingual Chinese-metaphysics workspace shared by people and AI agents.**
 
-- 在线使用：<https://astrocopy.jackmeds.top/>
-- 指南目录：<https://astrocopy.jackmeds.top/guide/>
-- 搜索索引：<https://astrocopy.jackmeds.top/sitemap.xml>
-- 仓库：<https://github.com/JackMeds/sizhu-astro-ai>
+AstroCopy computes BaZi (Four Pillars), Zi Wei Dou Shu, transit structures, apparent solar time, and complete Da Liu Ren charts with code. It then exposes the same live workspace to a person and to a WebMCP-capable agent.
 
-## 核心能力
+The core product idea is simple:
 
-- 八字四柱、十神、藏干、纳音、空亡与五行结构概览
-- 完整大运、流年、流月浏览
-- 程序化识别天干五合、六合、冲、害、破、刑、自刑、伏吟、三合/三会候选等关系事实
-- 五合只标记“合化候选”，不在事实层自动宣称合化成立
-- 紫微斗数命宫/身宫、命主身主、五行局、十二宫、星曜亮度/四化与大限结构化数据
-- 目标日期联动：同屏查看八字大运/流年关系事实与紫微大限、小限、流年、流月、流日、流时
-- **完整大六壬**：正时 / 报数 / 指定占时 → 月将、天地盘、天将、四课、九宗门三传、旬空、遁干、六亲、课体与来源受控神煞
-- 大六壬双 TypeScript 引擎重叠校验 + 固定 Python oracle 回归
-- 三种时间口径：标准时、地方平太阳时、视太阳时（真太阳时）
-- 显式记录经度修正、均时差、是否跨时辰 / 跨日期
-- 八字、紫微与六壬历法桥共享同一套显式时间模型
-- AI-ready JSON、Markdown / 纯文本提示词导出
-- 浏览器本地历史记录，无需登录
-- 本地 MCP Server 与实验性 WebMCP 页面工具
-- GitHub Actions Golden Fixture + 固定 `kinliuren` Python oracle 回归测试
-- 首页预留可替换的赞助 / 广告 slot；当前不加载第三方广告脚本
+> **Computation belongs to a deterministic engine. Interpretation belongs to the user and the AI they choose.**
 
-## 产品边界
+- Live app: <https://astrocopy.jackmeds.top/>
+- Source: <https://github.com/JackMeds/sizhu-astro-ai>
+- Agent guide: <https://astrocopy.jackmeds.top/agents.md>
+- Guides: <https://astrocopy.jackmeds.top/guide/>
 
-本站负责：
+## Why AstroCopy exists
+
+Large language models can discuss traditional metaphysics, but they are unreliable at repeatedly calculating calendars, pillars, luck cycles, time corrections, palace structures, and Da Liu Ren transmissions from conversational context alone.
+
+AstroCopy separates the problem into two layers:
 
 ```text
-输入资料 / 起课输入
-  ↓
-确定性时间与历法计算
-  ↓
-八字 / 紫微 / 六壬结构化结果
-  ↓
-关系事实与来源受控的传统规则证据
-  ↓
-复制 JSON / 提示词
-  ↓
-交给用户喜欢的 AI 分析
+Birth or casting input
+        ↓
+Explicit civil-time and solar-time semantics
+        ↓
+Deterministic BaZi / Zi Wei / Da Liu Ren computation
+        ↓
+Stable structural facts, warnings and cross-check evidence
+        ↓
+A shared browser workspace for a person and an AI agent
+        ↓
+Optional interpretation by the AI selected by the user
 ```
 
-本站**不在网页内提供命理解读或六壬解课**。这样可以把“排盘事实”与“模型解释”解耦，也不会把用户锁定在某一家 AI 服务。
+The website itself does not claim scientific predictive validity and does not replace medical, legal, financial, or other professional advice.
 
-## 传统规则证据层
+## Human–agent workspace
 
-规则层保存来源、章节、适用条件与不适用条件。只有条件满足的规则才进入 AI evidence。例如：
+AstroCopy is not only a JSON endpoint embedded in a page. WebMCP actions use the same reducer and visible state as human interactions.
 
-- `八字提要 · 丑月壬日丁未时` 可在满足对应月支 / 日干 / 时柱时命中；
-- `穷通宝鉴 · 正月壬水` 会在丑月命例上被条件门禁拦截，而不是仅因为文本中出现“壬水”就进入分析。
+An agent can:
 
-## 时间模型
+- create a birth chart and make it appear in the current page;
+- open the BaZi, Zi Wei, transit, comparison, or audit view;
+- select a target transit date;
+- compare two to five dates in the visible workspace;
+- read the current user-selected workspace state;
+- leave a visible activity record that the user can inspect or undo.
 
-`packages/core` 保存：
+The user can then change the selected view or date manually, and the agent reads that updated state on its next call.
 
-- 标准时
-- 地方平太阳时：按出生地经度与时区标准经线修正
-- 视太阳时（真太阳时）：地方平太阳时 + 均时差
-- 有效排盘口径
-- 修正分钟数
-- 是否跨时辰 / 是否跨日期
+### WebMCP tool surface
 
-八字和紫微统一使用这套有效时间；大六壬的历法输入桥也复用同一套时间口径。
+The challenge workspace uses a small task-oriented surface rather than exposing every internal function:
 
-## 结构事实与运限 API
+- `astrocopy.create_birth_chart`
+- `astrocopy.inspect_chart`
+- `astrocopy.inspect_transit`
+- `astrocopy.compare_transits`
+- `astrocopy.get_workspace_state`
+- Da Liu Ren tools are registered only when that workspace is relevant.
 
-主要入口：
+The existing local stdio MCP server remains available for clients such as Codex and other MCP-compatible desktop tools.
 
-```ts
-createAstroProfile(input)
-createTransitSnapshot(input, "2027-06-15")
-createTransitBaziFacts(pillars, transit)
-createZiweiHoroscope(input, "2027-06-15")
-```
+## Core capabilities
 
-`createTransitSnapshot` 会把目标日期的八字大运/流年关系事实和紫微动态范围放进同一个稳定 JSON，方便网页、MCP 与 AI 使用同一份数据。
+### BaZi · Four Pillars
 
-## 完整大六壬
+- year, month, day, and hour pillars;
+- Heavenly Stems, Earthly Branches, Ten Gods, hidden stems, Na Yin, and void branches;
+- 10-year luck cycles, annual transits, and monthly transits;
+- deterministic structural relations including combinations, clashes, harms, breaks, punishments, self-punishments, Fu Yin, and Three-Harmony / Three-Meeting candidates;
+- transformation is marked only as a candidate at the fact layer;
+- overlapping calendrical fields are cross-checked with `lunisolar`.
 
-大六壬被建模成独立 `DivinationSession`，而不是出生命盘的一部分。项目明确区分两层：
+### Zi Wei Dou Shu
 
-1. **起课入口**：怎么得到最终占时；
-2. **排课算法**：在最终占时上统一计算天地盘、四课和三传。
+- Life and Body Palaces, Soul and Body Stars, and Five-Phase Class;
+- normalized twelve-palace data;
+- major, minor, and supporting stars;
+- brightness, natal transformations, decadal ranges, and dynamic scopes;
+- an original AstroCopy renderer built from normalized data rather than the default `react-iztro` visual component.
 
-当前支持三种入口：
+### Transit workspace
+
+For one target date, AstroCopy combines:
+
+- the matching BaZi 10-year cycle and annual transit;
+- deterministic relations between the natal chart, cycle, and year;
+- Zi Wei decadal, nominal-age, annual, monthly, daily, and hourly scopes.
+
+The comparison workspace can keep several dates visible at the same time for human–agent review.
+
+### Complete Da Liu Ren
+
+Three casting entries are supported:
+
+- actual-time casting;
+- reported-number casting, cyclically mapped with 1=Zi through 12=Hai;
+- direct hour-branch selection.
+
+The normalized result includes:
+
+- Month General;
+- Earth and Heaven plates;
+- Twelve Generals;
+- Four Lessons;
+- Three Transmissions selected through the applicable Nine-School rule;
+- void branches, hidden stems, Six Relations, transmission pattern, chart forms, and source-gated Shen-Sha;
+- overlap checks between two TypeScript engines;
+- pinned Python `kinliuren` fixtures as an additional CI oracle.
+
+## International time semantics
+
+The challenge branch supports IANA time zones and date-specific UTC offsets, including daylight-saving transitions and non-hour offsets.
+
+Examples covered by tests include:
+
+- `Asia/Shanghai`;
+- `America/Los_Angeles` in standard and daylight time;
+- `America/New_York`;
+- `Europe/London`;
+- `Asia/Kolkata`;
+- ambiguous or nonexistent local wall times around DST transitions.
+
+Three calculation bases are retained explicitly:
+
+1. standard civil time;
+2. local mean solar time using longitude correction;
+3. apparent solar time using longitude correction plus the equation of time.
+
+The output records the effective basis, correction in minutes, and whether the correction crossed an hour branch or calendar date.
+
+## Bilingual product
+
+The application supports Simplified Chinese and English.
+
+English terminology preserves the source tradition instead of pretending it is Western astrology. For example:
+
+- `八字` → **BaZi · Four Pillars**
+- `天干` → **Heavenly Stems**
+- `地支` → **Earthly Branches**
+- `十神` → **Ten Gods**
+- `大运` → **10-year Luck Cycle**
+- `流年` → **Annual Transit**
+- `真太阳时` → **Apparent Solar Time**
+- `大六壬` → **Da Liu Ren**
+
+Chinese characters remain visible where they carry the actual chart data, while navigation, explanations, accessibility labels, errors, activity records, and AI export instructions follow the selected language.
+
+## Privacy model
+
+Birth-chart and casting computation runs in the browser. Drafts and history are stored in the current browser unless the user exports or shares them.
+
+AstroCopy does not automatically send birth data to ChatGPT, Claude, Gemini, DeepSeek, Kimi, or another model. When a user explicitly invokes a WebMCP tool or pastes an export into an AI service, the returned chart data is processed under that service's terms.
+
+## Validation architecture
+
+- `lunar-javascript@1.7.7`: BaZi, luck cycles, solar terms, and calendrical bridge;
+- `iztro`: Zi Wei calculation and dynamic scopes;
+- `lunisolar`: overlapping BaZi calendrical cross-check;
+- `mingyu-core@0.1.23`: complete Da Liu Ren engine and second TypeScript implementation;
+- `kentang2017/kinliuren` pinned at commit `3ba45a9540f08269b56d81508a061c7d46938785`: executable Python CI oracle.
+
+Differences are not silently discarded. They are returned in warnings or `crossCheck.differences` and shown in the calculation-audit UI.
+
+## Repository structure
 
 ```text
-正时起课    使用所选时间口径的实际时辰
-报数起课    1=子 … 12=亥，超过 12 循环取支（例如 26 → 丑）
-指定占时    直接选择子至亥作为最终占时支
+apps/web                 React + Vite bilingual web workspace
+apps/mcp                 Local stdio MCP server
+packages/core            Time, BaZi, Zi Wei, transit, relation and Da Liu Ren core
+packages/prompt          Structured AI export logic
+packages/render          SVG and rendering helpers
+tools/liuren-reference   Pinned Python oracle adapter
 ```
 
-九宗门属于**取三传算法**，不是九套彼此独立的起课入口。完整输出由 `createCompleteLiurenChart(...)` 统一返回：
+## Local development
 
-- 月将、天地盘、十二天将、四课
-- 三传与取传法 / 传局
-- 旬空
-- 三传遁干、六亲
-- 课体 / 格局标签
-- 来源受控的神煞 evidence
-- 双引擎重叠字段校验状态
-- 引擎版本 manifest 与 warning
+Requirements:
 
-核心接口：
-
-```ts
-createCompleteLiurenChart({
-  dateTime: "2026-08-15T09:30:00+08:00",
-  timezone: "Asia/Shanghai",
-  castingMethod: "time" // 或 number / branch
-})
-```
-
-### 六壬验证架构
-
-- `sizhu-liuren-ts@0.2.0`：项目自己的可审计结构层，负责历法桥、月将、天地盘、天将与四课，并继续扩展；
-- `mingyu-core@0.1.23`：MIT 发布版，作为完整 TypeScript 六壬引擎与第二交叉验证器；
-- `kentang2017/kinliuren` 固定 commit `3ba45a9540f08269b56d81508a061c7d46938785`：Python CI oracle。
-
-重叠字段（干支、月将、天地盘、四课、天将）会程序化比对；出现差异时不会静默忽略，而会进入 `crossCheck.differences` 与 warnings。
-
-## 搜索与学习指南
-
-站点提供独立可索引页面：
-
-- [指南目录](https://astrocopy.jackmeds.top/guide/)
-- [八字排盘怎么看](https://astrocopy.jackmeds.top/guide/bazi.html)
-- [紫微斗数排盘怎么看](https://astrocopy.jackmeds.top/guide/ziwei.html)
-- [真太阳时怎么算](https://astrocopy.jackmeds.top/guide/solar-time.html)
-- [大运流年怎么看](https://astrocopy.jackmeds.top/guide/dayun.html)
-- [大六壬起课与九宗门](https://astrocopy.jackmeds.top/guide/liuren.html)
-
-首页和指南页都设置 canonical、描述性标题与摘要，并通过 `sitemap.xml` 和 `robots.txt` 暴露给搜索引擎。
-
-## 隐私与赞助位
-
-网页端排盘、起课、提示词生成和历史记录都在当前浏览器本地完成。历史记录保存在 `localStorage`，不会自动同步到其他设备。只有用户主动把导出内容发送到第三方 AI 后，数据才进入对应服务的处理范围。
-
-首页提供一个 `data-sponsor-slot="primary"` 的赞助 / 广告预留组件。当前只展示项目主题图案和 GitHub Star 入口，不加载第三方追踪或广告脚本。未来接入真实赞助或广告网络时，可替换该 slot，而不改动命盘输入与计算流程。
-
-## 项目结构
-
-```text
-apps/web      React + Vite 静态网站
-apps/mcp      本地 MCP Server
-packages/core 八字、紫微、六壬、时间、关系事实与运限结构化核心
-packages/prompt AI 提示词与资料导出逻辑
-packages/render 图像 / SVG 渲染辅助
-tools/liuren-reference 固定 Python 六壬 oracle
-```
-
-## 本地运行
+- Node.js 24
+- npm
 
 ```bash
 npm install
 npm run dev:web
 ```
 
-## 构建与测试
+Open the local URL printed by Vite.
+
+## Tests and builds
 
 ```bash
 npm run test
 npm run typecheck
+npm run build:mcp
 npm run build:web
 ```
 
-核心测试包含固定命例、子时 sect 差异、太阳时跨时辰、立春边界、八字关系事实、紫微标准化字段、目标日期运限 snapshot，以及六壬天地盘 / 天将 / 四课 oracle fixture、完整三传、旬空、神煞、报数与指定占时回归测试。当前 `lunar-javascript` 固定为 `1.7.7`，`mingyu-core` 固定为 `0.1.23`。
+CI validates core fixtures, relation facts, time-zone behavior, Zi Wei normalization, transit snapshots, prompt output, MCP compilation, web compilation, and the pinned Da Liu Ren oracle.
 
-## AI / Agent 接入
+## Current product boundary
 
-静态网站发布 `/agents.md`，用于说明 AI/Agent 如何理解项目能力。
+AstroCopy computes and structures chart evidence. It deliberately does **not**:
 
-当前接入形态：
+- assert that traditional metaphysics is modern science;
+- silently choose a school-specific interpretation as objective fact;
+- alter computed pillars or palace data to fit a narrative;
+- provide medical, legal, financial, or other professional decisions;
+- require an account or lock the user to one AI provider.
 
-- MCP Server：运行 `apps/mcp`，供支持 MCP 的本地客户端连接
-- WebMCP：在支持 `document.modelContext` / `navigator.modelContext` 的环境注册 `sizhu.*` 工具
-- HTTP / Remote MCP：规划中
+---
 
-主要 Agent 工具：
+# 中文说明
 
-- `sizhu.create_profile`
-- `sizhu.create_ai_prompt`
-- `sizhu.get_transit_snapshot`
-- `sizhu.create_liuren_chart`（完整大六壬）
-- `sizhu.create_liuren_base_chart`（兼容旧调用）
-- `sizhu.get_current_chart`
+**AstroCopy 四柱星盘** 是一个本地优先、确定性优先、中英双语的传统术数工作台。程序负责计算八字、紫微斗数、运限、真太阳时和完整大六壬；用户与支持 WebMCP 的 Agent 可以共同操作同一张网页命盘。
 
-## 主要开源依赖
+项目的核心不是“让 AI 自己手算命盘”，而是：
 
-- [lunar-javascript](https://github.com/6tail/lunar-javascript)
-- [iztro](https://github.com/SylarLong/iztro)
-- [lunisolar](https://github.com/waterbeside/lunisolar)
-- [mingyu-core](https://github.com/Brhiza/mingyu)（MIT；完整六壬交叉验证器）
-- [kinliuren](https://github.com/kentang2017/kinliuren)（固定 commit 作为六壬参考 oracle）
-- [React](https://react.dev/)
-- [Vite](https://vite.dev/)
+> **把历法和排盘交给可复现代码，把解释交给用户选择的 AI。**
 
-## 说明
+当前主要能力包括：
+
+- 八字四柱、十神、藏干、纳音、空亡和五行结构；
+- 大运、流年、流月；
+- 冲、合、刑、害、破、伏吟、三合/三会候选等确定性关系事实；
+- 紫微十二宫、星曜、亮度、四化、大限和动态运限；
+- 原创紫微命盘前端，不再直接使用开源组件默认视觉；
+- 全球 IANA 时区、夏令时和真太阳时；
+- 正时、报数、指定占时三种大六壬起课入口；
+- 天地盘、天将、四课、三传、旬空、遁干、六亲、课体和来源受控神煞；
+- WebMCP 共享状态、页面联动、比较视图、操作记录和撤销；
+- 本地 stdio MCP、Markdown / 纯文本 / JSON 导出。
+
+网页默认不上传出生资料。只有用户主动调用 Agent 工具、复制导出内容或发送给第三方 AI 后，相关数据才进入对应服务的处理范围。
 
 本项目用于传统文化研究、工具开发与自我观察。术数解释不等同于现代科学结论，也不替代医学、法律、投资或其他专业判断。
