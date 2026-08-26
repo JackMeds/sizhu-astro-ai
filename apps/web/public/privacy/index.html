@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AstroCopy Privacy</title>
+    <meta name="description" content="How AstroCopy handles birth-chart, casting, browser-history and WebMCP data." />
+    <meta name="robots" content="index,follow" />
+    <link rel="canonical" href="https://astrocopy.jackmeds.top/privacy/" />
+    <style>
+      :root { color-scheme: light dark; --paper:#f3f0e7; --ink:#161b1a; --surface:#fbfaf6; --jade:#326f66; --cinnabar:#b64c3e; --line:rgba(22,27,26,.16); }
+      * { box-sizing:border-box; }
+      body { margin:0; background:var(--paper); color:var(--ink); font:16px/1.72 ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif; }
+      main { width:min(860px,calc(100% - 32px)); margin:40px auto; padding:clamp(24px,5vw,58px); border:1px solid var(--line); border-radius:24px; background:var(--surface); box-shadow:0 24px 70px rgba(22,27,26,.08); }
+      h1,h2 { font-family:Iowan Old Style,"Noto Serif SC",Georgia,serif; line-height:1.15; }
+      h1 { font-size:clamp(38px,7vw,70px); margin:0 0 10px; }
+      h2 { margin-top:38px; }
+      .kicker { color:var(--jade); text-transform:uppercase; letter-spacing:.12em; font-size:12px; font-weight:800; }
+      .notice { padding:16px 18px; border-left:3px solid var(--cinnabar); background:color-mix(in srgb,var(--cinnabar) 7%,transparent); }
+      code { padding:.15em .35em; border-radius:5px; background:rgba(50,111,102,.09); }
+      a { color:var(--jade); }
+      hr { margin:52px 0; border:0; border-top:1px solid var(--line); }
+      @media (prefers-color-scheme: dark) { :root { --paper:#101513; --ink:#ece8dc; --surface:#171e1b; --line:rgba(236,232,220,.15); } }
+    </style>
+  </head>
+  <body>
+    <main>
+      <p class="kicker">AstroCopy · Privacy</p>
+      <h1>Local computation, explicit sharing.</h1>
+      <p class="notice">AstroCopy computes birth charts and Da Liu Ren structures in the browser. It does not automatically send birth or casting data to an external AI service.</p>
+
+      <h2>Data kept in the browser</h2>
+      <p>Birth-input drafts, generated chart history, selected views, comparison dates, and interface preferences may be stored in browser storage on the current device. AstroCopy does not require an account and does not provide automatic cloud synchronization.</p>
+
+      <h2>WebMCP and AI tools</h2>
+      <p>When a person explicitly invokes a WebMCP tool, the tool may return chart inputs, computed structures, selected dates, warnings, or current workspace state to the active Agent. That returned data is then processed under the Agent provider's terms. “Local-first” does not mean that data explicitly shared with an Agent remains only inside the browser.</p>
+
+      <h2>Copying and opening another AI</h2>
+      <p>Copy buttons place the selected structured package on the clipboard. Quick links to ChatGPT, Claude, Gemini, DeepSeek, Kimi, or another service only open that service; AstroCopy does not automatically paste or transmit the clipboard contents.</p>
+
+      <h2>Analytics</h2>
+      <p>The public site may use privacy-oriented aggregate page and performance analytics. Chart inputs, birth data, generated chart JSON, casting questions, and clipboard contents are not intentionally included in those analytics events.</p>
+
+      <h2>Deletion</h2>
+      <p>Use the history controls in the application to remove saved charts, or clear site data for <code>astrocopy.jackmeds.top</code> in the browser. Because AstroCopy does not maintain a user account database for these charts, there is no separate server-side chart account to delete.</p>
+
+      <h2>Traditional-metaphysics boundary</h2>
+      <p>AstroCopy is a cultural research and calculation tool. Traditional interpretations are not modern scientific conclusions and do not replace medical, legal, financial, safety, or other professional advice.</p>
+
+      <p><a href="/?lang=en">Back to the English workspace</a> · <a href="/?lang=zh">中文工作台</a> · <a href="https://github.com/JackMeds/sizhu-astro-ai">Source code</a></p>
+
+      <hr />
+
+      <p class="kicker">AstroCopy · 隐私说明</p>
+      <h1>本地计算，主动分享。</h1>
+      <p class="notice">AstroCopy 在浏览器内计算出生命盘和大六壬结构，不会自动把出生资料或占问内容发送给第三方 AI。</p>
+
+      <h2>保存在浏览器里的数据</h2>
+      <p>出生资料草稿、命盘历史、当前视图、比较日期和界面偏好可能保存在当前设备的浏览器存储中。项目不要求登录，也不会自动进行云端同步。</p>
+
+      <h2>WebMCP 与 Agent</h2>
+      <p>当用户主动调用 WebMCP 工具时，工具可能把输入资料、程序计算结构、目标日期、警告或当前工作区状态返回给正在使用的 Agent。之后这些数据将按照对应 Agent 服务的条款处理。“本地优先”并不表示主动交给 Agent 的数据仍然只留在浏览器中。</p>
+
+      <h2>复制与打开第三方 AI</h2>
+      <p>复制按钮只会把所选结构化资料写入剪贴板。ChatGPT、Claude、Gemini、DeepSeek、Kimi 等快捷链接只负责打开对应网站；AstroCopy 不会自动粘贴或发送剪贴板内容。</p>
+
+      <h2>统计与删除</h2>
+      <p>公开网站可能使用隐私友好的汇总访问与性能统计，但不会有意把出生资料、命盘 JSON、占问内容或剪贴板内容放入统计事件。用户可以在网页历史控件中删除命盘，也可以清除浏览器中该站点的数据。</p>
+
+      <p><a href="/?lang=zh">返回中文工作台</a> · <a href="/?lang=en">English workspace</a> · <a href="https://github.com/JackMeds/sizhu-astro-ai">查看源码</a></p>
+    </main>
+  </body>
+</html>
