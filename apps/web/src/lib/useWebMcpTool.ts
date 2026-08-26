@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { executeWebMcpTool } from "@/lib/webMcpResult";
 
 export interface WebMcpToolDefinition {
   name: string;
@@ -84,7 +85,7 @@ export function useWebMcpTool({
           title,
           description,
           inputSchema,
-          execute: (input) => executeRef.current(input)
+          execute: (input) => executeWebMcpTool(executeRef.current, input)
         }, { signal: controller.signal });
         if (!disposed) setState({ supported: true, registered: true, error: null });
       } catch (caught) {

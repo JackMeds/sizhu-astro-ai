@@ -7,6 +7,7 @@ import {
 import { useI18n } from "@/lib/i18n";
 import { getBrowserTimeZone } from "@/lib/timezone";
 import { useWebMcpTool } from "@/lib/useWebMcpTool";
+import { webMcpToolError, webMcpToolResult } from "@/lib/webMcpResult";
 import { useWorkspace, type WorkspaceView } from "@/lib/workspace";
 import {
   isZiweiFocusId,
@@ -70,22 +71,6 @@ function normalizeBirthInput(input: Record<string, unknown> = {}, fallbackName =
   };
 }
 
-function toolResult(value: unknown) {
-  return {
-    content: [{ type: "text", text: JSON.stringify(value, null, 2) }]
-  };
-}
-
-function toolError(error: unknown) {
-  return {
-    isError: true,
-    content: [{
-      type: "text",
-      text: error instanceof Error ? error.message : String(error)
-    }]
-  };
-}
-
 function scrollToWorkspace(view: WorkspaceView) {
   const id = view === "transit" ? "transit-inspector" : view === "overview" ? "profile-result" : "chart";
   window.setTimeout(() => document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" }), 80);
@@ -113,7 +98,7 @@ export function WebMcpBridge({ onProfileCreated }: WebMcpBridgeProps) {
     title: "About AstroCopy",
     description: "Describe AstroCopy's deterministic Chinese metaphysics workspace, privacy model, and active collaboration tools.",
     inputSchema: { type: "object", additionalProperties: false, properties: {} },
-    execute: () => toolResult({
+    execute: () => webMcpToolResult({
       app: "AstroCopy",
       purpose: "Deterministic BaZi, Zi Wei Dou Shu, transit and Da Liu Ren computation shared by the visible page and an AI agent.",
       privacy: "Calculations and browser history remain local to the page. Data returned by a WebMCP tool is shared with the currently connected agent.",
@@ -133,7 +118,7 @@ export function WebMcpBridge({ onProfileCreated }: WebMcpBridgeProps) {
         const profile = createAstroProfile(normalizeBirthInput(input, isEnglish ? "Untitled chart" : "未命名"));
         onProfileCreated(profile);
         window.setTimeout(() => document.getElementById("profile-result")?.scrollIntoView({ behavior: "smooth", block: "start" }), 100);
-        return toolResult({
+        return webMcpToolResult({
           status: "success",
           visibleChange: "A birth-chart workspace was created and opened on the page.",
           chart: {
@@ -145,7 +130,7 @@ export function WebMcpBridge({ onProfileCreated }: WebMcpBridgeProps) {
           warnings: profile.warnings
         });
       } catch (error) {
-        return toolError(error);
+        return webMcpToolError(error);
       }
     }
   });
@@ -153,20 +138,29 @@ export function WebMcpBridge({ onProfileCreated }: WebMcpBridgeProps) {
   useWebMcpTool({
     name: "astrocopy.get_workspace_state",
     title: "Get AstroCopy Workspace State",
-    description: "Read the chart, view, selected transit and comparison dates currently visible in AstroCopy without changing the page.",
+    description: "Read the concise chart identity, visible view, selected and pinned transit dates, comparison set, focus and recent human-agent activity without changing the page.",
     inputSchema: { type: "object", additionalProperties: false, properties: {} },
-    execute: () => toolResult({
+    execute: () => webMcpToolResult({
+      workspace: state.profile ? "birth-chart" : "empty",
       hasChart: Boolean(state.profile),
       chart: state.profile ? {
         name: state.profile.input.name,
         timezone: state.profile.input.timezone,
         pillars: state.profile.bazi.pillars.map((pillar) => pillar.ganZhi),
+        warningCount: state.profile.warnings.length,
         warnings: state.profile.warnings
       } : null,
       activeView: state.activeView,
       selectedTransitDate: state.selectedTransitDate,
+      pinnedTransitDate: state.pinnedTransitDate,
       comparedTransitDates: state.comparedTransitDates,
       focusedIds: state.focusedIds,
+      recentActivities: state.activities.slice(0, 6).map((activity) => ({
+        type: activity.type,
+        actor: activity.actor,
+        detail: activity.detail ?? null,
+        undone: Boolean(activity.undone)
+      })),
       locale
     })
   });
@@ -195,23 +189,23 @@ export function WebMcpBridge({ onProfileCreated }: WebMcpBridgeProps) {
     execute: (input = {}) => {
       const view = input.view as WorkspaceView;
       if (!["overview", "bazi", "ziwei", "transit", "audit"].includes(view)) {
-        return toolError("Unknown chart view.");
+        return webMcpToolError("Unknown chart view.");
       }
       if (input.focusIds !== undefined && !Array.isArray(input.focusIds)) {
-        return toolError("focusIds must be an array of stable Zi Wei focus IDs.");
+        return webMcpToolError("focusIds must be an array of stable Zi Wei focus IDs.");
       }
       const rawFocusIds = (input.focusIds ?? []) as unknown[];
       if (rawFocusIds.some((id) => !isZiweiFocusId(id))) {
-        return toolError(`Unknown focus ID. Use one of: ${ZIWEI_FOCUS_IDS.join(", ")}.`);
+        return webMcpToolError(`Unknown focus ID. Use one of: ${ZIWEI_FOCUS_IDS.join(", ")}.`);
       }
       if (input.focusIds !== undefined && rawFocusIds.length < 1) {
-        return toolError("Provide at least one focusId when focusIds is present.");
+        return webMcpToolError("Provide at least one focusId when focusIds is present.");
       }
       if (rawFocusIds.length > 4 || new Set(rawFocusIds).size !== rawFocusIds.length) {
-        return toolError("Provide one to four unique focusIds.");
+        return webMcpToolError("Provide one to four unique focusIds.");
       }
       if (rawFocusIds.length > 0 && view !== "ziwei") {
-        return toolError("focusIds are available only when view is ziwei.");
+        return webMcpToolError("focusIds are available only when view is ziwei.");
       }
       const focusIds = normalizeZiweiFocusIds(rawFocusIds as ZiweiFocusId[]);
       dispatch({
@@ -237,7 +231,7 @@ export function WebMcpBridge({ onProfileCreated }: WebMcpBridgeProps) {
           ? `The page emphasized ${focusIds.join(", ")}.`
           : "The page cleared Zi Wei emphasis.");
       }
-      return toolResult({
+      return webMcpToolResult({
         status: "success",
         activeView: view,
         focusedIds: input.focusIds !== undefined ? focusIds : state.focusedIds,
@@ -260,9 +254,9 @@ export function WebMcpBridge({ onProfileCreated }: WebMcpBridgeProps) {
     },
     enabled: hasProfile,
     execute: (input = {}) => {
-      if (!state.profile) return toolError("Create a birth chart first.");
+      if (!state.profile) return webMcpToolError("Create a birth chart first.");
       const targetDate = typeof input.targetDate === "string" ? input.targetDate : "";
-      if (!/^\d{4}-\d{2}-\d{2}$/.test(targetDate)) return toolError("targetDate must be YYYY-MM-DD.");
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(targetDate)) return webMcpToolError("targetDate must be YYYY-MM-DD.");
       try {
         const summary = snapshotSummary(state.profile, targetDate);
         dispatch({
@@ -273,9 +267,9 @@ export function WebMcpBridge({ onProfileCreated }: WebMcpBridgeProps) {
           detail: targetDate
         });
         scrollToWorkspace("transit");
-        return toolResult({ status: "success", visibleChange: `The page selected ${targetDate} in the transit view.`, summary });
+        return webMcpToolResult({ status: "success", visibleChange: `The page selected ${targetDate} in the transit view.`, summary });
       } catch (error) {
-        return toolError(error);
+        return webMcpToolError(error);
       }
     }
   });
@@ -300,29 +294,36 @@ export function WebMcpBridge({ onProfileCreated }: WebMcpBridgeProps) {
     },
     enabled: hasProfile,
     execute: (input = {}) => {
-      if (!state.profile) return toolError("Create a birth chart first.");
-      const dates = Array.isArray(input.targetDates)
-        ? input.targetDates.filter((value): value is string => typeof value === "string" && /^\d{4}-\d{2}-\d{2}$/.test(value))
-        : [];
-      const uniqueDates = Array.from(new Set(dates)).slice(0, 5);
-      if (uniqueDates.length < 2) return toolError("Provide two to five unique YYYY-MM-DD dates.");
+      if (!state.profile) return webMcpToolError("Create a birth chart first.");
+      if (!Array.isArray(input.targetDates)) {
+        return webMcpToolError("targetDates must be an array of two to five unique YYYY-MM-DD dates.");
+      }
+      const dates = input.targetDates;
+      if (
+        dates.length < 2
+        || dates.length > 5
+        || dates.some((value) => typeof value !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(value))
+        || new Set(dates).size !== dates.length
+      ) {
+        return webMcpToolError("Provide two to five unique YYYY-MM-DD dates.");
+      }
       try {
-        const summaries = uniqueDates.map((date) => snapshotSummary(state.profile as AstroProfile, date));
+        const summaries = dates.map((date) => snapshotSummary(state.profile as AstroProfile, date));
         dispatch({
           type: "compare-transits",
-          dates: uniqueDates,
+          dates,
           actor: "agent",
           label: t("activity.compare.agent"),
-          detail: uniqueDates.join(" · ")
+          detail: dates.join(" · ")
         });
         scrollToWorkspace("transit");
-        return toolResult({
+        return webMcpToolResult({
           status: "success",
           visibleChange: "The page rendered a side-by-side transit comparison.",
           dates: summaries
         });
       } catch (error) {
-        return toolError(error);
+        return webMcpToolError(error);
       }
     }
   });

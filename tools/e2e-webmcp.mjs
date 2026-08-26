@@ -69,6 +69,12 @@ async function callTool(name, input = {}) {
   }, { name, input });
 }
 
+function parseToolJson(result) {
+  const textContent = result?.content?.find((item) => item?.type === "text")?.text;
+  if (typeof textContent !== "string") throw new Error("Tool result did not include text content");
+  return JSON.parse(textContent);
+}
+
 try {
   await page.goto(`${baseUrl}/?lang=en`, { waitUntil: "networkidle" });
   await waitForTools(foundationalTools, true);
@@ -104,6 +110,14 @@ try {
   const chartText = await page.locator("body").innerText();
   assert(chartText.includes("Alex Demo"), "Created profile is not visible in the page");
 
+  const transitResult = await callTool("astrocopy.inspect_transit", { targetDate: "2028-06-15" });
+  assert(transitResult?.isError !== true, "Valid inspect_transit call failed");
+  await page.locator("#transit-inspector input[type='date']").waitFor({ state: "visible", timeout: 15_000 });
+  assert(
+    await page.locator("#transit-inspector input[type='date']").inputValue() === "2028-06-15",
+    "inspect_transit did not select the requested visible date"
+  );
+
   const inspectResult = await callTool("astrocopy.inspect_chart", {
     view: "ziwei",
     focusIds: ["ziwei-palace-life", "ziwei-palace-body"]
@@ -132,11 +146,19 @@ try {
   });
   assert(legacyCompareResult?.isError === true, "Legacy dates input must not be accepted as the compare contract");
 
-  await callTool("astrocopy.compare_transits", {
+  const compareResult = await callTool("astrocopy.compare_transits", {
     targetDates: ["2027-06-15", "2029-06-15", "2032-06-15"]
   });
+  assert(compareResult?.isError !== true, "Canonical targetDates comparison failed");
+  await page.waitForFunction(() => document.querySelectorAll(".transit-comparison-card").length === 3);
 
-  const workspace = await callTool("astrocopy.get_workspace_state");
+  const humanDateCard = page.locator(".transit-comparison-card[data-date='2029-06-15']");
+  await humanDateCard.locator("[data-action='select-transit']").click();
+  await page.locator(".transit-comparison-card[data-date='2029-06-15'][data-selected='true']").waitFor();
+  await humanDateCard.locator("[data-action='pin-transit']").click();
+  await page.locator(".transit-pinned-summary[data-pinned-transit='2029-06-15']").waitFor();
+
+  const workspace = parseToolJson(await callTool("astrocopy.get_workspace_state"));
   const serialized = JSON.stringify(workspace);
   for (const date of ["2027-06-15", "2029-06-15", "2032-06-15"]) {
     assert(serialized.includes(date), `Workspace state does not include compared date ${date}`);
@@ -144,11 +166,65 @@ try {
   for (const focusId of ["ziwei-palace-life", "ziwei-palace-body"]) {
     assert(serialized.includes(focusId), `Workspace state does not include focused ID ${focusId}`);
   }
+  assert(workspace.selectedTransitDate === "2029-06-15", "Workspace did not read the human-selected date");
+  assert(workspace.pinnedTransitDate === "2029-06-15", "Workspace did not read the human-pinned date");
+  assert(workspace.recentActivities?.length <= 6, "Workspace returned more than six recent activities");
+  assert(
+    workspace.recentActivities?.some((activity) => activity.actor === "user" && activity.type === "pin-transit" && activity.detail === "2029-06-15"),
+    "Workspace did not expose the recent human pin activity"
+  );
 
+  await page.locator("#transit-inspector").screenshot({
+    path: path.join(outputDirectory, "webmcp-human-pin.png")
+  });
   await page.screenshot({
     path: path.join(outputDirectory, "webmcp-shared-workspace.png"),
     fullPage: true
   });
+
+  const stateBeforeInvalidCalls = JSON.stringify({
+    activeView: workspace.activeView,
+    selectedTransitDate: workspace.selectedTransitDate,
+    pinnedTransitDate: workspace.pinnedTransitDate,
+    comparedTransitDates: workspace.comparedTransitDates,
+    focusedIds: workspace.focusedIds,
+    recentActivities: workspace.recentActivities
+  });
+  for (const [name, input] of [
+    ["astrocopy.create_birth_chart", { birthDateTime: "" }],
+    ["astrocopy.inspect_chart", { view: "unknown" }],
+    ["astrocopy.inspect_chart", { view: "ziwei", focusIds: ["unknown-focus"] }],
+    ["astrocopy.inspect_transit", { targetDate: "2029/06/15" }],
+    ["astrocopy.compare_transits", { targetDates: ["2029-06-15"] }],
+    ["astrocopy.compare_transits", { targetDates: ["2029-06-15", "2029-06-15"] }]
+  ]) {
+    const result = await callTool(name, input);
+    assert(result?.isError === true, `${name} did not normalize invalid input to isError: true`);
+  }
+  const stateAfterInvalidCalls = parseToolJson(await callTool("astrocopy.get_workspace_state"));
+  assert(
+    JSON.stringify({
+      activeView: stateAfterInvalidCalls.activeView,
+      selectedTransitDate: stateAfterInvalidCalls.selectedTransitDate,
+      pinnedTransitDate: stateAfterInvalidCalls.pinnedTransitDate,
+      comparedTransitDates: stateAfterInvalidCalls.comparedTransitDates,
+      focusedIds: stateAfterInvalidCalls.focusedIds,
+      recentActivities: stateAfterInvalidCalls.recentActivities
+    }) === stateBeforeInvalidCalls,
+    "Invalid tool inputs changed the shared workspace state"
+  );
+
+  const comparisonUndo = page.locator("[data-activity-type='compare-transits'] [data-action='undo-activity']");
+  await comparisonUndo.click();
+  await page.waitForFunction(() => document.querySelectorAll(".transit-comparison-card").length === 0);
+  const stateAfterUndo = parseToolJson(await callTool("astrocopy.get_workspace_state"));
+  assert(stateAfterUndo.comparedTransitDates.length === 0, "Undo did not restore the previous comparison set");
+  assert(stateAfterUndo.selectedTransitDate === "2029-06-15", "Undo clobbered the newer human selection");
+  assert(stateAfterUndo.pinnedTransitDate === "2029-06-15", "Undo clobbered the newer human pin");
+  assert(
+    stateAfterUndo.recentActivities?.some((activity) => activity.type === "compare-transits" && activity.undone === true),
+    "Workspace state did not expose the undone comparison activity"
+  );
 
   console.log(`WebMCP smoke test passed with ${names.length} registered tools.`);
   console.log(`Registered: ${names.join(", ")}`);
