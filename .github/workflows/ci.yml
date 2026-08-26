@@ -1,4 +1,4 @@
-name: Validate core and web
+name: Validate core, web and WebMCP
 
 on:
   pull_request:
@@ -21,7 +21,7 @@ jobs:
           cache: npm
       - name: Install dependencies
         run: npm ci
-      - name: Core and prompt tests
+      - name: Core, prompt and locale tests
         run: npm run test
       - name: Typecheck workspaces
         run: npm run typecheck
@@ -29,6 +29,47 @@ jobs:
         run: npm run build:mcp
       - name: Build web
         run: npm run build:web
+
+  webmcp-smoke:
+    runs-on: ubuntu-latest
+    needs: validate
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Build web
+        run: npm run build:web
+      - name: Start preview server
+        run: |
+          nohup npm run preview -w @sizhu/web -- --port 4173 > /tmp/astrocopy-preview.log 2>&1 &
+          for attempt in {1..30}; do
+            if curl --fail --silent http://127.0.0.1:4173/ > /dev/null; then
+              exit 0
+            fi
+            sleep 1
+          done
+          cat /tmp/astrocopy-preview.log
+          exit 1
+      - name: Run shared WebMCP browser test
+        env:
+          ASTROCOPY_E2E_URL: http://127.0.0.1:4173
+        run: node tools/e2e-webmcp.mjs
+      - name: Upload WebMCP screenshot
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: webmcp-smoke
+          path: artifacts/e2e
+          if-no-files-found: ignore
+          retention-days: 7
 
   liuren-reference:
     runs-on: ubuntu-latest
