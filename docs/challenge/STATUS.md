@@ -161,3 +161,13 @@ Partially verified on 2026-08-26; P0-011 remains `TODO`.
 - Native calls accepted two- and five-date comparisons; one-date, six-date, duplicate-date, and legacy `dates` inputs returned `isError: true` without corrupting state.
 - The connected external Edge session had a signed-in ChatGPT tab, but its page environment did not expose `document.modelContext`. That browser cannot satisfy P0-011 until the official WebMCP challenge environment or required experiment is available.
 - Full evidence and the remaining sign-off procedure are in [`BROWSER_QA_RECORD.md`](./BROWSER_QA_RECORD.md).
+
+## Phase 5 — late WebMCP injection hardening (local result)
+
+Implemented locally on 2026-08-26; remote CI is required before this hardening is considered verified.
+
+- The existing AstroCopy registration adapter now probes for a late `document.modelContext` injection for up to approximately 10 seconds instead of approximately 2 seconds.
+- The production browser E2E delays model-context injection by 2.5 seconds by default, proving discovery still succeeds beyond the old window before running the complete six-tool shared-workspace and international-time flow.
+- A separate local near-boundary run passed with a 9-second injection delay.
+- The E2E shim now uses identity-safe AbortSignal cleanup and asserts one production registration per active tool, no unexpected abort during the 3→6 transition, and preservation of every human-readable `title`.
+- GoogleChromeLabs `use-webmcp-tool@0.2.0` was not adopted because its public options and registered descriptor omit `title`; a direct migration would regress the current discovery experience even though its lifecycle coverage is otherwise strong.

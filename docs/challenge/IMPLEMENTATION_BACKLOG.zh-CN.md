@@ -43,7 +43,7 @@
 | P2-004 | P2 | DEFER | 可分享只读命盘 | backend | 赛后 |
 | P2-005 | P2 | DEFER | PWA | web | 赛后 |
 
-## 当前明确失败
+## 已关闭的基线失败（历史记录）
 
 ```text
 CI workflow: Validate core, web and WebMCP
@@ -57,7 +57,7 @@ webmcp-smoke: failure
 1. smoke 在创建 profile 前等待 >= 5 个工具，但当前实现会动态注册，空页实际应只有 3 个基础工具。
 2. smoke 调用 compare 时使用 `dates`，当前工具 schema 使用 `targetDates`。
 
-Codex 必须通过真实日志确认，不得只根据本文猜测；但这两个不一致应首先修复。
+以上两个问题已在 P0-001 与 P0-002 修复，并由后续浏览器 CI 持续验证。当前失败状态以 [`STATUS.md`](./STATUS.md) 和 PR checks 为准，不应再把这段历史记录当作现状。
 
 ## 每个 DONE 的要求
 

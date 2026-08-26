@@ -50,8 +50,8 @@ All activity and package facts below were checked on 2026-08-26. “Coverage” 
 - Stack/license/activity: TypeScript/React, Apache-2.0, repository pushed 2026-08-18; npm package updated 2026-07-30.
 - Documentation/installability/demo: documented README, small installable package (about 25 kB unpacked), peer React 18+, no runtime dependencies, source tests cover the hook.
 - Capabilities: enabled state, late injection, Strict Mode behavior, annotations, stable closure handling, error/result normalization, and registration-error handling.
-- Missing: no AstroCopy workspace, schema semantics, visualization, undo, audit, or domain computation.
-- Coverage/integration: about 90% of the React registration slice and roughly 15% of the whole product; **adopt candidate** replacing only the local hook.
+- Missing: no AstroCopy workspace, schema semantics, visualization, undo, audit, or domain computation. Version 0.2.0 also omits the optional WebMCP `title` field from its public options and registration descriptor, so a direct swap would silently remove the human-readable titles already exposed by all six AstroCopy tools.
+- Coverage/integration: about 90% of the React registration slice and roughly 15% of the whole product; **watch candidate** until descriptor-title parity is available.
 - Smoke test/risk: swap the hook without changing tool contracts, then require unit lifecycle coverage and the complete browser E2E. Main risks are Chrome API churn and a React 19 compatibility edge despite the broad peer range.
 
 ### C. MCP-B / WebMCP-org stack (`usewebmcp`, `@mcp-b/react-webmcp`, types, polyfill)
@@ -154,7 +154,7 @@ Scores are 1 (poor) to 5 (strong); migration risk is reversed, so 5 means low ri
 ## 7. Build/adopt/watch/drop boundary
 
 - **Build:** shared workspace reducer, stable focus IDs, compare/pin/undo behavior, bilingual UI, audit trail, and the end-to-end demo narrative. These encode the product's differentiator.
-- **Adopt:** GoogleChromeLabs `use-webmcp-tool`, but only after a contained migration proves parity in the real browser flow.
+- **Watch:** GoogleChromeLabs `use-webmcp-tool`; do not migrate version 0.2.0 until it can preserve AstroCopy's registered tool titles as well as lifecycle behavior.
 - **Retain:** deterministic domain engines and normalized core contracts.
 - **Watch:** MCP-B types/polyfill for a concrete non-native-browser requirement; WebMCP spec/API changes.
 - **Drop:** the unused `react-iztro` UI dependency and stale static WebMCP registry after separate regression checks.

@@ -45,6 +45,10 @@ ChatGPT in-app-browser sign-off. P0-011 therefore remains `TODO`.
   `get_workspace_state`, including the human pin activity.
 - Undoing the latest Agent comparison restored its previous comparison snapshot
   while retaining the newer human selection and pin.
+- The local production browser flow also passed with `document.modelContext`
+  injected after 9 seconds. The default CI case delays injection by 2.5 seconds,
+  beyond the former approximately 2-second detection window, and asserts that all
+  six registered descriptors retain their human-readable titles.
 
 ### Remaining P0-011 sign-off
 
