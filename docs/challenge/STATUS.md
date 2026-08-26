@@ -151,3 +151,13 @@ Completed and verified on 2026-08-26. P0-009 and P0-010 are `DONE`.
 ### Next gate
 
 P0-011 is the next manual gate: verify discovery and calls for all six tools in the real ChatGPT challenge browser and record the browser/version/result evidence. Do not deploy, merge `main`, or begin the submission freeze as part of that verification.
+
+## Phase 4 — P0-011 browser-environment probe
+
+Partially verified on 2026-08-26; P0-011 remains `TODO`.
+
+- A WebMCP-enabled Codex in-app browser discovered exactly three foundational tools on the empty English workspace and exactly six tools after creating the fictional `Alex Demo` chart.
+- All six tools were called through the browser capability. The page visibly applied semantic Zi Wei focus, transit selection, comparison, human selection/pin, state reads, and field-aware undo.
+- Native calls accepted two- and five-date comparisons; one-date, six-date, duplicate-date, and legacy `dates` inputs returned `isError: true` without corrupting state.
+- The connected external Edge session had a signed-in ChatGPT tab, but its page environment did not expose `document.modelContext`. That browser cannot satisfy P0-011 until the official WebMCP challenge environment or required experiment is available.
+- Full evidence and the remaining sign-off procedure are in [`BROWSER_QA_RECORD.md`](./BROWSER_QA_RECORD.md).

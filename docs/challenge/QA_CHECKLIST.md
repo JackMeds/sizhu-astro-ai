@@ -48,6 +48,8 @@ Test each case through the birth workspace and at least one through WebMCP.
 ## P0 — WebMCP shared state
 
 Run in ChatGPT in-app browser or the official current challenge test environment.
+Keep dated evidence in [`BROWSER_QA_RECORD.md`](./BROWSER_QA_RECORD.md); a Codex
+in-app integration probe does not by itself complete the ChatGPT sign-off.
 
 - [ ] Page reports WebMCP availability without blocking ordinary use.
 - [ ] Tool registration is not duplicated under React Strict Mode.
