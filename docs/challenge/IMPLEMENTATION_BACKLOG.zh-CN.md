@@ -16,11 +16,11 @@
 | P0-001 | P0 | DONE | 修复 smoke 初始工具数量假设 | `tools/e2e-webmcp.mjs` | 空页 3 工具，profile 后动态工具出现 |
 | P0-002 | P0 | DONE | 统一 compare 参数为 `targetDates` | Bridge、测试、docs、agents | 全仓无错误 `dates` 示例 |
 | P0-003 | P0 | DONE | 实现 `inspect_chart.focusIds` | Bridge、workspace、Ziwei | 命宫/身宫真实高亮 |
-| P0-004 | P0 | DOING | 实现 pinned transit 或删除 pin 文案 | workspace、Transit、docs | Demo 与实现一致 |
-| P0-005 | P0 | DOING | 完善 focus/pin/compare undo | workspace、Activity | UI 状态正确恢复 |
-| P0-006 | P0 | DOING | state 返回 pinned 和 recent activities | Bridge | Agent 读到人类最新选择 |
-| P0-007 | P0 | DOING | 统一工具 error result | hook、Bridge、tests | 所有失败 `isError: true` |
-| P0-008 | P0 | DOING | 主 Demo WebMCP E2E | E2E | create→focus→compare→human→read→undo |
+| P0-004 | P0 | DONE | 实现 pinned transit 或删除 pin 文案 | workspace、Transit、docs | Demo 与实现一致 |
+| P0-005 | P0 | DONE | 完善 focus/pin/compare undo | workspace、Activity | UI 状态正确恢复 |
+| P0-006 | P0 | DONE | state 返回 pinned 和 recent activities | Bridge | Agent 读到人类最新选择 |
+| P0-007 | P0 | DONE | 统一工具 error result | hook、Bridge、tests | 所有失败 `isError: true` |
+| P0-008 | P0 | DONE | 主 Demo WebMCP E2E | E2E | create→focus→compare→human→read→undo |
 | P0-009 | P0 | TODO | 英文 UI 残留扫描 | i18n、components | 关键路径无硬编码中文控件 |
 | P0-010 | P0 | TODO | 国际时间 E2E | core tests、E2E | IANA/DST/half/quarter 全通过 |
 | P0-011 | P0 | TODO | 真实 ChatGPT 浏览器测试 | STATUS、QA | 有完整验证记录 |

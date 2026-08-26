@@ -81,9 +81,9 @@ See [`ENGINEERING_SCAN.md`](./ENGINEERING_SCAN.md). Keep the deterministic calcu
 
 Start P0-004 through P0-008 with one coherent demo-state slice: pinned transit, complete undo, readable recent activity, normalized error results, and the full human-agent browser scenario. Do not merge `main` as part of this phase.
 
-## Phase 2 — P0-004 through P0-008 local result
+## Phase 2 — P0-004 through P0-008 verified result
 
-Completed locally on 2026-08-26; remote CI is required before these backlog items become `DONE`.
+Completed and verified on 2026-08-26. P0-004 through P0-008 are `DONE`.
 
 ### Implemented
 
@@ -105,6 +105,15 @@ Completed locally on 2026-08-26; remote CI is required before these backlog item
 - Visual evidence: `artifacts/e2e/webmcp-human-pin.png` shows 2029 selected and pinned; `webmcp-shared-workspace.png` also records it in the activity rail
 - Current web bundle: 1,750.02 kB JavaScript / 561.80 kB gzip, still with Vite's large-chunk warning
 
+### Remote validation
+
+- Commit under test: `adf3b25`
+- GitHub Actions run: [`32945373022`](https://github.com/JackMeds/sizhu-astro-ai/actions/runs/32945373022)
+- `validate`: passed in 43 seconds
+- `liuren-reference`: passed in 8 seconds
+- `webmcp-smoke`: passed in 1 minute 22 seconds, including the complete shared-state browser flow and screenshot upload
+- Non-blocking runner annotation remains the Node.js 20 action-runtime deprecation warning
+
 ### Next gate
 
-Push this second P0 slice, require all PR checks to pass, then mark P0-004 through P0-008 `DONE`. P0-009 English-route cleanup remains separate and is visibly necessary in the current screenshot.
+Complete P0-009 and P0-010 next: remove hard-coded Chinese from the English demo route and add browser-level international-time coverage. Then run P0-011 in the real ChatGPT challenge browser before deployment work. Do not merge `main` as part of this phase.
