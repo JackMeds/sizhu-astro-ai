@@ -52,12 +52,20 @@ function PalaceCard({
   palace,
   index,
   focusedIds,
-  focusLabel
+  focusLabel,
+  isEnglish,
+  noMajorLabel,
+  noSupportLabel,
+  palaceLabel
 }: {
   palace: ZiweiPalace;
   index: number;
   focusedIds: string[];
   focusLabel: string;
+  isEnglish: boolean;
+  noMajorLabel: string;
+  noSupportLabel: string;
+  palaceLabel: string;
 }) {
   const majorStars = palace.majorStars.slice(0, 4);
   const supportingStars = [...palace.minorStars, ...palace.adjectiveStars].slice(0, 5);
@@ -70,6 +78,9 @@ function PalaceCard({
     : semanticIds.includes("ziwei-palace-body")
       ? "ziwei-palace-body"
       : semanticIds[0];
+  const englishName = palaceEnglish[palace.name] ?? palaceLabel;
+  const primaryName = isEnglish ? englishName : palace.name || `${palaceLabel} ${index + 1}`;
+  const secondaryName = isEnglish ? palace.name : englishName;
 
   return (
     <article
@@ -86,8 +97,8 @@ function PalaceCard({
       {isAgentFocused ? <span className="ziwei-agent-focus-label">{focusLabel}</span> : null}
       <header>
         <div>
-          <strong>{palace.name || `第 ${index + 1} 宫`}</strong>
-          <small>{palaceEnglish[palace.name] ?? "Palace"}</small>
+          <strong>{primaryName}</strong>
+          <small>{secondaryName}</small>
         </div>
         <span>{palace.heavenlyStem}{palace.earthlyBranch}</span>
       </header>
@@ -106,12 +117,12 @@ function PalaceCard({
               {starLabel(star)}
             </span>
           ))
-          : <span className="is-empty">无主星</span>}
+          : <span className="is-empty">{noMajorLabel}</span>}
       </div>
 
       {supportingStars.length ? (
         <p>{supportingStars.map((star) => starLabel(star)).join(" · ")}</p>
-      ) : <p className="is-empty">辅曜未取</p>}
+      ) : <p className="is-empty">{noSupportLabel}</p>}
 
       <footer>
         <span>{palace.changsheng12 || "—"}</span>
@@ -122,30 +133,30 @@ function PalaceCard({
 }
 
 export function ZiweiPlate({ profile, focusedIds = [] }: ZiweiPlateProps) {
-  const { t } = useI18n();
+  const { isEnglish, t } = useI18n();
   const calculation = profile.ziwei.calculation;
   if (!calculation || !profile.ziwei.available) {
     return (
       <section className="panel ziwei-custom-plate">
         <div className="plate-title">
-          <div><p className="eyeline">Zi Wei Dou Shu</p><h2>紫微斗数十二宫</h2></div>
+          <div><p className="eyeline">Zi Wei Dou Shu</p><h2>{t("ziwei.title")}</h2></div>
         </div>
-        <p>紫微排盘暂不可用，请查看计算警告。</p>
+        <p>{t("ziwei.unavailable")}</p>
       </section>
     );
   }
 
   const palaces = profile.ziwei.palaces.slice(0, 12);
   return (
-    <section className="panel ziwei-custom-plate" aria-label="AstroCopy 原创紫微斗数十二宫命盘">
+    <section className="panel ziwei-custom-plate" aria-label={t("ziwei.aria")}>
       <div className="plate-title ziwei-custom-title">
         <div>
           <p className="eyeline">Zi Wei Dou Shu · Native AstroCopy renderer</p>
-          <h2>紫微斗数十二宫</h2>
+          <h2>{t("ziwei.title")}</h2>
         </div>
         <div className="plate-meta">
-          <span>iztro 负责计算 · AstroCopy 负责结构与呈现</span>
-          <strong>{calculation.solarDate} · {calculation.shichen}时 · {profile.input.timezone}</strong>
+          <span>{t("ziwei.engine")}</span>
+          <strong>{calculation.solarDate} · {calculation.shichen} {t("ziwei.shichen")} · {profile.input.timezone}</strong>
         </div>
       </div>
 
@@ -157,32 +168,36 @@ export function ZiweiPlate({ profile, focusedIds = [] }: ZiweiPlateProps) {
             index={index}
             focusedIds={focusedIds}
             focusLabel={t("ziwei.focus.agent")}
+            isEnglish={isEnglish}
+            noMajorLabel={t("ziwei.noMajor")}
+            noSupportLabel={t("ziwei.noSupport")}
+            palaceLabel={t("ziwei.palace")}
           />
         ))}
 
-        <section className="ziwei-center-card" aria-label="紫微斗数命盘中央资料">
-          <p>ASTROCOPY · 紫微</p>
+        <section className="ziwei-center-card" aria-label={t("ziwei.centerAria")}>
+          <p>ASTROCOPY · {isEnglish ? "ZI WEI" : "紫微"}</p>
           <h3>{profile.input.name}</h3>
-          <strong>{profile.ziwei.chineseDate || profile.ziwei.lunarDate || profile.ziwei.solarDate}</strong>
+          <strong>{isEnglish ? profile.ziwei.solarDate : profile.ziwei.chineseDate || profile.ziwei.lunarDate || profile.ziwei.solarDate}</strong>
           <div className="ziwei-center-grid">
-            <span><small>命宫 Life</small><b>{profile.ziwei.soulPalaceBranch || "—"}</b></span>
-            <span><small>身宫 Body</small><b>{profile.ziwei.bodyPalaceBranch || "—"}</b></span>
-            <span><small>命主 Soul</small><b>{profile.ziwei.soulStar || "—"}</b></span>
-            <span><small>身主 Body ruler</small><b>{profile.ziwei.bodyStar || "—"}</b></span>
+            <span><small>{t("ziwei.life")}</small><b>{profile.ziwei.soulPalaceBranch || "—"}</b></span>
+            <span><small>{t("ziwei.body")}</small><b>{profile.ziwei.bodyPalaceBranch || "—"}</b></span>
+            <span><small>{t("ziwei.soul")}</small><b>{profile.ziwei.soulStar || "—"}</b></span>
+            <span><small>{t("ziwei.bodyRuler")}</small><b>{profile.ziwei.bodyStar || "—"}</b></span>
           </div>
           <footer>
-            <span>{profile.ziwei.fiveElementsClass || "五行局未取"}</span>
-            <span>{profile.time.effective.label}</span>
+            <span>{profile.ziwei.fiveElementsClass || t("ziwei.classMissing")}</span>
+            <span>{t(`time.mode.${profile.time.effective.mode}`)}</span>
           </footer>
         </section>
       </div>
 
-      <div className="ziwei-legend" aria-label="紫微命盘图例">
-        <span><b>命</b> 命宫</span>
-        <span><b>身</b> 身宫</span>
-        <span><b className="is-original">因</b> 来因宫</span>
-        <span><i>禄</i><i>权</i><i>科</i><i>忌</i> 生年四化</span>
-        <small>星曜、四化与大限来自标准化计算数据；界面不直接给出吉凶结论。</small>
+      <div className="ziwei-legend" aria-label={t("ziwei.legendAria")}>
+        <span><b>命</b> {t("ziwei.legend.life")}</span>
+        <span><b>身</b> {t("ziwei.legend.body")}</span>
+        <span><b className="is-original">因</b> {t("ziwei.legend.original")}</span>
+        <span><i>禄</i><i>权</i><i>科</i><i>忌</i> {t("ziwei.legend.mutagen")}</span>
+        <small>{t("ziwei.legend.note")}</small>
       </div>
     </section>
   );

@@ -2,6 +2,7 @@ import * as Tabs from "@radix-ui/react-tabs";
 import { motion } from "motion/react";
 import { ArrowDown, CheckCircle2, Orbit, ShieldCheck, Sparkles } from "lucide-react";
 import type { AstroProfile } from "@sizhu/core";
+import { useI18n } from "@/lib/i18n";
 import { useWorkspace, type WorkspaceView } from "@/lib/workspace";
 import { BaziFactsPanel } from "./BaziFactsPanel";
 import { BaziPlate } from "./BaziPlate";
@@ -14,8 +15,22 @@ interface ProfileResultsProps {
   profile: AstroProfile;
 }
 
+const evidenceTranslationKeyByLabel: Record<string, string> = {
+  输入时间: "inputTime",
+  排盘口径: "timeMode",
+  阳历: "solar",
+  阴历: "lunar",
+  生肖: "zodiac",
+  日主: "dayMaster",
+  八字关系事实: "relations",
+  传统规则命中: "rules",
+  紫微摘要: "ziwei",
+  紫微生年四化: "mutagens"
+};
+
 export function ProfileResults({ profile }: ProfileResultsProps) {
   const { state, dispatch } = useWorkspace();
+  const { t } = useI18n();
   const signature = profile.bazi.pillars.map((pillar) => pillar.ganZhi).join(" · ");
   const evidence = profile.ai.evidence.slice(0, 4);
 
@@ -25,7 +40,7 @@ export function ProfileResults({ profile }: ProfileResultsProps) {
       type: "set-view",
       view,
       actor: "user",
-      label: "You switched the chart view",
+      label: t("activity.view.user"),
       detail: view
     });
   }
@@ -41,45 +56,45 @@ export function ProfileResults({ profile }: ProfileResultsProps) {
       <div className="result-ready-card" id="profile-result">
         <div className="result-ready-icon"><CheckCircle2 size={24} /></div>
         <div className="result-ready-copy">
-          <p className="eyeline">Chart ready</p>
-          <h2>命盘已经算好了。</h2>
-          <p>八字、紫微、时间口径和计算依据已经整理好。普通用户可以直接进入下一步，不必先看懂下面所有术语。</p>
-          <div className="result-signature" aria-label="四柱">
+          <p className="eyeline">{t("result.ready.kicker")}</p>
+          <h2>{t("result.ready.title")}</h2>
+          <p>{t("result.ready.text")}</p>
+          <div className="result-signature" aria-label={t("result.pillars.label")}>
             {profile.bazi.pillars.map((pillar) => (
-              <span key={pillar.key}><small>{pillar.label}</small><strong>{pillar.ganZhi}</strong></span>
+              <span key={pillar.key}><small>{t(`bazi.pillar.${pillar.key}`)}</small><strong>{pillar.ganZhi}</strong></span>
             ))}
           </div>
         </div>
         <a className="result-primary-action" href="#export">
-          <Sparkles size={17} />复制给 AI 解读<ArrowDown size={15} />
+          <Sparkles size={17} />{t("result.ready.action")}<ArrowDown size={15} />
         </a>
       </div>
 
       <Tabs.Root className="progressive-results" value={state.activeView} onValueChange={selectView}>
-        <Tabs.List className="progressive-tab-list" aria-label="命盘结果分类">
-          <Tabs.Trigger value="overview">概览</Tabs.Trigger>
-          <Tabs.Trigger value="bazi">八字</Tabs.Trigger>
-          <Tabs.Trigger value="ziwei">紫微</Tabs.Trigger>
-          <Tabs.Trigger value="transit">运势</Tabs.Trigger>
-          <Tabs.Trigger value="audit">计算依据</Tabs.Trigger>
+        <Tabs.List className="progressive-tab-list" aria-label={t("result.tabs.label")}>
+          <Tabs.Trigger value="overview">{t("result.tab.overview")}</Tabs.Trigger>
+          <Tabs.Trigger value="bazi">{t("result.tab.bazi")}</Tabs.Trigger>
+          <Tabs.Trigger value="ziwei">{t("result.tab.ziwei")}</Tabs.Trigger>
+          <Tabs.Trigger value="transit">{t("result.tab.transit")}</Tabs.Trigger>
+          <Tabs.Trigger value="audit">{t("result.tab.audit")}</Tabs.Trigger>
         </Tabs.List>
 
         <Tabs.Content className="progressive-tab-content" value="overview">
           <motion.div animate={{ opacity: 1, y: 0 }} initial={{ opacity: 0, y: 8 }} transition={{ duration: 0.25 }}>
             <section className="overview-panel panel">
               <div className="overview-heading">
-                <div><p className="eyeline"><Orbit size={14} /> Quick overview</p><h3>{profile.input.name} · {signature}</h3></div>
-                <span className="overview-status"><ShieldCheck size={14} /> {profile.warnings.length ? `${profile.warnings.length} 条提醒` : "结构已生成"}</span>
+                <div><p className="eyeline"><Orbit size={14} /> {t("result.overview.kicker")}</p><h3>{profile.input.name} · {signature}</h3></div>
+                <span className="overview-status"><ShieldCheck size={14} /> {profile.warnings.length ? t("result.warning.count", { count: profile.warnings.length }) : t("result.generated")}</span>
               </div>
-              <p className="overview-summary">{profile.ai.summary}</p>
+              <p className="overview-summary">{t("result.overview.summary")}</p>
               <div className="overview-facts">
                 {evidence.map((item) => (
-                  <article key={item.label}><span>{item.label}</span><strong>{item.value}</strong></article>
+                  <article key={item.label}><span>{t(`evidence.${evidenceTranslationKeyByLabel[item.label] ?? "other"}`)}</span><strong>{item.value}</strong></article>
                 ))}
               </div>
               <div className="overview-next-step">
-                <strong>第一次使用？</strong>
-                <span>不用从这里判断吉凶。点上面的“复制给 AI 解读”，把完整结构交给你喜欢的 AI，再围绕你的问题继续问。</span>
+                <strong>{t("result.beginner")}</strong>
+                <span>{t("result.beginner.text")}</span>
               </div>
             </section>
           </motion.div>

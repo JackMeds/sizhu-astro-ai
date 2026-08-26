@@ -20,21 +20,21 @@ function todayLocal(timezone: string) {
   }
 }
 
-function scopeCard(label: string, item: ZiweiHoroscopeItem | undefined) {
+function scopeCard(label: string, item: ZiweiHoroscopeItem | undefined, mutagenMissing: string) {
   if (!item) return null;
   return (
     <article className="transit-scope-card" key={label}>
       <span>{label}</span>
       <strong>{item.name || `${item.heavenlyStem}${item.earthlyBranch}`}</strong>
       <small>{item.heavenlyStem}{item.earthlyBranch}</small>
-      <p>{item.mutagen.length ? item.mutagen.map((value, index) => `${["禄", "权", "科", "忌"][index] ?? index + 1}:${value}`).join(" · ") : "四化未取"}</p>
+      <p>{item.mutagen.length ? item.mutagen.map((value, index) => `${["禄", "权", "科", "忌"][index] ?? index + 1}:${value}`).join(" · ") : mutagenMissing}</p>
     </article>
   );
 }
 
 export function TransitInspector({ profile }: { profile: AstroProfile }) {
   const { state, dispatch } = useWorkspace();
-  const { t } = useI18n();
+  const { isEnglish, t } = useI18n();
   const targetDate = state.selectedTransitDate ?? todayLocal(profile.input.timezone);
   const [error, setError] = useState("");
 
@@ -49,26 +49,26 @@ export function TransitInspector({ profile }: { profile: AstroProfile }) {
       const yearItem = dayun?.years.find((item) => item.year === year);
       const context: BaziRelationParticipant[] = [];
       const dayunFacts = dayun && dayun.ganZhi && dayun.ganZhi !== "童限"
-        ? createTransitBaziFacts(profile.bazi.pillars, { scope: "dayun", label: `${dayun.ganZhi}大运`, ganZhi: dayun.ganZhi })
+        ? createTransitBaziFacts(profile.bazi.pillars, { scope: "dayun", label: isEnglish ? `${dayun.ganZhi} cycle` : `${dayun.ganZhi}大运`, ganZhi: dayun.ganZhi })
         : [];
       if (dayun && dayun.ganZhi && dayun.ganZhi !== "童限") {
         context.push({
           scope: "dayun",
-          label: `${dayun.ganZhi}大运`,
+          label: isEnglish ? `${dayun.ganZhi} cycle` : `${dayun.ganZhi}大运`,
           ganZhi: dayun.ganZhi,
           stem: dayun.ganZhi[0] ?? "",
           branch: dayun.ganZhi[1] ?? ""
         });
       }
       const yearFacts = yearItem?.ganZhi
-        ? createTransitBaziFacts(profile.bazi.pillars, { scope: "year", label: `${year}流年`, ganZhi: yearItem.ganZhi }, context)
+        ? createTransitBaziFacts(profile.bazi.pillars, { scope: "year", label: isEnglish ? `${year} annual` : `${year}流年`, ganZhi: yearItem.ganZhi }, context)
         : [];
       const ziwei = createZiweiHoroscope(profile.input, targetDate);
       return { year, dayun, yearItem, dayunFacts, yearFacts, ziwei };
     } catch (caught) {
       return { error: caught instanceof Error ? caught.message : String(caught) };
     }
-  }, [profile, targetDate]);
+  }, [isEnglish, profile, targetDate]);
 
   const comparisons = useMemo(() => {
     return state.comparedTransitDates.map((date) => {
@@ -81,8 +81,8 @@ export function TransitInspector({ profile }: { profile: AstroProfile }) {
   }, [profile, state.comparedTransitDates]);
 
   useEffect(() => {
-    setError("error" in result ? result.error ?? "运限计算失败" : "");
-  }, [result]);
+    setError("error" in result ? result.error ?? t("transit.error") : "");
+  }, [result, t]);
 
   function selectDate(date: string) {
     if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return;
@@ -109,8 +109,8 @@ export function TransitInspector({ profile }: { profile: AstroProfile }) {
   if ("error" in result) {
     return (
       <section className="panel transit-inspector" id="transit-inspector">
-        <div className="transit-title"><div><p className="eyeline">Transit Explorer</p><h2>目标日期联动</h2></div><CalendarSearch size={22} /></div>
-        <label className="transit-date"><span>目标日期</span><input required type="date" value={targetDate} onChange={(event) => selectDate(event.target.value)} /></label>
+        <div className="transit-title"><div><p className="eyeline">{t("transit.kicker")}</p><h2>{t("transit.title")}</h2></div><CalendarSearch size={22} /></div>
+        <label className="transit-date"><span>{t("transit.date")}</span><input required type="date" value={targetDate} onChange={(event) => selectDate(event.target.value)} /></label>
         <p className="form-error">{error}</p>
       </section>
     );
@@ -120,16 +120,16 @@ export function TransitInspector({ profile }: { profile: AstroProfile }) {
   const uniqueFacts = Array.from(new Map(relationFacts.map((item) => [item.id, item])).values());
 
   return (
-    <section className="panel transit-inspector" id="transit-inspector" aria-label="八字紫微目标日期联动">
+    <section className="panel transit-inspector" id="transit-inspector" aria-label={t("transit.aria")}>
       <div className="transit-title">
-        <div><p className="eyeline">Transit Explorer</p><h2>目标日期联动</h2><p>同一日期同时读取八字运限关系和紫微动态范围。</p></div>
+        <div><p className="eyeline">{t("transit.kicker")}</p><h2>{t("transit.title")}</h2><p>{t("transit.description")}</p></div>
         <CalendarSearch size={22} />
       </div>
 
       <div className="transit-toolbar">
-        <label className="transit-date"><span>目标日期</span><input required type="date" value={targetDate} onChange={(event) => selectDate(event.target.value)} /></label>
-        <div><span>八字大运</span><strong>{result.dayun?.ganZhi || "未覆盖"}</strong><small>{result.dayun?.startAge ?? "-"}岁起</small></div>
-        <div><span>流年</span><strong>{result.yearItem?.ganZhi || result.year}</strong><small>{result.yearItem?.tenGod || "十神未取"}</small></div>
+        <label className="transit-date"><span>{t("transit.date")}</span><input required type="date" value={targetDate} onChange={(event) => selectDate(event.target.value)} /></label>
+        <div><span>{t("transit.dayun")}</span><strong>{result.dayun?.ganZhi || t("transit.uncovered")}</strong><small>{t("transit.ageStart", { age: result.dayun?.startAge ?? "-" })}</small></div>
+        <div><span>{t("transit.year")}</span><strong>{result.yearItem?.ganZhi || result.year}</strong><small>{result.yearItem?.tenGod || t("transit.tenGodMissing")}</small></div>
         <div className="transit-pinned-summary" data-pinned-transit={state.pinnedTransitDate ?? ""}>
           <span>{t("transit.pinned")}</span>
           <strong>{state.pinnedTransitDate ?? "—"}</strong>
@@ -143,38 +143,38 @@ export function TransitInspector({ profile }: { profile: AstroProfile }) {
 
       <div className="transit-columns">
         <div className="transit-facts">
-          <header><GitCompareArrows size={16} /><strong>八字动态关系事实</strong><span>{uniqueFacts.length} 条</span></header>
+          <header><GitCompareArrows size={16} /><strong>{t("transit.baziFacts")}</strong><span>{t("transit.factCount", { count: uniqueFacts.length })}</span></header>
           {uniqueFacts.length ? (
             <div>{uniqueFacts.map((fact) => (
               <article key={fact.id} data-status={fact.status}>
                 <strong>{fact.label}</strong>
                 <span>{fact.participants.map((item) => `${item.label}${item.ganZhi ? ` ${item.ganZhi}` : ""}`).join(" ↔ ")}</span>
-                {fact.transformation ? <small>合化{fact.transformation.targetElement}仅为候选</small> : null}
+                {fact.transformation ? <small>{t("transit.transformCandidate", { element: fact.transformation.targetElement })}</small> : null}
               </article>
             ))}</div>
-          ) : <p>当前已编码规则未识别到目标大运/流年与原局的关系。</p>}
+          ) : <p>{t("transit.noFacts")}</p>}
         </div>
 
         <div className="transit-ziwei">
-          <header><Orbit size={16} /><strong>紫微动态范围</strong><span>{result.ziwei.solarDate}</span></header>
+          <header><Orbit size={16} /><strong>{t("transit.ziweiScope")}</strong><span>{result.ziwei.solarDate}</span></header>
           <div className="transit-scope-grid">
-            {scopeCard("大限", result.ziwei.decadal)}
-            {scopeCard("小限", result.ziwei.age)}
-            {scopeCard("流年", result.ziwei.yearly)}
-            {scopeCard("流月", result.ziwei.monthly)}
-            {scopeCard("流日", result.ziwei.daily)}
-            {scopeCard("流时", result.ziwei.hourly)}
+            {scopeCard(t("transit.scope.decadal"), result.ziwei.decadal, t("transit.mutagenMissing"))}
+            {scopeCard(t("transit.scope.age"), result.ziwei.age, t("transit.mutagenMissing"))}
+            {scopeCard(t("transit.scope.year"), result.ziwei.yearly, t("transit.mutagenMissing"))}
+            {scopeCard(t("transit.scope.month"), result.ziwei.monthly, t("transit.mutagenMissing"))}
+            {scopeCard(t("transit.scope.day"), result.ziwei.daily, t("transit.mutagenMissing"))}
+            {scopeCard(t("transit.scope.hour"), result.ziwei.hourly, t("transit.mutagenMissing"))}
           </div>
         </div>
       </div>
 
       {comparisons.length ? (
-        <section className="transit-comparison" aria-label="多个目标日期比较">
-          <header><strong>Agent / human transit comparison</strong><span>{comparisons.length} 个日期</span></header>
+        <section className="transit-comparison" aria-label={t("transit.comparison")}>
+          <header><strong>{t("transit.comparison")}</strong><span>{t("transit.dateCount", { count: comparisons.length })}</span></header>
           <div className="transit-comparison-grid">
             {comparisons.map((item) => {
               if ("error" in item) {
-                return <article className="transit-comparison-card is-error" data-date={item.date} key={item.date}><span>{item.date}</span><strong>计算失败</strong><p>{item.error}</p></article>;
+                return <article className="transit-comparison-card is-error" data-date={item.date} key={item.date}><span>{item.date}</span><strong>{t("transit.failed")}</strong><p>{item.error}</p></article>;
               }
               const snapshot = item.snapshot;
               const isPinned = state.pinnedTransitDate === item.date;
@@ -195,8 +195,8 @@ export function TransitInspector({ profile }: { profile: AstroProfile }) {
                   >
                     <span>{item.date}</span>
                     <strong>{snapshot.bazi.year?.ganZhi || snapshot.targetYear}</strong>
-                    <small>{snapshot.bazi.dayun?.ganZhi || "未覆盖大运"} · {snapshot.bazi.facts.length} 条关系事实</small>
-                    <p>紫微流年：{snapshot.ziwei.yearly.name || `${snapshot.ziwei.yearly.heavenlyStem}${snapshot.ziwei.yearly.earthlyBranch}`}</p>
+                    <small>{snapshot.bazi.dayun?.ganZhi || t("transit.uncoveredDayun")} · {t("transit.factCountInline", { count: snapshot.bazi.facts.length })}</small>
+                    <p>{t("transit.ziweiAnnual", { value: snapshot.ziwei.yearly.name || `${snapshot.ziwei.yearly.heavenlyStem}${snapshot.ziwei.yearly.earthlyBranch}` })}</p>
                   </button>
                   <button
                     aria-label={`${t(isPinned ? "transit.unpin" : "transit.pin")} ${item.date}`}
