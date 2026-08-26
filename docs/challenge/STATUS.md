@@ -1,0 +1,73 @@
+# AstroCopy WebMCP Challenge Status
+
+This file records verified execution state for the challenge branch. It is not a release claim; unchecked work remains blocked until the listed validation passes.
+
+## Phase 0 — Baseline
+
+- Started: 2026-08-26T15:17:30+08:00
+- Branch: `challenge/webmcp-2026`
+- Commit: `dbfe8a011fbbeeb4ef0db3f47c1e9604eaf752f2`
+- Base: `origin/main@40f1fbebeb68f0cd1131692a2ca0f848e66d8b31`
+- Pull request: [#11](https://github.com/JackMeds/sizhu-astro-ai/pull/11) (Draft)
+
+### Verified remote state
+
+- `validate`: success
+- `liuren-reference`: success
+- `webmcp-smoke`: failure
+- Failed run: `32934764791`, job `98073896847`
+- Exact failure: `tools/e2e-webmcp.mjs:56` timed out after 15 seconds while waiting for at least five tools before a profile existed.
+
+### Verified local baseline
+
+- `npm ci`: passed on Node.js `v24.17.0` / npm `11.13.0`
+- `npm run test`: passed (38 core, 2 prompt, 4 web tests)
+- `npm run typecheck`: passed
+- `npm run build:mcp`: passed
+- `npm run build:web`: passed
+- Local browser reproduction: failed at the same `page.waitForFunction` as CI
+- Production web bundle at baseline: 1,742.99 kB JavaScript / 559.99 kB gzip, with Vite's large-chunk warning
+
+### Confirmed blockers for this execution round
+
+1. The empty workspace intentionally exposes only `about`, `create_birth_chart`, and `get_workspace_state`; the smoke test incorrectly waits for five tools before chart creation.
+2. The smoke test calls `compare_transits` with `dates`, while the live schema and implementation require `targetDates`.
+3. `inspect_chart` has no `focusIds` schema or execution path, and the custom Zi Wei renderer does not consume workspace focus state.
+4. No shared `test:webmcp` npm script exists; CI and local validation do not yet share one entry point.
+
+### Newly verified risks outside P0-001–P0-003
+
+- English completion is overstated: the result-ready area, result tabs, and custom Zi Wei renderer still contain hard-coded Chinese interface copy.
+- `react-iztro` is no longer imported by the web app but remains an installed dependency.
+- The production JavaScript bundle is large enough to trigger Vite's chunk-size warning.
+- The challenge deadline is inconsistent across official pages. The OpenAI event page says September 3 at 5 p.m. PT, while the Devpost Official Rules say September 3 at 1 p.m. Pacific Time and state that the rules prevail on conflict. Use the earlier rules deadline: 2026-09-04 04:00 Beijing time.
+
+## Phase 1 — P0-001 through P0-003 local result
+
+Completed locally on 2026-08-26; remote CI is still required before these backlog items become `DONE`.
+
+### Implemented
+
+- The WebMCP E2E now asserts exactly three foundational tools before profile creation and six tools after profile creation.
+- `compare_transits` uses the canonical `targetDates` input. The browser test also proves that the legacy `dates` input returns `isError: true`.
+- `inspect_chart` accepts one to four stable Zi Wei `focusIds`, writes them to shared workspace state, and produces a visible focused state in the custom plate.
+- Life-palace detection now uses the semantic palace name `命宫`. The iztro `isOriginalPalace` flag means `来因宫` and is no longer misinterpreted as the life palace.
+- CI and local development share the root `npm run test:webmcp` entry point.
+
+### Local validation
+
+- `npm run test`: passed (38 core, 2 prompt, 7 web tests)
+- `npm run typecheck`: passed
+- `npm run build:mcp`: passed
+- `npm run build:web`: passed
+- `npm run test:webmcp`: passed with exactly six registered tools after profile creation
+- Visual evidence: `artifacts/e2e/webmcp-ziwei-focus.png` shows separate, correctly labelled life- and body-palace focus states
+- Current web bundle: 1,745.79 kB JavaScript / 560.73 kB gzip, still with Vite's large-chunk warning
+
+### Engineering scan decision
+
+See [`ENGINEERING_SCAN.md`](./ENGINEERING_SCAN.md). Keep the deterministic calculation engines and the project-specific shared workspace. After the current P0 fixes are accepted, smoke-test migration from the custom registration hook to Google's small `use-webmcp-tool` package; do not add the heavier MCP-B polyfill stack unless a verified browser requirement needs it. Remove the unused `react-iztro` UI dependency in a separate cleanup.
+
+### Next gate
+
+Push the challenge branch, require all PR checks to pass, then mark P0-001 through P0-003 `DONE`. Do not merge `main` as part of this phase.
