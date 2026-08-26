@@ -1,14 +1,17 @@
 import { useId, useMemo } from "react";
 import { Globe2 } from "lucide-react";
+import { useI18n } from "@/lib/i18n";
 import { COMMON_TIME_ZONES, getBrowserTimeZone, isValidTimeZone } from "@/lib/timezone";
 
 interface TimeZoneFieldProps {
   value: string;
   onChange: (value: string) => void;
   label?: string;
+  labelKey?: "timezone.birth" | "timezone.divination";
 }
 
-export function TimeZoneField({ value, onChange, label = "出生地时区" }: TimeZoneFieldProps) {
+export function TimeZoneField({ value, onChange, label, labelKey = "timezone.birth" }: TimeZoneFieldProps) {
+  const { t } = useI18n();
   const listId = useId();
   const browserTimeZone = useMemo(() => getBrowserTimeZone(), []);
   const options = useMemo(
@@ -16,15 +19,16 @@ export function TimeZoneField({ value, onChange, label = "出生地时区" }: Ti
     [browserTimeZone]
   );
   const valid = isValidTimeZone(value);
+  const resolvedLabel = label ?? t(labelKey);
 
   return (
     <label className="field timezone-field">
-      <span><Globe2 size={14} /> {label}</span>
+      <span><Globe2 size={14} /> {resolvedLabel}</span>
       <input
         aria-invalid={!valid}
         autoComplete="off"
         list={listId}
-        placeholder="例如 Asia/Shanghai 或 America/Los_Angeles"
+        placeholder={t("timezone.placeholder")}
         spellCheck={false}
         value={value}
         onChange={(event) => onChange(event.target.value.trim())}
@@ -33,7 +37,7 @@ export function TimeZoneField({ value, onChange, label = "出生地时区" }: Ti
         {options.map((timezone) => <option key={timezone} value={timezone} />)}
       </datalist>
       <small className="field-helper">
-        {valid ? `使用 IANA 时区；当前浏览器为 ${browserTimeZone}` : "请输入有效的 IANA 时区名称。"}
+        {valid ? t("timezone.valid", { timezone: browserTimeZone }) : t("timezone.invalid")}
       </small>
     </label>
   );

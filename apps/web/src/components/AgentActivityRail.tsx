@@ -1,9 +1,10 @@
 import { Bot, RotateCcw, Trash2, UserRound } from "lucide-react";
+import { useI18n } from "@/lib/i18n";
 import { useWorkspace } from "@/lib/workspace";
 
-function formatActivityTime(value: string) {
+function formatActivityTime(value: string, locale: string) {
   try {
-    return new Intl.DateTimeFormat(undefined, { hour: "2-digit", minute: "2-digit" }).format(new Date(value));
+    return new Intl.DateTimeFormat(locale, { hour: "2-digit", minute: "2-digit" }).format(new Date(value));
   } catch {
     return "";
   }
@@ -11,13 +12,16 @@ function formatActivityTime(value: string) {
 
 export function AgentActivityRail() {
   const { state, dispatch } = useWorkspace();
+  const { locale, t } = useI18n();
   if (!state.activities.length) return null;
 
   return (
-    <aside className="agent-activity-rail" aria-label="人与 Agent 的工作区操作记录">
+    <aside className="agent-activity-rail" aria-label={t("activity.title")}>
       <header>
-        <div><Bot size={16} /><strong>Workspace activity</strong></div>
-        <button type="button" aria-label="清空操作记录" onClick={() => dispatch({ type: "clear-activities" })}><Trash2 size={14} /></button>
+        <div><Bot size={16} /><strong>{t("activity.title")}</strong></div>
+        <button type="button" aria-label={t("activity.clear")} title={t("activity.clear")} onClick={() => dispatch({ type: "clear-activities" })}>
+          <Trash2 size={14} />
+        </button>
       </header>
       <div className="agent-activity-list">
         {state.activities.map((activity) => (
@@ -26,7 +30,14 @@ export function AgentActivityRail() {
               {activity.actor === "agent" ? <Bot size={14} /> : <UserRound size={14} />}
             </span>
             <div>
-              <small>{activity.actor === "agent" ? "Agent" : activity.actor === "user" ? "You" : "System"} · {formatActivityTime(activity.createdAt)}</small>
+              <small>
+                {activity.actor === "agent"
+                  ? t("activity.agent")
+                  : activity.actor === "user"
+                    ? t("activity.you")
+                    : t("activity.system")}
+                {" · "}{formatActivityTime(activity.createdAt, locale)}
+              </small>
               <strong>{activity.label}</strong>
               {activity.detail ? <p>{activity.detail}</p> : null}
             </div>
@@ -34,7 +45,8 @@ export function AgentActivityRail() {
               <button
                 className="agent-activity-undo"
                 type="button"
-                title="撤销这次页面状态变化"
+                aria-label={t("activity.undo")}
+                title={t("activity.undo")}
                 onClick={() => dispatch({ type: "undo-activity", id: activity.id })}
               >
                 <RotateCcw size={13} />

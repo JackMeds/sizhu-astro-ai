@@ -1,5 +1,6 @@
 import { useEffect, useRef, type FormEvent } from "react";
 import { CalendarDays, Clock3, Compass, MapPin, Settings2, Sparkles } from "lucide-react";
+import { useI18n } from "@/lib/i18n";
 import { getBrowserTimeZone } from "@/lib/timezone";
 import { Button } from "./Button";
 import { TimeZoneField } from "./TimeZoneField";
@@ -119,7 +120,7 @@ function WheelColumn({ label, options, renderOption = String, value, onChange }:
       <select value={value} onChange={(event) => onChange(Number(event.target.value))} aria-label={label}>
         {options.map((option) => <option value={option} key={option}>{renderOption(option)}</option>)}
       </select>
-      <div className="wheel-list" role="listbox" aria-label={`${label}滚轮`} ref={listRef}>
+      <div className="wheel-list" role="listbox" aria-label={label} ref={listRef}>
         {options.map((option) => (
           <button
             aria-selected={option === value}
@@ -142,6 +143,7 @@ function WheelColumn({ label, options, renderOption = String, value, onChange }:
 }
 
 export function InputPanel({ error, form, onChange, onSubmit }: InputPanelProps) {
+  const { t, isEnglish } = useI18n();
   const initializedTimeZone = useRef(false);
   const selectedDate = dateParts(form.birthDateTime);
   const selectedTime = timePart(form.birthDateTime);
@@ -191,64 +193,70 @@ export function InputPanel({ error, form, onChange, onSubmit }: InputPanelProps)
     onSubmit();
   }
 
+  const currentTimeMode = form.trueSolarTime === "none"
+    ? t("form.time.current.standard")
+    : form.trueSolarTime === "longitude"
+      ? t("form.time.current.mean")
+      : t("form.time.current.apparent");
+
   return (
     <form className="panel input-panel input-panel-v2" onSubmit={submit}>
       <div className="panel-heading">
         <div>
-          <p className="eyeline">出生资料</p>
-          <h2>建立命盘</h2>
-          <span className="panel-subtitle">第一次使用只填基本资料即可；专业时间口径保持默认也能完成排盘。</span>
+          <p className="eyeline">{t("form.kicker")}</p>
+          <h2>{t("form.title")}</h2>
+          <span className="panel-subtitle">{t("form.subtitle")}</span>
         </div>
         <Compass className="input-heading-icon" size={22} />
       </div>
 
       <label className="field">
-        <span>怎么称呼这张命盘？ <small className="field-optional">可选</small></span>
-        <input placeholder="例如：自己 / 小明 / A" value={form.name} onChange={(event) => patch("name", event.target.value)} />
+        <span>{t("form.name.label")} <small className="field-optional">{t("form.optional")}</small></span>
+        <input placeholder={t("form.name.placeholder")} value={form.name} onChange={(event) => patch("name", event.target.value)} />
       </label>
 
       <div className="compact-field-grid">
         <div>
-          <div className="field-label-row"><span>性别</span><small>用于大运顺逆与紫微排盘</small></div>
-          <div className="segmented two-up" aria-label="性别">
-            <button type="button" className={form.gender === "male" ? "active" : ""} onClick={() => patch("gender", "male")}><strong>男</strong><small>乾造</small></button>
-            <button type="button" className={form.gender === "female" ? "active" : ""} onClick={() => patch("gender", "female")}><strong>女</strong><small>坤造</small></button>
+          <div className="field-label-row"><span>{t("form.gender")}</span><small>{t("form.gender.help")}</small></div>
+          <div className="segmented two-up" aria-label={t("form.gender")}>
+            <button type="button" className={form.gender === "male" ? "active" : ""} onClick={() => patch("gender", "male")}><strong>{t("form.gender.male")}</strong><small>{t("form.gender.qian")}</small></button>
+            <button type="button" className={form.gender === "female" ? "active" : ""} onClick={() => patch("gender", "female")}><strong>{t("form.gender.female")}</strong><small>{t("form.gender.kun")}</small></button>
           </div>
         </div>
         <label className="field">
-          <span>历法输入</span>
+          <span>{t("form.calendar")}</span>
           <select value={form.calendar} onChange={(event) => patch("calendar", event.target.value as FormState["calendar"])}>
-            <option value="solar">阳历 / 公历</option>
-            <option value="lunar">农历 / 阴历（实验）</option>
+            <option value="solar">{t("form.calendar.solar")}</option>
+            <option value="lunar">{t("form.calendar.lunar")}</option>
           </select>
         </label>
       </div>
 
       <div className="date-time-grid">
         <label className="field">
-          <span><CalendarDays size={14} /> 出生日期</span>
+          <span><CalendarDays size={14} /> {t("form.date")}</span>
           <input required type="date" value={datePart(form.birthDateTime)} onChange={(event) => patchDateTime(event.target.value, selectedTime || "00:00")} />
         </label>
         <label className="field">
-          <span><Clock3 size={14} /> 出生时间</span>
+          <span><Clock3 size={14} /> {t("form.time")}</span>
           <input required type="time" step="60" value={selectedTime} onChange={(event) => patchDateTime(datePart(form.birthDateTime), event.target.value)} />
-          <small className="field-helper">只记得“子时/午时”？可展开下面的十二时辰快捷选择。</small>
+          <small className="field-helper">{t("form.time.help")}</small>
         </label>
       </div>
 
       <TimeZoneField value={form.timezone} onChange={(timezone) => patch("timezone", timezone)} />
 
       <details className="precision-picker">
-        <summary><span><Settings2 size={15} /> 只记得传统时辰 / 需要精确调时？</span><small>可选</small></summary>
+        <summary><span><Settings2 size={15} /> {t("form.precision")}</span><small>{t("form.optional")}</small></summary>
         <div className="precision-content">
           <div className="wheel-picker date-wheel">
-            <WheelColumn label="年" options={years} value={selectedDate.year} onChange={(value) => patchDatePart("year", value)} renderOption={(value) => `${value}年`} />
-            <WheelColumn label="月" options={months} value={selectedDate.month} onChange={(value) => patchDatePart("month", value)} renderOption={(value) => `${value}月`} />
-            <WheelColumn label="日" options={dayOptions} value={selectedDate.day} onChange={(value) => patchDatePart("day", value)} renderOption={(value) => `${value}日`} />
+            <WheelColumn label={t("form.year")} options={years} value={selectedDate.year} onChange={(value) => patchDatePart("year", value)} renderOption={(value) => isEnglish ? String(value) : `${value}年`} />
+            <WheelColumn label={t("form.month")} options={months} value={selectedDate.month} onChange={(value) => patchDatePart("month", value)} renderOption={(value) => isEnglish ? String(value) : `${value}月`} />
+            <WheelColumn label={t("form.day")} options={dayOptions} value={selectedDate.day} onChange={(value) => patchDatePart("day", value)} renderOption={(value) => isEnglish ? String(value) : `${value}日`} />
           </div>
           <div className="wheel-picker time-wheel">
-            <WheelColumn label="时" options={hours} value={selectedHour} onChange={(value) => patchTimePart("hour", value)} renderOption={(value) => `${pad2(value)}点`} />
-            <WheelColumn label="分" options={minutes} value={selectedMinute} onChange={(value) => patchTimePart("minute", value)} renderOption={(value) => `${pad2(value)}分`} />
+            <WheelColumn label={t("form.hour")} options={hours} value={selectedHour} onChange={(value) => patchTimePart("hour", value)} renderOption={(value) => isEnglish ? pad2(value) : `${pad2(value)}点`} />
+            <WheelColumn label={t("form.minute")} options={minutes} value={selectedMinute} onChange={(value) => patchTimePart("minute", value)} renderOption={(value) => isEnglish ? pad2(value) : `${pad2(value)}分`} />
           </div>
           <div className="time-period-grid">
             {timePeriods.map((period) => (
@@ -269,51 +277,48 @@ export function InputPanel({ error, form, onChange, onSubmit }: InputPanelProps)
       </details>
 
       <details className="advanced-options time-settings-v3" open={form.trueSolarTime !== "none"}>
-        <summary>
-          <span>高级时间设置</span>
-          <small>{form.trueSolarTime === "none" ? "当前：标准时（默认推荐）" : form.trueSolarTime === "longitude" ? "当前：地方平太阳时" : "当前：真太阳时"}</small>
-        </summary>
+        <summary><span>{t("form.advancedTime")}</span><small>{currentTimeMode}</small></summary>
         <div className="advanced-inner">
-          <p className="advanced-explainer">不确定怎么选时，保持“标准时”即可。只有你明确需要经度修正或真太阳时时再修改。</p>
-          <div className="time-method-grid" aria-label="时间口径">
-            <button type="button" className={form.trueSolarTime === "none" ? "active" : ""} onClick={() => patch("trueSolarTime", "none")}><strong>标准时</strong><small>默认 · 钟表时间</small></button>
-            <button type="button" className={form.trueSolarTime === "longitude" ? "active" : ""} onClick={() => patch("trueSolarTime", "longitude")}><strong>地方平太阳时</strong><small>经度修正</small></button>
-            <button type="button" className={form.trueSolarTime === "apparent" ? "active" : ""} onClick={() => patch("trueSolarTime", "apparent")}><strong>真太阳时</strong><small>经度 + 均时差</small></button>
+          <p className="advanced-explainer">{t("form.time.explainer")}</p>
+          <div className="time-method-grid" aria-label={t("form.advancedTime")}>
+            <button type="button" className={form.trueSolarTime === "none" ? "active" : ""} onClick={() => patch("trueSolarTime", "none")}><strong>{t("form.time.standard")}</strong><small>{t("form.time.standard.help")}</small></button>
+            <button type="button" className={form.trueSolarTime === "longitude" ? "active" : ""} onClick={() => patch("trueSolarTime", "longitude")}><strong>{t("form.time.mean")}</strong><small>{t("form.time.mean.help")}</small></button>
+            <button type="button" className={form.trueSolarTime === "apparent" ? "active" : ""} onClick={() => patch("trueSolarTime", "apparent")}><strong>{t("form.time.apparent")}</strong><small>{t("form.time.apparent.help")}</small></button>
           </div>
           {form.trueSolarTime !== "none" ? (
             <div className="solar-location">
               <label className="field">
-                <span>出生地</span>
-                <input list="birthplace-options" placeholder="例如：烟台市 海阳市" value={form.locationName} onChange={(event) => selectLocation(event.target.value)} />
+                <span>{t("form.location")}</span>
+                <input list="birthplace-options" placeholder={t("form.location.placeholder")} value={form.locationName} onChange={(event) => selectLocation(event.target.value)} />
                 <datalist id="birthplace-options">{locations.map((location) => <option value={location.name} key={location.name} />)}</datalist>
               </label>
               <label className="field">
-                <span>经度</span>
-                <input inputMode="decimal" placeholder="例如 121.17" value={form.longitude} onChange={(event) => patch("longitude", event.target.value)} />
+                <span>{t("form.longitude")}</span>
+                <input inputMode="decimal" placeholder={t("form.longitude.placeholder")} value={form.longitude} onChange={(event) => patch("longitude", event.target.value)} />
               </label>
-              <div className="input-note compact"><MapPin size={15} />经度可手动填写，最终资料会保留修正量。</div>
+              <div className="input-note compact"><MapPin size={15} />{t("form.longitude.note")}</div>
             </div>
           ) : null}
         </div>
       </details>
 
       <details className="advanced-options">
-        <summary><span>专业排盘口径</span><small>绝大多数用户无需修改</small></summary>
+        <summary><span>{t("form.professional")}</span><small>{t("form.professional.help")}</small></summary>
         <div className="advanced-inner">
           <label className="field">
-            <span>子初换日 / 起运 sect</span>
+            <span>{t("form.sect")}</span>
             <select value={form.sect} onChange={(event) => patch("sect", Number(event.target.value) as 1 | 2)}>
-              <option value={1}>Sect 1 · 子初换日</option>
-              <option value={2}>Sect 2 · 子正换日</option>
+              <option value={1}>Sect 1 · 子初 / 23:00 boundary</option>
+              <option value={2}>Sect 2 · 子正 / 00:00 boundary</option>
             </select>
           </label>
-          <p>这个选项主要影响夜子时附近的日柱与起运结果；如果你没有明确门派要求，保持默认。</p>
+          <p>{t("form.sect.help")}</p>
         </div>
       </details>
 
-      <Button type="submit" variant="primary" className="generate-chart-button"><Sparkles size={17} />生成八字 + 紫微命盘</Button>
+      <Button type="submit" variant="primary" className="generate-chart-button"><Sparkles size={17} />{t("form.submit")}</Button>
       {error ? <p className="form-error">{error}</p> : null}
-      <div className="input-note"><CalendarDays size={16} />计算与历史记录都在当前浏览器本地完成；生成后可一键复制给你喜欢的 AI。</div>
+      <div className="input-note"><CalendarDays size={16} />{t("form.localNote")}</div>
     </form>
   );
 }

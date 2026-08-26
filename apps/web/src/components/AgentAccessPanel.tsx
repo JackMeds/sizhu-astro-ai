@@ -8,8 +8,9 @@ import {
   SquareTerminal,
   Wrench
 } from "lucide-react";
-import { copyText } from "@/lib/utils";
 import { showFeedback } from "@/lib/feedback";
+import { useI18n } from "@/lib/i18n";
+import { copyText } from "@/lib/utils";
 
 const siteUrl = "https://astrocopy.jackmeds.top/";
 const repoUrl = "https://github.com/JackMeds/sizhu-astro-ai";
@@ -43,6 +44,7 @@ const webMcpTools = [
 ];
 
 export function AgentAccessPanel() {
+  const { t } = useI18n();
   const [os, setOs] = useState<"unix" | "windows">("windows");
   const [tab, setTab] = useState<"webmcp" | "codex" | "generic">("webmcp");
   const webMcpAvailable = useMemo(() => {
@@ -55,9 +57,13 @@ export function AgentAccessPanel() {
   async function copy(value: string, label: string) {
     try {
       await copyText(value);
-      showFeedback("success", "已复制", `${label}已复制到剪贴板。`);
+      showFeedback("success", t("feedback.copied"), t("feedback.copiedDetail", { label }));
     } catch (error) {
-      showFeedback("error", "复制失败", error instanceof Error ? error.message : "请手动复制代码块内容。");
+      showFeedback(
+        "error",
+        t("feedback.copyFailed"),
+        error instanceof Error ? error.message : t("feedback.copyManual")
+      );
     }
   }
 
@@ -69,16 +75,24 @@ export function AgentAccessPanel() {
       <div className="agent-access-heading">
         <div>
           <p className="eyeline"><Wrench size={14} /> Agent / MCP Access</p>
-          <h2 id="agent-access-title">让 AI 和你操作同一个命盘工作区</h2>
-          <p>WebMCP 工具会复用当前网页的计算与状态：Agent 创建命盘、切换视图或比较年份时，变化会直接显示在页面上，并进入可撤销的工作区记录。本地 MCP 仍保留为标准 stdio 计算接口。</p>
+          <h2 id="agent-access-title">{t("agent.title")}</h2>
+          <p>{t("agent.description")}</p>
         </div>
-        <a className="agent-guide-link" href={`${import.meta.env.BASE_URL}guide/agent.html`}>完整接入指南 <ExternalLink size={15} /></a>
+        <a className="agent-guide-link" href={`${import.meta.env.BASE_URL}guide/agent.html`}>
+          {t("agent.fullGuide")} <ExternalLink size={15} />
+        </a>
       </div>
 
-      <div className="agent-access-tabs" role="tablist" aria-label="Agent 接入方式">
-        <button className={tab === "webmcp" ? "active" : ""} onClick={() => setTab("webmcp")} type="button"><MonitorSmartphone size={16} />网页 WebMCP</button>
-        <button className={tab === "codex" ? "active" : ""} onClick={() => setTab("codex")} type="button"><SquareTerminal size={16} />Codex 一键接入</button>
-        <button className={tab === "generic" ? "active" : ""} onClick={() => setTab("generic")} type="button"><Code2 size={16} />通用 MCP</button>
+      <div className="agent-access-tabs" role="tablist" aria-label={t("agent.tabs.label")}>
+        <button className={tab === "webmcp" ? "active" : ""} onClick={() => setTab("webmcp")} type="button">
+          <MonitorSmartphone size={16} />{t("agent.tabs.webmcp")}
+        </button>
+        <button className={tab === "codex" ? "active" : ""} onClick={() => setTab("codex")} type="button">
+          <SquareTerminal size={16} />{t("agent.tabs.codex")}
+        </button>
+        <button className={tab === "generic" ? "active" : ""} onClick={() => setTab("generic")} type="button">
+          <Code2 size={16} />{t("agent.tabs.generic")}
+        </button>
       </div>
 
       {tab === "webmcp" ? (
@@ -86,51 +100,69 @@ export function AgentAccessPanel() {
           <div className={`webmcp-status ${webMcpAvailable ? "ok" : "warn"}`}>
             <CheckCircle2 size={18} />
             <div>
-              <strong>{webMcpAvailable ? "当前浏览器检测到 WebMCP" : "当前浏览器未检测到原生 WebMCP"}</strong>
-              <span>{webMcpAvailable
-                ? "页面会自动注册 astrocopy.* 工具；建立命盘后，运限和视图工具会动态出现。"
-                : "网站仍可正常手动使用；WebMCP 属于实验性网页能力，也可以改用下面的本地 MCP。"}</span>
+              <strong>{webMcpAvailable ? t("agent.webmcp.detected") : t("agent.webmcp.notDetected")}</strong>
+              <span>{webMcpAvailable ? t("agent.webmcp.detectedHelp") : t("agent.webmcp.notDetectedHelp")}</span>
             </div>
           </div>
           <div className="agent-quick-grid">
             <article>
-              <small>1 · 打开网页</small>
-              <strong>直接使用当前站点</strong>
-              <p>支持 WebMCP 的浏览器或 Agent 打开网站后，会发现当前页面注册的协作工具。</p>
-              <button onClick={() => copy(siteUrl, "网站地址")} type="button"><Clipboard size={14} />复制网站地址</button>
+              <small>{t("agent.webmcp.step1")}</small>
+              <strong>{t("agent.webmcp.openSite")}</strong>
+              <p>{t("agent.webmcp.openSiteHelp")}</p>
+              <button onClick={() => copy(siteUrl, t("agent.copy.siteLabel"))} type="button">
+                <Clipboard size={14} />{t("agent.copy.site")}
+              </button>
             </article>
             <article>
-              <small>2 · 共享工作区工具</small>
-              <strong>{webMcpTools.length} 个主要入口</strong>
+              <small>{t("agent.webmcp.step2")}</small>
+              <strong>{t("agent.webmcp.toolCount", { count: webMcpTools.length })}</strong>
               <p className="tool-cloud">{webMcpTools.map((tool) => <code key={tool}>{tool}</code>)}</p>
-              <button onClick={() => copy(webMcpTools.join("\n"), "WebMCP 工具列表")} type="button"><Clipboard size={14} />复制工具列表</button>
+              <button onClick={() => copy(webMcpTools.join("\n"), t("agent.copy.toolsLabel"))} type="button">
+                <Clipboard size={14} />{t("agent.copy.tools")}
+              </button>
             </article>
           </div>
-          <p className="agent-note">创建命盘前只暴露基础入口；建立命盘后才注册查看、运限和比较工具。Agent 的页面改动会显示在右侧 Workspace activity 中，并可撤销。</p>
+          <p className="agent-note">{t("agent.webmcp.note")}</p>
         </div>
       ) : null}
 
       {tab === "codex" ? (
         <div className="agent-access-content">
-          <div className="os-switch" aria-label="选择操作系统">
+          <div className="os-switch" aria-label={t("agent.os.label")}>
             <button className={os === "windows" ? "active" : ""} onClick={() => setOs("windows")} type="button">Windows PowerShell</button>
             <button className={os === "unix" ? "active" : ""} onClick={() => setOs("unix")} type="button">macOS / Linux</button>
           </div>
-          <div className="command-card"><div><small>第一步 · 安装 / 更新并构建本地 MCP</small><button onClick={() => copy(installCommand, "安装命令")} type="button"><Clipboard size={14} />复制</button></div><pre>{installCommand}</pre></div>
-          <div className="command-card"><div><small>第二步 · 注册到 Codex</small><button onClick={() => copy(codexCommand, "Codex MCP 命令")} type="button"><Clipboard size={14} />复制</button></div><pre>{codexCommand}</pre></div>
-          <p className="agent-note">注册后可在 Codex 中用 <code>/mcp</code> 查看工具。服务器通过 stdio 启动，不需要额外端口。</p>
+          <div className="command-card">
+            <div><small>{t("agent.codex.install")}</small><button onClick={() => copy(installCommand, t("agent.copy.installLabel"))} type="button"><Clipboard size={14} />{t("common.copy")}</button></div>
+            <pre>{installCommand}</pre>
+          </div>
+          <div className="command-card">
+            <div><small>{t("agent.codex.register")}</small><button onClick={() => copy(codexCommand, t("agent.copy.codexLabel"))} type="button"><Clipboard size={14} />{t("common.copy")}</button></div>
+            <pre>{codexCommand}</pre>
+          </div>
+          <p className="agent-note">{t("agent.codex.note")}</p>
         </div>
       ) : null}
 
       {tab === "generic" ? (
         <div className="agent-access-content">
-          <div className="command-card"><div><small>先安装项目</small><button onClick={() => copy(installCommand, "安装命令")} type="button"><Clipboard size={14} />复制</button></div><pre>{installCommand}</pre></div>
-          <div className="command-card"><div><small>通用 stdio MCP 配置示例</small><button onClick={() => copy(genericJson, "MCP JSON 配置")} type="button"><Clipboard size={14} />复制</button></div><pre>{genericJson}</pre></div>
-          <p className="agent-note">把 <code>/ABSOLUTE/PATH/TO/sizhu-astro-ai</code> 替换成实际安装目录。Claude Desktop、Cursor 等使用 <code>mcpServers</code> 风格配置的客户端可以据此接入；其他客户端按其 stdio MCP 配置格式填写相同 command/args。</p>
+          <div className="command-card">
+            <div><small>{t("agent.generic.install")}</small><button onClick={() => copy(installCommand, t("agent.copy.installLabel"))} type="button"><Clipboard size={14} />{t("common.copy")}</button></div>
+            <pre>{installCommand}</pre>
+          </div>
+          <div className="command-card">
+            <div><small>{t("agent.generic.config")}</small><button onClick={() => copy(genericJson, t("agent.copy.configLabel"))} type="button"><Clipboard size={14} />{t("common.copy")}</button></div>
+            <pre>{genericJson}</pre>
+          </div>
+          <p className="agent-note">{t("agent.generic.note")}</p>
         </div>
       ) : null}
 
-      <div className="agent-access-footer"><span>想让 Agent 先读规则？</span><a href={`${import.meta.env.BASE_URL}agents.md`}>打开 agents.md</a><a href={repoUrl} target="_blank" rel="noreferrer">查看源码</a></div>
+      <div className="agent-access-footer">
+        <span>{t("agent.footer.question")}</span>
+        <a href={`${import.meta.env.BASE_URL}agents.md`}>{t("agent.footer.agents")}</a>
+        <a href={repoUrl} target="_blank" rel="noreferrer">{t("agent.footer.source")}</a>
+      </div>
     </section>
   );
 }

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Monitor, Moon, Sun } from "lucide-react";
+import { useI18n } from "@/lib/i18n";
 
 type Theme = "system" | "light" | "dark";
 
@@ -48,9 +49,9 @@ export function useTheme() {
   }, [theme]);
 
   const toggleTheme = () => {
-    setTheme((prev) => {
-      if (prev === "system") return "light";
-      if (prev === "light") return "dark";
+    setTheme((previous) => {
+      if (previous === "system") return "light";
+      if (previous === "light") return "dark";
       return "system";
     });
   };
@@ -60,14 +61,20 @@ export function useTheme() {
 
 export function ThemeToggle() {
   const { resolvedTheme, theme, toggleTheme } = useTheme();
-  const label = theme === "system" ? `跟随系统：${resolvedTheme === "light" ? "浅色" : "深色"}` : theme === "light" ? "浅色模式" : "深色模式";
+  const { t } = useI18n();
+  const label = theme === "system"
+    ? t("theme.system", { mode: resolvedTheme === "light" ? t("theme.light") : t("theme.dark") })
+    : theme === "light"
+      ? t("theme.lightMode")
+      : t("theme.darkMode");
 
   return (
     <button
       className="theme-toggle"
       onClick={toggleTheme}
       type="button"
-      aria-label={`当前${label}，点击切换主题`}
+      aria-label={t("theme.aria", { mode: label })}
+      title={t("theme.aria", { mode: label })}
     >
       {theme === "system" ? <Monitor /> : resolvedTheme === "light" ? <Sun /> : <Moon />}
       <span>{label}</span>

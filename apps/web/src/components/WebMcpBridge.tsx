@@ -4,6 +4,7 @@ import {
   type AstroInput,
   type AstroProfile
 } from "@sizhu/core";
+import { useI18n } from "@/lib/i18n";
 import { getBrowserTimeZone } from "@/lib/timezone";
 import { useWebMcpTool } from "@/lib/useWebMcpTool";
 import { useWorkspace, type WorkspaceView } from "@/lib/workspace";
@@ -48,9 +49,9 @@ function normalizeLocation(input: unknown): AstroInput["location"] {
   return typeof input === "object" && input !== null ? input as AstroInput["location"] : undefined;
 }
 
-function normalizeBirthInput(input: Record<string, unknown> = {}): AstroInput {
+function normalizeBirthInput(input: Record<string, unknown> = {}, fallbackName = "Untitled chart"): AstroInput {
   return {
-    name: typeof input.name === "string" && input.name.trim() ? input.name.trim() : "Untitled chart",
+    name: typeof input.name === "string" && input.name.trim() ? input.name.trim() : fallbackName,
     gender: input.gender === "female" ? "female" : "male",
     birthDateTime: typeof input.birthDateTime === "string" ? input.birthDateTime : "",
     calendar: input.calendar === "lunar" ? "lunar" : "solar",
@@ -98,6 +99,7 @@ function snapshotSummary(profile: AstroProfile, targetDate: string) {
 
 export function WebMcpBridge({ onProfileCreated }: WebMcpBridgeProps) {
   const { state, dispatch } = useWorkspace();
+  const { locale, isEnglish, t } = useI18n();
   const hasProfile = Boolean(state.profile);
 
   useWebMcpTool({
@@ -110,7 +112,8 @@ export function WebMcpBridge({ onProfileCreated }: WebMcpBridgeProps) {
       purpose: "Deterministic BaZi, Zi Wei Dou Shu, transit and Da Liu Ren computation shared by the visible page and an AI agent.",
       privacy: "Calculations and browser history remain local to the page. Data returned by a WebMCP tool is shared with the currently connected agent.",
       activeWorkspace: state.profile ? "birth-chart" : "empty",
-      activeView: state.activeView
+      activeView: state.activeView,
+      locale
     })
   });
 
@@ -121,7 +124,7 @@ export function WebMcpBridge({ onProfileCreated }: WebMcpBridgeProps) {
     inputSchema: birthInputSchema,
     execute: (input = {}) => {
       try {
-        const profile = createAstroProfile(normalizeBirthInput(input));
+        const profile = createAstroProfile(normalizeBirthInput(input, isEnglish ? "Untitled chart" : "未命名"));
         onProfileCreated(profile);
         window.setTimeout(() => document.getElementById("profile-result")?.scrollIntoView({ behavior: "smooth", block: "start" }), 100);
         return toolResult({
@@ -157,7 +160,8 @@ export function WebMcpBridge({ onProfileCreated }: WebMcpBridgeProps) {
       activeView: state.activeView,
       selectedTransitDate: state.selectedTransitDate,
       comparedTransitDates: state.comparedTransitDates,
-      focusedIds: state.focusedIds
+      focusedIds: state.focusedIds,
+      locale
     })
   });
 
@@ -183,8 +187,8 @@ export function WebMcpBridge({ onProfileCreated }: WebMcpBridgeProps) {
         type: "set-view",
         view,
         actor: "agent",
-        label: "Agent switched the chart view",
-        detail: view
+        label: t("activity.view.agent"),
+        detail: t(`result.tab.${view}`)
       });
       scrollToWorkspace(view);
       return toolResult({ status: "success", activeView: view, visibleChange: `The page opened the ${view} view.` });
@@ -214,7 +218,7 @@ export function WebMcpBridge({ onProfileCreated }: WebMcpBridgeProps) {
           type: "select-transit",
           date: targetDate,
           actor: "agent",
-          label: "Agent selected a transit date",
+          label: t("activity.transit.agent"),
           detail: targetDate
         });
         scrollToWorkspace("transit");
@@ -257,7 +261,7 @@ export function WebMcpBridge({ onProfileCreated }: WebMcpBridgeProps) {
           type: "compare-transits",
           dates: uniqueDates,
           actor: "agent",
-          label: "Agent compared transit dates",
+          label: t("activity.compare.agent"),
           detail: uniqueDates.join(" · ")
         });
         scrollToWorkspace("transit");
