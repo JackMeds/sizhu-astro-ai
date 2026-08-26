@@ -118,9 +118,9 @@ Completed and verified on 2026-08-26. P0-004 through P0-008 are `DONE`.
 
 Complete P0-009 and P0-010 next: remove hard-coded Chinese from the English demo route and add browser-level international-time coverage. Then run P0-011 in the real ChatGPT challenge browser before deployment work. Do not merge `main` as part of this phase.
 
-## Phase 3 — P0-009 and P0-010 local result
+## Phase 3 — P0-009 and P0-010 verified
 
-Completed locally on 2026-08-26; remote CI is required before these backlog items become `DONE`.
+Completed and verified on 2026-08-26. P0-009 and P0-010 are `DONE`.
 
 ### Implemented
 
@@ -140,6 +140,14 @@ Completed locally on 2026-08-26; remote CI is required before these backlog item
 - Visual evidence: `artifacts/e2e/webmcp-ziwei-focus.png` and `webmcp-human-pin.png` now show English headings and controls
 - Current web bundle: 1,751.30 kB JavaScript / 561.72 kB gzip, still with Vite's large-chunk warning
 
+### Remote validation
+
+- Commits under test: `5f082ab`, `56120b8`, and `6e4f294`
+- GitHub Actions run: [`32946700795`](https://github.com/JackMeds/sizhu-astro-ai/actions/runs/32946700795)
+- `validate`: passed in 29 seconds
+- `liuren-reference`: passed in 4 seconds
+- `webmcp-smoke`: passed in 51 seconds, including the English demo route and international-time matrix
+
 ### Next gate
 
-Run the complete local validation chain, push this slice, require all PR checks to pass, and then mark P0-009 and P0-010 `DONE`. P0-011 remains a manual real-ChatGPT-browser gate.
+P0-011 is the next manual gate: verify discovery and calls for all six tools in the real ChatGPT challenge browser and record the browser/version/result evidence. Do not deploy, merge `main`, or begin the submission freeze as part of that verification.
