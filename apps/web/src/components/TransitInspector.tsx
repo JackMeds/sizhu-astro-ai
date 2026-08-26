@@ -7,7 +7,8 @@ import {
   type BaziRelationParticipant,
   type ZiweiHoroscopeItem
 } from "@sizhu/core";
-import { CalendarSearch, GitCompareArrows, Orbit } from "lucide-react";
+import { CalendarSearch, GitCompareArrows, Orbit, Pin, PinOff } from "lucide-react";
+import { useI18n } from "@/lib/i18n";
 import { currentLocalDateTime } from "@/lib/timezone";
 import { useWorkspace } from "@/lib/workspace";
 
@@ -33,6 +34,7 @@ function scopeCard(label: string, item: ZiweiHoroscopeItem | undefined) {
 
 export function TransitInspector({ profile }: { profile: AstroProfile }) {
   const { state, dispatch } = useWorkspace();
+  const { t } = useI18n();
   const targetDate = state.selectedTransitDate ?? todayLocal(profile.input.timezone);
   const [error, setError] = useState("");
 
@@ -88,7 +90,18 @@ export function TransitInspector({ profile }: { profile: AstroProfile }) {
       type: "select-transit",
       date,
       actor: "user",
-      label: "You selected a transit date",
+      label: t("activity.transit.user"),
+      detail: date
+    });
+  }
+
+  function togglePinnedDate(date: string) {
+    const unpinning = state.pinnedTransitDate === date;
+    dispatch({
+      type: "pin-transit",
+      date: unpinning ? null : date,
+      actor: "user",
+      label: t(unpinning ? "activity.unpin.user" : "activity.pin.user"),
       detail: date
     });
   }
@@ -117,6 +130,15 @@ export function TransitInspector({ profile }: { profile: AstroProfile }) {
         <label className="transit-date"><span>目标日期</span><input required type="date" value={targetDate} onChange={(event) => selectDate(event.target.value)} /></label>
         <div><span>八字大运</span><strong>{result.dayun?.ganZhi || "未覆盖"}</strong><small>{result.dayun?.startAge ?? "-"}岁起</small></div>
         <div><span>流年</span><strong>{result.yearItem?.ganZhi || result.year}</strong><small>{result.yearItem?.tenGod || "十神未取"}</small></div>
+        <div className="transit-pinned-summary" data-pinned-transit={state.pinnedTransitDate ?? ""}>
+          <span>{t("transit.pinned")}</span>
+          <strong>{state.pinnedTransitDate ?? "—"}</strong>
+          {state.pinnedTransitDate ? (
+            <button data-action="unpin-transit" type="button" onClick={() => togglePinnedDate(state.pinnedTransitDate as string)}>
+              <PinOff size={12} />{t("transit.unpin")}
+            </button>
+          ) : <small>{t("transit.notPinned")}</small>}
+        </div>
       </div>
 
       <div className="transit-columns">
@@ -152,22 +174,42 @@ export function TransitInspector({ profile }: { profile: AstroProfile }) {
           <div className="transit-comparison-grid">
             {comparisons.map((item) => {
               if ("error" in item) {
-                return <article className="transit-comparison-card" key={item.date}><span>{item.date}</span><strong>计算失败</strong><p>{item.error}</p></article>;
+                return <article className="transit-comparison-card is-error" data-date={item.date} key={item.date}><span>{item.date}</span><strong>计算失败</strong><p>{item.error}</p></article>;
               }
               const snapshot = item.snapshot;
+              const isPinned = state.pinnedTransitDate === item.date;
               return (
-                <button
+                <article
                   className="transit-comparison-card"
                   data-selected={targetDate === item.date}
+                  data-pinned={isPinned}
+                  data-date={item.date}
                   key={item.date}
-                  onClick={() => selectDate(item.date)}
-                  type="button"
                 >
-                  <span>{item.date}</span>
-                  <strong>{snapshot.bazi.year?.ganZhi || snapshot.targetYear}</strong>
-                  <small>{snapshot.bazi.dayun?.ganZhi || "未覆盖大运"} · {snapshot.bazi.facts.length} 条关系事实</small>
-                  <p>紫微流年：{snapshot.ziwei.yearly.name || `${snapshot.ziwei.yearly.heavenlyStem}${snapshot.ziwei.yearly.earthlyBranch}`}</p>
-                </button>
+                  <button
+                    aria-label={`${t("transit.select")} ${item.date}`}
+                    className="transit-comparison-select"
+                    data-action="select-transit"
+                    onClick={() => selectDate(item.date)}
+                    type="button"
+                  >
+                    <span>{item.date}</span>
+                    <strong>{snapshot.bazi.year?.ganZhi || snapshot.targetYear}</strong>
+                    <small>{snapshot.bazi.dayun?.ganZhi || "未覆盖大运"} · {snapshot.bazi.facts.length} 条关系事实</small>
+                    <p>紫微流年：{snapshot.ziwei.yearly.name || `${snapshot.ziwei.yearly.heavenlyStem}${snapshot.ziwei.yearly.earthlyBranch}`}</p>
+                  </button>
+                  <button
+                    aria-label={`${t(isPinned ? "transit.unpin" : "transit.pin")} ${item.date}`}
+                    aria-pressed={isPinned}
+                    className="transit-comparison-pin"
+                    data-action="pin-transit"
+                    onClick={() => togglePinnedDate(item.date)}
+                    type="button"
+                  >
+                    {isPinned ? <PinOff size={12} /> : <Pin size={12} />}
+                    {t(isPinned ? "transit.unpin" : "transit.pin")}
+                  </button>
+                </article>
               );
             })}
           </div>

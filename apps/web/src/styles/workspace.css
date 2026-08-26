@@ -118,6 +118,30 @@
   border-top: 1px solid var(--border-subtle);
 }
 
+.transit-toolbar {
+  grid-template-columns: minmax(170px, 1.2fr) repeat(3, minmax(130px, .7fr));
+}
+
+.transit-pinned-summary button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  align-self: end;
+  width: fit-content;
+  padding: 4px 7px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text-secondary);
+  background: var(--surface);
+  font: 700 9px var(--font-sans);
+}
+
+.transit-pinned-summary button:hover {
+  color: var(--text-primary);
+  border-color: var(--selected-border);
+}
+
 .transit-comparison > header {
   display: flex;
   align-items: center;
@@ -141,9 +165,9 @@
 }
 
 .transit-comparison-card {
+  position: relative;
   display: grid;
-  gap: 6px;
-  padding: 11px;
+  overflow: hidden;
   border: 1px solid var(--border);
   border-radius: 12px;
   color: var(--text-primary);
@@ -151,10 +175,69 @@
   text-align: left;
 }
 
+.transit-comparison-card.is-error {
+  gap: 6px;
+  padding: 11px;
+}
+
 .transit-comparison-card:hover,
 .transit-comparison-card[data-selected="true"] {
   border-color: var(--selected-border);
   background: var(--selected-bg);
+}
+
+.transit-comparison-card[data-pinned="true"] {
+  outline: 2px solid color-mix(in srgb, var(--accent) 32%, transparent);
+  outline-offset: 1px;
+}
+
+.transit-comparison-select {
+  display: grid;
+  gap: 6px;
+  width: 100%;
+  padding: 11px 11px 42px;
+  border: 0;
+  color: inherit;
+  background: transparent;
+  text-align: left;
+}
+
+.transit-comparison-select > span,
+.transit-comparison-select > small {
+  color: var(--text-secondary);
+  font: 9px/1.4 var(--font-sans);
+}
+
+.transit-comparison-select > strong {
+  font: 750 18px var(--font-serif);
+}
+
+.transit-comparison-select > p {
+  margin: 0;
+  color: var(--text-secondary);
+  font: 9px/1.5 var(--font-sans);
+}
+
+.transit-comparison-pin {
+  position: absolute;
+  right: 8px;
+  bottom: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 7px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text-secondary);
+  background: var(--surface);
+  font: 750 9px var(--font-sans);
+}
+
+.transit-comparison-pin:hover,
+.transit-comparison-pin[aria-pressed="true"] {
+  color: var(--text-on-accent);
+  border-color: var(--accent);
+  background: var(--accent);
 }
 
 .transit-comparison-card > span,
@@ -182,5 +265,17 @@
   }
   .agent-activity-list {
     max-height: calc(42vh - 46px);
+  }
+}
+
+@media (max-width: 900px) {
+  .transit-toolbar {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .transit-toolbar {
+    grid-template-columns: 1fr;
   }
 }

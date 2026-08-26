@@ -25,7 +25,14 @@ export function AgentActivityRail() {
       </header>
       <div className="agent-activity-list">
         {state.activities.map((activity) => (
-          <article className={activity.undone ? "is-undone" : ""} data-actor={activity.actor} key={activity.id}>
+          <article
+            className={activity.undone ? "is-undone" : ""}
+            data-activity-id={activity.id}
+            data-activity-type={activity.type}
+            data-actor={activity.actor}
+            data-undone={activity.undone || undefined}
+            key={activity.id}
+          >
             <span className="agent-activity-icon">
               {activity.actor === "agent" ? <Bot size={14} /> : <UserRound size={14} />}
             </span>
@@ -44,6 +51,7 @@ export function AgentActivityRail() {
             {activity.undo && !activity.undone ? (
               <button
                 className="agent-activity-undo"
+                data-action="undo-activity"
                 type="button"
                 aria-label={t("activity.undo")}
                 title={t("activity.undo")}
