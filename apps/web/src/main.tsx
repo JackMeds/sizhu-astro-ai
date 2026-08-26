@@ -16,6 +16,7 @@ import "./styles/product-v3.css";
 import "./styles/product-v3-fixes.css";
 import "./styles/agent-access.css";
 import "./styles/workspace.css";
+import "./styles/ziwei-custom.css";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
