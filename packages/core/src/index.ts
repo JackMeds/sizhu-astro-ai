@@ -40,7 +40,13 @@ export type {
 export { createZiweiProfile, createZiweiHoroscope } from "./ziwei.js";
 export { createTransitSnapshot } from "./transit.js";
 export { createDivinationProfile } from "./divination.js";
-export { createTimeProfile, getEffectiveBirthDate } from "./time.js";
+export {
+  createTimeProfile,
+  getEffectiveBirthDate,
+  getTimeZoneOffsetMinutes,
+  zonedLocalDateTimeToOffset
+} from "./time.js";
+export type { TimeZoneDisambiguation } from "./time.js";
 export { createAstroProfile } from "./profile.js";
 export type {
   AiReadableBlock,

@@ -1,6 +1,11 @@
 import type { AstroInput, TimeProfile, TrueSolarTimeMode, WallClockTime } from "./types.js";
 
 const SHICHEN = ["子", "丑", "寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥"] as const;
+const FORMATTER_CACHE = new Map<string, Intl.DateTimeFormat>();
+
+export type TimeZoneDisambiguation = "earlier" | "later";
+
+type WallClockParts = Pick<WallClockTime, "year" | "month" | "day" | "hour" | "minute" | "second">;
 
 function pad2(value: number) {
   return String(value).padStart(2, "0");
@@ -18,22 +23,126 @@ function parseOffsetMinutes(value: string): number | null {
   return sign * (Number(match[2]) * 60 + Number(match[3]));
 }
 
-function timezoneDefaultOffsetMinutes(timezone: string) {
-  if (timezone === "Asia/Shanghai" || timezone === "Asia/Chongqing" || timezone === "Asia/Hong_Kong" || timezone === "Asia/Macau" || timezone === "Asia/Taipei") return 480;
-  return 0;
+function parseWallClockParts(value: string): WallClockParts {
+  const match = value.match(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})(?::(\d{2}))?/);
+  if (!match) throw new Error(`无法解析本地日期时间：${value}`);
+  const parts = {
+    year: Number(match[1]),
+    month: Number(match[2]),
+    day: Number(match[3]),
+    hour: Number(match[4]),
+    minute: Number(match[5]),
+    second: Number(match[6] ?? 0)
+  };
+  const validDate = parts.month >= 1 && parts.month <= 12 && parts.day >= 1 && parts.day <= daysInMonth(parts.year, parts.month);
+  const validTime = parts.hour >= 0 && parts.hour <= 23 && parts.minute >= 0 && parts.minute <= 59 && parts.second >= 0 && parts.second <= 59;
+  if (!validDate || !validTime) throw new Error(`无效的本地日期时间：${value}`);
+  return parts;
+}
+
+function getFormatter(timezone: string) {
+  const cached = FORMATTER_CACHE.get(timezone);
+  if (cached) return cached;
+  let formatter: Intl.DateTimeFormat;
+  try {
+    formatter = new Intl.DateTimeFormat("en-CA", {
+      timeZone: timezone,
+      calendar: "iso8601",
+      numberingSystem: "latn",
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hourCycle: "h23"
+    });
+  } catch {
+    throw new Error(`无效的 IANA 时区：${timezone}`);
+  }
+  FORMATTER_CACHE.set(timezone, formatter);
+  return formatter;
+}
+
+function partsAtInstant(timezone: string, epochMilliseconds: number): WallClockParts {
+  const values: Partial<Record<Intl.DateTimeFormatPartTypes, string>> = {};
+  for (const part of getFormatter(timezone).formatToParts(new Date(epochMilliseconds))) {
+    if (part.type !== "literal") values[part.type] = part.value;
+  }
+  return {
+    year: Number(values.year),
+    month: Number(values.month),
+    day: Number(values.day),
+    hour: Number(values.hour),
+    minute: Number(values.minute),
+    second: Number(values.second)
+  };
+}
+
+function sameWallClock(left: WallClockParts, right: WallClockParts) {
+  return left.year === right.year && left.month === right.month && left.day === right.day
+    && left.hour === right.hour && left.minute === right.minute && left.second === right.second;
+}
+
+function offsetAtInstant(timezone: string, epochMilliseconds: number) {
+  const rounded = Math.trunc(epochMilliseconds / 1000) * 1000;
+  const parts = partsAtInstant(timezone, rounded);
+  const representedAsUtc = Date.UTC(parts.year, parts.month - 1, parts.day, parts.hour, parts.minute, parts.second);
+  return Math.round((representedAsUtc - rounded) / 60000);
+}
+
+function resolveWallClock(timezone: string, wall: WallClockParts, disambiguation: TimeZoneDisambiguation) {
+  const wallAsUtc = Date.UTC(wall.year, wall.month - 1, wall.day, wall.hour, wall.minute, wall.second);
+  const possibleOffsets = new Set<number>();
+  for (let hours = -48; hours <= 48; hours += 6) {
+    possibleOffsets.add(offsetAtInstant(timezone, wallAsUtc + hours * 3600000));
+  }
+  const candidates = Array.from(possibleOffsets)
+    .map((offsetMinutes) => ({ offsetMinutes, epochMilliseconds: wallAsUtc - offsetMinutes * 60000 }))
+    .filter((candidate) => sameWallClock(partsAtInstant(timezone, candidate.epochMilliseconds), wall))
+    .sort((left, right) => left.epochMilliseconds - right.epochMilliseconds);
+
+  if (!candidates.length) {
+    throw new Error(`本地时间 ${formatWallClock(wall)} 在时区 ${timezone} 中不存在，可能落在夏令时跳转区间。`);
+  }
+  return disambiguation === "later" ? candidates[candidates.length - 1] : candidates[0];
+}
+
+function formatWallClock(value: WallClockParts) {
+  return `${value.year}-${pad2(value.month)}-${pad2(value.day)}T${pad2(value.hour)}:${pad2(value.minute)}:${pad2(value.second)}`;
+}
+
+function formatOffset(offsetMinutes: number) {
+  const sign = offsetMinutes < 0 ? "-" : "+";
+  const absolute = Math.abs(offsetMinutes);
+  return `${sign}${pad2(Math.floor(absolute / 60))}:${pad2(absolute % 60)}`;
+}
+
+export function getTimeZoneOffsetMinutes(
+  timezone: string,
+  localDateTime: string,
+  disambiguation: TimeZoneDisambiguation = "earlier"
+) {
+  const wall = parseWallClockParts(localDateTime);
+  return resolveWallClock(timezone, wall, disambiguation).offsetMinutes;
+}
+
+export function zonedLocalDateTimeToOffset(
+  localDateTime: string,
+  timezone: string,
+  disambiguation: TimeZoneDisambiguation = "earlier"
+) {
+  if (/Z$|[+-]\d{2}:\d{2}$/.test(localDateTime)) return localDateTime;
+  const wall = parseWallClockParts(localDateTime);
+  const resolved = resolveWallClock(timezone, wall, disambiguation);
+  return `${formatWallClock(wall)}${formatOffset(resolved.offsetMinutes)}`;
 }
 
 function parseWallClock(input: AstroInput): { wall: WallClockTime; offsetMinutes: number } {
-  const match = input.birthDateTime.match(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})(?::(\d{2}))?/);
-  if (!match) throw new Error(`无法解析出生时间：${input.birthDateTime}`);
-  const year = Number(match[1]);
-  const month = Number(match[2]);
-  const day = Number(match[3]);
-  const hour = Number(match[4]);
-  const minute = Number(match[5]);
-  const second = Number(match[6] ?? 0);
-  const offsetMinutes = parseOffsetMinutes(input.birthDateTime) ?? timezoneDefaultOffsetMinutes(input.timezone);
-  return { wall: buildWallClock(year, month, day, hour, minute, second), offsetMinutes };
+  const parsed = parseWallClockParts(input.birthDateTime);
+  const offsetMinutes = parseOffsetMinutes(input.birthDateTime)
+    ?? getTimeZoneOffsetMinutes(input.timezone, input.birthDateTime);
+  return { wall: buildWallClock(parsed.year, parsed.month, parsed.day, parsed.hour, parsed.minute, parsed.second), offsetMinutes };
 }
 
 function shichenFromHour(hour: number) {
