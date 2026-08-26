@@ -109,6 +109,14 @@ try {
   }
   const chartText = await page.locator("body").innerText();
   assert(chartText.includes("Alex Demo"), "Created profile is not visible in the page");
+  const readyText = await page.locator(".result-ready-card").innerText();
+  assert(readyText.includes("The chart has been computed."), "English result-ready title is missing");
+  assert(!readyText.includes("命盘已经算好了"), "English result-ready card still contains its hard-coded Chinese title");
+  const resultTabsText = await page.locator(".progressive-tab-list").innerText();
+  for (const label of ["Overview", "BaZi", "Zi Wei", "Transits", "Audit"]) {
+    assert(resultTabsText.includes(label), `English result tab is missing: ${label}`);
+  }
+  assert(!resultTabsText.includes("概览"), "English result tabs still contain hard-coded Chinese controls");
 
   const transitResult = await callTool("astrocopy.inspect_transit", { targetDate: "2028-06-15" });
   assert(transitResult?.isError !== true, "Valid inspect_transit call failed");
@@ -116,6 +124,10 @@ try {
   assert(
     await page.locator("#transit-inspector input[type='date']").inputValue() === "2028-06-15",
     "inspect_transit did not select the requested visible date"
+  );
+  assert(
+    (await page.locator("#transit-inspector").innerText()).includes("Linked target date"),
+    "English transit workspace title is missing"
   );
 
   const inspectResult = await callTool("astrocopy.inspect_chart", {
@@ -140,6 +152,9 @@ try {
   await page.locator(".ziwei-custom-plate").screenshot({
     path: path.join(outputDirectory, "webmcp-ziwei-focus.png")
   });
+  const ziweiText = await page.locator(".ziwei-custom-plate").innerText();
+  assert(ziweiText.includes("Zi Wei Dou Shu · Twelve Palaces"), "English Zi Wei title is missing");
+  assert(!ziweiText.includes("紫微斗数十二宫\n"), "English Zi Wei panel still uses its hard-coded Chinese heading");
 
   const legacyCompareResult = await callTool("astrocopy.compare_transits", {
     dates: ["2027-06-15", "2029-06-15", "2032-06-15"]
@@ -225,6 +240,66 @@ try {
     stateAfterUndo.recentActivities?.some((activity) => activity.type === "compare-transits" && activity.undone === true),
     "Workspace state did not expose the undone comparison activity"
   );
+
+  const auditResult = await callTool("astrocopy.inspect_chart", { view: "audit" });
+  assert(auditResult?.isError !== true, "Valid audit view call failed");
+  await page.locator(".engine-audit").waitFor({ state: "visible", timeout: 15_000 });
+  assert(
+    (await page.locator(".engine-audit").innerText()).includes("Calculation evidence and uncertainty"),
+    "English calculation-audit title is missing"
+  );
+
+  for (const scenario of [
+    {
+      name: "New York DST",
+      birthDateTime: "1996-07-01T10:30:00",
+      timezone: "America/New_York",
+      expectedOffsetMinutes: -240
+    },
+    {
+      name: "Kolkata Half Hour",
+      birthDateTime: "1996-07-01T10:30:00",
+      timezone: "Asia/Kolkata",
+      expectedOffsetMinutes: 330
+    },
+    {
+      name: "Kathmandu Quarter Hour",
+      birthDateTime: "1996-07-01T10:30:00",
+      timezone: "Asia/Kathmandu",
+      expectedOffsetMinutes: 345
+    }
+  ]) {
+    const result = await callTool("astrocopy.create_birth_chart", {
+      name: scenario.name,
+      gender: "female",
+      birthDateTime: scenario.birthDateTime,
+      calendar: "solar",
+      timezone: scenario.timezone,
+      trueSolarTime: "none",
+      sect: 1
+    });
+    assert(result?.isError !== true, `International chart failed for ${scenario.timezone}`);
+    const payload = parseToolJson(result);
+    assert(payload.chart?.timezone === scenario.timezone, `Tool result lost timezone ${scenario.timezone}`);
+    assert(
+      payload.chart?.timezoneOffsetMinutes === scenario.expectedOffsetMinutes,
+      `Expected ${scenario.expectedOffsetMinutes} minutes for ${scenario.timezone}, received ${payload.chart?.timezoneOffsetMinutes}`
+    );
+    await page.waitForFunction((name) => document.body.innerText.includes(name), scenario.name);
+  }
+
+  const dstGapResult = await callTool("astrocopy.create_birth_chart", {
+    name: "Invalid DST Gap",
+    gender: "female",
+    birthDateTime: "2026-03-08T02:30:00",
+    calendar: "solar",
+    timezone: "America/New_York",
+    trueSolarTime: "none",
+    sect: 1
+  });
+  assert(dstGapResult?.isError === true, "Nonexistent New York DST wall time was not rejected");
+  const stateAfterDstGap = parseToolJson(await callTool("astrocopy.get_workspace_state"));
+  assert(stateAfterDstGap.chart?.name === "Kathmandu Quarter Hour", "Rejected DST gap corrupted the current chart");
 
   console.log(`WebMCP smoke test passed with ${names.length} registered tools.`);
   console.log(`Registered: ${names.join(", ")}`);

@@ -124,7 +124,9 @@ export function WebMcpBridge({ onProfileCreated }: WebMcpBridgeProps) {
           chart: {
             name: profile.input.name,
             timezone: profile.input.timezone,
-            effectiveTimeMode: profile.time.effective.label,
+            timezoneOffsetMinutes: profile.time.timezoneOffsetMinutes,
+            standardLocalTime: profile.time.standard.isoLocal,
+            effectiveTimeMode: profile.time.effective.mode,
             pillars: profile.bazi.pillars.map((pillar) => pillar.ganZhi)
           },
           warnings: profile.warnings
