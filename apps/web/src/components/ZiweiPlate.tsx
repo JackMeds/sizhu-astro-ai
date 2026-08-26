@@ -1,8 +1,11 @@
 import type { CSSProperties } from "react";
 import type { AstroProfile, ZiweiPalace, ZiweiStar } from "@sizhu/core";
+import { useI18n } from "@/lib/i18n";
+import { getZiweiPalaceFocusIds } from "@/lib/ziweiFocus";
 
 interface ZiweiPlateProps {
   profile: AstroProfile;
+  focusedIds?: string[];
 }
 
 const palacePositions = [
@@ -45,19 +48,42 @@ function starLabel(star: ZiweiStar) {
   ].join("");
 }
 
-function PalaceCard({ palace, index }: { palace: ZiweiPalace; index: number }) {
+function PalaceCard({
+  palace,
+  index,
+  focusedIds,
+  focusLabel
+}: {
+  palace: ZiweiPalace;
+  index: number;
+  focusedIds: string[];
+  focusLabel: string;
+}) {
   const majorStars = palace.majorStars.slice(0, 4);
   const supportingStars = [...palace.minorStars, ...palace.adjectiveStars].slice(0, 5);
   const style = { gridArea: palacePositions[index] } as CSSProperties;
+  const semanticIds = getZiweiPalaceFocusIds(palace);
+  const isLifePalace = semanticIds.includes("ziwei-palace-life");
+  const isAgentFocused = semanticIds.some((id) => focusedIds.includes(id));
+  const primarySemanticId = semanticIds.includes("ziwei-palace-life")
+    ? "ziwei-palace-life"
+    : semanticIds.includes("ziwei-palace-body")
+      ? "ziwei-palace-body"
+      : semanticIds[0];
 
   return (
     <article
-      className="ziwei-palace-card"
+      className={`ziwei-palace-card${isAgentFocused ? " is-agent-focused" : ""}`}
+      id={primarySemanticId}
+      data-agent-focused={isAgentFocused || undefined}
       data-body-palace={palace.isBodyPalace || undefined}
-      data-life-palace={palace.isOriginalPalace || undefined}
+      data-focus-ids={semanticIds.join(" ") || undefined}
+      data-life-palace={isLifePalace || undefined}
+      data-original-palace={palace.isOriginalPalace || undefined}
       style={style}
       aria-label={`${palace.name} ${palace.heavenlyStem}${palace.earthlyBranch}`}
     >
+      {isAgentFocused ? <span className="ziwei-agent-focus-label">{focusLabel}</span> : null}
       <header>
         <div>
           <strong>{palace.name || `第 ${index + 1} 宫`}</strong>
@@ -67,8 +93,9 @@ function PalaceCard({ palace, index }: { palace: ZiweiPalace; index: number }) {
       </header>
 
       <div className="ziwei-palace-badges">
-        {palace.isOriginalPalace ? <b>命</b> : null}
+        {isLifePalace ? <b>命</b> : null}
         {palace.isBodyPalace ? <b>身</b> : null}
+        {palace.isOriginalPalace ? <b className="is-original">因</b> : null}
         {palace.decadal ? <em>{palace.decadal.range[0]}–{palace.decadal.range[1]}</em> : null}
       </div>
 
@@ -94,7 +121,8 @@ function PalaceCard({ palace, index }: { palace: ZiweiPalace; index: number }) {
   );
 }
 
-export function ZiweiPlate({ profile }: ZiweiPlateProps) {
+export function ZiweiPlate({ profile, focusedIds = [] }: ZiweiPlateProps) {
+  const { t } = useI18n();
   const calculation = profile.ziwei.calculation;
   if (!calculation || !profile.ziwei.available) {
     return (
@@ -122,7 +150,15 @@ export function ZiweiPlate({ profile }: ZiweiPlateProps) {
       </div>
 
       <div className="ziwei-custom-board">
-        {palaces.map((palace, index) => <PalaceCard key={`${palace.index}-${palace.name}`} palace={palace} index={index} />)}
+        {palaces.map((palace, index) => (
+          <PalaceCard
+            key={`${palace.index}-${palace.name}`}
+            palace={palace}
+            index={index}
+            focusedIds={focusedIds}
+            focusLabel={t("ziwei.focus.agent")}
+          />
+        ))}
 
         <section className="ziwei-center-card" aria-label="紫微斗数命盘中央资料">
           <p>ASTROCOPY · 紫微</p>
@@ -144,6 +180,7 @@ export function ZiweiPlate({ profile }: ZiweiPlateProps) {
       <div className="ziwei-legend" aria-label="紫微命盘图例">
         <span><b>命</b> 命宫</span>
         <span><b>身</b> 身宫</span>
+        <span><b className="is-original">因</b> 来因宫</span>
         <span><i>禄</i><i>权</i><i>科</i><i>忌</i> 生年四化</span>
         <small>星曜、四化与大限来自标准化计算数据；界面不直接给出吉凶结论。</small>
       </div>

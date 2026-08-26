@@ -70,6 +70,13 @@ Show that AstroCopy is not merely a chart API. The Agent and the person manipula
 
 - `astrocopy.inspect_chart`
 
+```json
+{
+  "view": "ziwei",
+  "focusIds": ["ziwei-palace-life", "ziwei-palace-body"]
+}
+```
+
 **Visible page change**
 
 - Zi Wei tab opens.
@@ -85,6 +92,12 @@ Show that AstroCopy is not merely a chart API. The Agent and the person manipula
 **Expected call**
 
 - `astrocopy.compare_transits`
+
+```json
+{
+  "targetDates": ["2027-06-15", "2029-06-15", "2032-06-15"]
+}
+```
 
 **Visible page change**
 

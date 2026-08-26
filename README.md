@@ -61,6 +61,10 @@ The challenge workspace uses a small task-oriented surface rather than exposing 
 - `astrocopy.get_workspace_state`
 - Da Liu Ren tools are registered only when that workspace is relevant.
 
+The Zi Wei inspection contract uses stable semantic `focusIds`, for example
+`["ziwei-palace-life", "ziwei-palace-body"]`. Transit comparison uses the single
+canonical input field `targetDates`.
+
 The existing local stdio MCP server remains available for clients such as Codex and other MCP-compatible desktop tools.
 
 ## Core capabilities

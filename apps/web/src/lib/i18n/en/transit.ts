@@ -41,6 +41,7 @@ export const transit = {
   "activity.transit.user": "You selected a transit date",
   "activity.transit.agent": "Agent selected a transit date",
   "activity.compare.agent": "Agent compared transit dates",
+  "activity.focus.agent": "Agent focused Zi Wei palaces",
   "time.mode.none": "Standard time",
   "time.mode.longitude": "Local mean solar time",
   "time.mode.apparent": "Apparent solar time",

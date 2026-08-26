@@ -29,10 +29,11 @@
 
 ### 0.2 截止时间
 
-官方提交截止时间为：
+官方页面给出的截止时间存在冲突：
 
-- 2026-09-03 17:00 PT
-- 北京时间 2026-09-04 08:00
+- OpenAI 活动页：2026-09-03 17:00 PT
+- Devpost Official Rules：2026-09-03 13:00 Pacific Time，并明确规则文本优先
+- 执行时一律采用更早的规则截止：**北京时间 2026-09-04 04:00**
 
 项目内部硬截止建议设为：
 
@@ -238,13 +239,7 @@
 }
 ```
 
-当前 smoke 使用：
-
-```json
-{
-  "dates": [...]
-}
-```
+当前 smoke 错误地把输入数组放在旧字段 `dates` 下；该写法仅是已知失败原因，不是可复制的工具示例。
 
 必须统一为 `targetDates`。所有文档、示例、测试和 Agent Guide 必须使用同一个字段名。
 
@@ -255,7 +250,7 @@
 ```text
 astrocopy.inspect_chart
 view = ziwei
-focus = life-palace, body-palace
+focusIds = ziwei-palace-life, ziwei-palace-body
 ```
 
 但当前工具 schema 主要只处理 `view`，没有可靠地 dispatch `focus-items`；紫微宫位组件也必须真正响应 `focusedIds`。
@@ -557,7 +552,7 @@ interface WorkspaceUndo {
 ```json
 {
   "view": "ziwei",
-  "focusIds": ["life-palace", "body-palace"]
+  "focusIds": ["ziwei-palace-life", "ziwei-palace-body"]
 }
 ```
 

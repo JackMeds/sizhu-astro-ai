@@ -95,7 +95,7 @@ export function ProfileResults({ profile }: ProfileResultsProps) {
         <Tabs.Content className="progressive-tab-content" value="ziwei">
           <motion.div className="result-section-stack" animate={{ opacity: 1, y: 0 }} initial={{ opacity: 0, y: 8 }} transition={{ duration: 0.25 }}>
             <ZiweiSummaryPanel profile={profile} />
-            <ZiweiPlate profile={profile} />
+            <ZiweiPlate profile={profile} focusedIds={state.focusedIds} />
           </motion.div>
         </Tabs.Content>
 

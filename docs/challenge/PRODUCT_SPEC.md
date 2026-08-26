@@ -141,7 +141,8 @@ English-speaking users who need clear terminology, IANA time zones, daylight-sav
 `astrocopy.inspect_chart`
 
 - selects overview, BaZi, Zi Wei, transits, or audit;
-- focuses relevant elements;
+- accepts stable semantic `focusIds`, including `ziwei-palace-life` and `ziwei-palace-body` in the Zi Wei view;
+- visibly emphasizes the matching custom-renderer palace cards;
 - does not return the full raw profile by default.
 
 ### Transit
@@ -156,7 +157,7 @@ English-speaking users who need clear terminology, IANA time zones, daylight-sav
 
 `astrocopy.compare_transits`
 
-- accepts two to five dates;
+- accepts two to five dates through the canonical `targetDates` field;
 - creates or updates the visible comparison set;
 - keeps the user's manually pinned date when possible;
 - records one reversible Agent action.

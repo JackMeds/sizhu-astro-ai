@@ -22,6 +22,21 @@ AstroCopy is a deterministic BaZi, Zi Wei Dou Shu, transit, apparent-solar-time,
 
 Human clicks and Agent calls use the same reducer. After changing the page, report the visible change briefly. Important Agent mutations should create a visible activity item and remain undoable.
 
+Use stable semantic focus IDs and the canonical comparison field:
+
+```json
+{
+  "view": "ziwei",
+  "focusIds": ["ziwei-palace-life", "ziwei-palace-body"]
+}
+```
+
+```json
+{
+  "targetDates": ["2027-06-15", "2029-06-15", "2032-06-15"]
+}
+```
+
 ## Canonical APIs
 
 ```ts

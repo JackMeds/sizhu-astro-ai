@@ -22,6 +22,21 @@ AstroCopy 是确定性优先的八字、紫微斗数、运限、真太阳时和�
 
 人工点击和 Agent 调用使用同一个 reducer。Agent 改变页面后，应简要说明可见变化；重要操作要进入活动记录并可撤销。
 
+紫微聚焦必须使用稳定语义 ID，日期比较必须使用统一字段：
+
+```json
+{
+  "view": "ziwei",
+  "focusIds": ["ziwei-palace-life", "ziwei-palace-body"]
+}
+```
+
+```json
+{
+  "targetDates": ["2027-06-15", "2029-06-15", "2032-06-15"]
+}
+```
+
 ## 核心 API
 
 ```ts

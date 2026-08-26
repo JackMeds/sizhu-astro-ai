@@ -57,6 +57,33 @@
   background: color-mix(in srgb, var(--success) 6%, var(--surface-strong));
 }
 
+.ziwei-palace-card.is-agent-focused {
+  z-index: 3;
+  border-color: var(--accent);
+  outline: 3px solid color-mix(in srgb, var(--accent) 32%, transparent);
+  outline-offset: 2px;
+  background: color-mix(in srgb, var(--accent) 9%, var(--surface-strong));
+  box-shadow: 0 12px 30px color-mix(in srgb, var(--accent) 20%, transparent);
+}
+
+.ziwei-agent-focus-label {
+  position: absolute;
+  z-index: 2;
+  top: 6px;
+  right: 6px;
+  padding: 3px 6px;
+  border-radius: 999px;
+  color: var(--text-on-accent);
+  background: var(--accent);
+  font: 800 7px/1 var(--font-sans);
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+
+.ziwei-palace-card.is-agent-focused > header {
+  padding-right: 58px;
+}
+
 .ziwei-palace-card > header {
   display: flex;
   align-items: flex-start;
@@ -104,6 +131,13 @@
   color: var(--text-on-accent);
   background: var(--accent);
   font: 800 9px var(--font-sans);
+}
+
+.ziwei-palace-badges b.is-original,
+.ziwei-legend b.is-original {
+  color: var(--text-primary);
+  background: color-mix(in srgb, var(--accent-bright) 18%, var(--surface-subtle));
+  border: 1px solid color-mix(in srgb, var(--accent-bright) 35%, var(--border));
 }
 
 .ziwei-palace-badges em {

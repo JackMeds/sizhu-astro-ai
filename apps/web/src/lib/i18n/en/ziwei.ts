@@ -15,6 +15,7 @@ export const ziwei = {
   "ziwei.legend.body": "Body Palace",
   "ziwei.legend.mutagen": "Natal mutagens",
   "ziwei.legend.note": "Stars, mutagens and decadal ranges come from normalized calculation data. The interface does not make outcome claims.",
+  "ziwei.focus.agent": "Agent focus",
   "ziwei.fiveElementsClass": "Five-element class",
   "ziwei.summary.aria": "Normalized Zi Wei Dou Shu summary",
   "ziwei.summary.title": "Normalized Zi Wei structure",

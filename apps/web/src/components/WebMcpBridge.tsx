@@ -8,6 +8,12 @@ import { useI18n } from "@/lib/i18n";
 import { getBrowserTimeZone } from "@/lib/timezone";
 import { useWebMcpTool } from "@/lib/useWebMcpTool";
 import { useWorkspace, type WorkspaceView } from "@/lib/workspace";
+import {
+  isZiweiFocusId,
+  normalizeZiweiFocusIds,
+  ZIWEI_FOCUS_IDS,
+  type ZiweiFocusId
+} from "@/lib/ziweiFocus";
 
 interface WebMcpBridgeProps {
   onProfileCreated: (profile: AstroProfile) => void;
@@ -173,7 +179,15 @@ export function WebMcpBridge({ onProfileCreated }: WebMcpBridgeProps) {
       type: "object",
       additionalProperties: false,
       properties: {
-        view: { type: "string", enum: ["overview", "bazi", "ziwei", "transit", "audit"] }
+        view: { type: "string", enum: ["overview", "bazi", "ziwei", "transit", "audit"] },
+        focusIds: {
+          type: "array",
+          minItems: 1,
+          maxItems: 4,
+          uniqueItems: true,
+          items: { type: "string", enum: ZIWEI_FOCUS_IDS },
+          description: "Optional stable semantic IDs to emphasize in the Zi Wei view."
+        }
       },
       required: ["view"]
     },
@@ -183,6 +197,23 @@ export function WebMcpBridge({ onProfileCreated }: WebMcpBridgeProps) {
       if (!["overview", "bazi", "ziwei", "transit", "audit"].includes(view)) {
         return toolError("Unknown chart view.");
       }
+      if (input.focusIds !== undefined && !Array.isArray(input.focusIds)) {
+        return toolError("focusIds must be an array of stable Zi Wei focus IDs.");
+      }
+      const rawFocusIds = (input.focusIds ?? []) as unknown[];
+      if (rawFocusIds.some((id) => !isZiweiFocusId(id))) {
+        return toolError(`Unknown focus ID. Use one of: ${ZIWEI_FOCUS_IDS.join(", ")}.`);
+      }
+      if (input.focusIds !== undefined && rawFocusIds.length < 1) {
+        return toolError("Provide at least one focusId when focusIds is present.");
+      }
+      if (rawFocusIds.length > 4 || new Set(rawFocusIds).size !== rawFocusIds.length) {
+        return toolError("Provide one to four unique focusIds.");
+      }
+      if (rawFocusIds.length > 0 && view !== "ziwei") {
+        return toolError("focusIds are available only when view is ziwei.");
+      }
+      const focusIds = normalizeZiweiFocusIds(rawFocusIds as ZiweiFocusId[]);
       dispatch({
         type: "set-view",
         view,
@@ -190,8 +221,28 @@ export function WebMcpBridge({ onProfileCreated }: WebMcpBridgeProps) {
         label: t("activity.view.agent"),
         detail: t(`result.tab.${view}`)
       });
+      if (input.focusIds !== undefined) {
+        dispatch({
+          type: "focus-items",
+          ids: focusIds,
+          actor: "agent",
+          label: t("activity.focus.agent"),
+          detail: focusIds.join(" · ")
+        });
+      }
       scrollToWorkspace(view);
-      return toolResult({ status: "success", activeView: view, visibleChange: `The page opened the ${view} view.` });
+      const visibleChanges = [`The page opened the ${view} view.`];
+      if (input.focusIds !== undefined) {
+        visibleChanges.push(focusIds.length
+          ? `The page emphasized ${focusIds.join(", ")}.`
+          : "The page cleared Zi Wei emphasis.");
+      }
+      return toolResult({
+        status: "success",
+        activeView: view,
+        focusedIds: input.focusIds !== undefined ? focusIds : state.focusedIds,
+        visibleChanges
+      });
     }
   });
 
