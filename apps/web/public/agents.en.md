@@ -22,6 +22,8 @@ AstroCopy is a deterministic BaZi, Zi Wei Dou Shu, transit, apparent-solar-time,
 
 Human clicks and Agent calls use the same reducer. After changing the page, report the visible change briefly. Important Agent mutations should create a visible activity item and remain undoable.
 
+`astrocopy.get_workspace_state` includes `selectedTransitDate`, `pinnedTransitDate`, `comparedTransitDates`, `focusedIds`, and concise `recentActivities`. A human pin is an explicit preference. Failed tool calls return `isError: true` and leave this state unchanged.
+
 Use stable semantic focus IDs and the canonical comparison field:
 
 ```json

@@ -243,7 +243,7 @@
 
 必须统一为 `targetDates`。所有文档、示例、测试和 Agent Guide 必须使用同一个字段名。
 
-### P0-C：演示承诺的“聚焦命宫/身宫”没有完整落地
+### P0-C：演示承诺的“聚焦命宫/身宫”没有完整落地（已于 2026-08-26 修复）
 
 当前 Demo 期望：
 
@@ -253,29 +253,24 @@ view = ziwei
 focusIds = ziwei-palace-life, ziwei-palace-body
 ```
 
-但当前工具 schema 主要只处理 `view`，没有可靠地 dispatch `focus-items`；紫微宫位组件也必须真正响应 `focusedIds`。
+当前挑战分支已经使用稳定语义 `focusIds` dispatch `focus-items`，自绘紫微宫位会真实响应并高亮；E2E 同时核对命宫名称与身宫上游标记。
 
-### P0-D：演示中的“固定 2029”语义不完整
+### P0-D：演示中的“固定 2029”语义不完整（已于 2026-08-26 修复）
 
-当前 state 有：
+基线 state 只有：
 
 - `selectedTransitDate`
 - `comparedTransitDates`
 
-但没有清晰的 `pinnedTransitDate` 或“固定”动作。
+当前实现已经加入 `pinnedTransitDate`、`pin-transit`、Select/Pin/Unpin UI 和明确的固定视觉状态。
 
-必须二选一：
+Agent 创建新比较集时会保留用户 pin；如果 pin 位于比较集内，还会优先保持该日期为当前选择。
 
-1. 真正实现 `pinnedTransitDate`、`pin-transit` 和 UI；
-2. 从全部产品文案和 Demo 中删除“pin”，统一表述为“select”。
+### P0-E：Undo 未覆盖所有 Agent UI 变更（已于 2026-08-26 修复）
 
-推荐实现真正的 pin，因为它更能表达用户对 Agent 结果的主导权。
+当前 `set-view`、`select-transit`、`compare-transits`、`focus-items` 和 `pin-transit` 都保存对应字段快照并可撤销。撤销旧活动时，较新的未撤销活动所修改的字段会被保留，避免旧 Agent undo 覆盖用户之后的选择或 pin。
 
-### P0-E：Undo 未覆盖所有 Agent UI 变更
-
-当前 `focus-items` 没有保存旧的 `focusedIds`；`set-profile` 也没有 profile undo。
-
-如果产品宣称“Agent 页面改动可撤销”，必须明确：
+当前可撤销范围明确为：
 
 - 至少 `set-view`
 - `select-transit`
@@ -285,9 +280,9 @@ focusIds = ziwei-palace-life, ziwei-palace-body
 
 都可撤销。
 
-创建整个 profile 是否允许 undo，可以保留为例外，但 UI 和文档必须说清楚。
+创建整个 profile 仍是明确例外，不提供 undo。
 
-### P0-F：`get_workspace_state` 信息不完整
+### P0-F：`get_workspace_state` 信息不完整（已于 2026-08-26 修复）
 
 产品规范要求返回：
 
@@ -300,7 +295,7 @@ focusIds = ziwei-palace-life, ziwei-palace-body
 - warnings
 - recent activities
 
-当前实现未完整返回最近 human/Agent activity，也没有 pinned state。
+当前实现返回精简命盘身份、selected/pinned/comparison/focus 状态、warnings 和最近 6 条 human/Agent activity，不返回完整 raw profile。
 
 ### P0-G：PR 描述已经过时
 

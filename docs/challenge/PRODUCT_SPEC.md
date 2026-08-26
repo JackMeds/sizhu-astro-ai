@@ -169,6 +169,7 @@ English-speaking users who need clear terminology, IANA time zones, daylight-sav
 - reports active workspace/view;
 - current chart identity;
 - selected transit;
+- pinned transit;
 - comparison dates;
 - focused items;
 - warnings;

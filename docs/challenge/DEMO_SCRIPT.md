@@ -114,7 +114,7 @@ Show that AstroCopy is not merely a chart API. The Agent and the person manipula
 
 **Screen action**
 
-- The user manually selects or pins 2029.
+- The user manually selects 2029, then clicks Pin on the same card.
 
 **User prompt to Agent**
 
@@ -127,7 +127,8 @@ Show that AstroCopy is not merely a chart API. The Agent and the person manipula
 
 **Visible proof**
 
-- Agent reads 2029 as the human-selected state rather than repeating its previous assumption.
+- Agent reads both `selectedTransitDate` and `pinnedTransitDate` as `2029-06-15`.
+- `recentActivities` includes the human `pin-transit` action.
 
 **Voiceover**
 
@@ -138,7 +139,8 @@ Show that AstroCopy is not merely a chart API. The Agent and the person manipula
 **Screen**
 
 - Show activity rail.
-- Hover or click Undo on the previous Agent action.
+- Click Undo on the previous Agent comparison action.
+- The comparison cards disappear while the newer human-selected and pinned 2029 state remains.
 - Briefly show Calculation Audit / warnings.
 
 **Voiceover**

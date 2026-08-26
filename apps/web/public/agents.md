@@ -78,9 +78,10 @@ Compare two to five target dates. The page creates a visible comparison workspac
 
 ### `astrocopy.get_workspace_state`
 
-Read the current state selected by the person or Agent, including the active view, selected transit, comparison set, current profile status, warnings, and recent activity.
+Read the current state selected by the person or Agent, including the active view, selected and pinned transit, comparison set, current profile status, warnings, and recent activity.
 
 Use this before continuing a multi-step workflow when the user may have changed the page manually.
+Treat a human `pin-transit` activity as an explicit preference. Invalid inputs return `isError: true`; do not assume a failed call changed the page.
 
 ## Canonical profile
 

@@ -80,3 +80,31 @@ See [`ENGINEERING_SCAN.md`](./ENGINEERING_SCAN.md). Keep the deterministic calcu
 ### Next gate
 
 Start P0-004 through P0-008 with one coherent demo-state slice: pinned transit, complete undo, readable recent activity, normalized error results, and the full human-agent browser scenario. Do not merge `main` as part of this phase.
+
+## Phase 2 — P0-004 through P0-008 local result
+
+Completed locally on 2026-08-26; remote CI is required before these backlog items become `DONE`.
+
+### Implemented
+
+- Shared workspace state now includes `pinnedTransitDate` and typed activity records.
+- Comparison cards expose separate Select and Pin/Unpin controls plus visible selected and pinned states.
+- `get_workspace_state` returns a concise workspace identity, selected/pinned/comparison/focus state, warning count, and the latest six human/Agent activities.
+- View, selection, comparison, focus, and pin mutations are undoable. Field-aware undo preserves newer human changes when reverting an older Agent activity.
+- Explicit tool failures and uncaught synchronous/asynchronous execute failures normalize to `{ isError: true, content: [...] }`.
+- Compare input validation now rejects missing arrays, fewer than two or more than five dates, invalid formats, and duplicates before changing state.
+- The main browser flow now covers create → focus → compare → human select → human pin → Agent read → invalid-input stability → undo.
+
+### Local validation
+
+- `npm run test`: passed (38 core, 2 prompt, 14 web tests)
+- `npm run typecheck`: passed
+- `npm run build:mcp`: passed
+- `npm run build:web`: passed
+- `npm run test:webmcp`: passed with six registered tools and the complete human-Agent round trip
+- Visual evidence: `artifacts/e2e/webmcp-human-pin.png` shows 2029 selected and pinned; `webmcp-shared-workspace.png` also records it in the activity rail
+- Current web bundle: 1,750.02 kB JavaScript / 561.80 kB gzip, still with Vite's large-chunk warning
+
+### Next gate
+
+Push this second P0 slice, require all PR checks to pass, then mark P0-004 through P0-008 `DONE`. P0-009 English-route cleanup remains separate and is visibly necessary in the current screenshot.

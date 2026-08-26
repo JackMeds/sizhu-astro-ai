@@ -45,7 +45,8 @@ An agent can:
 - open the BaZi, Zi Wei, transit, comparison, or audit view;
 - select a target transit date;
 - compare two to five dates in the visible workspace;
-- read the current user-selected workspace state;
+- manually select, pin, or unpin a comparison date without leaving the workspace;
+- read the current user-selected and pinned state plus recent human/Agent activity;
 - leave a visible activity record that the user can inspect or undo.
 
 The user can then change the selected view or date manually, and the agent reads that updated state on its next call.
@@ -64,6 +65,10 @@ The challenge workspace uses a small task-oriented surface rather than exposing 
 The Zi Wei inspection contract uses stable semantic `focusIds`, for example
 `["ziwei-palace-life", "ziwei-palace-body"]`. Transit comparison uses the single
 canonical input field `targetDates`.
+
+Invalid tool inputs return `isError: true` and do not mutate the workspace. Undo is
+field-aware: reverting an older Agent comparison restores its comparison set without
+overwriting a newer human selection or pin.
 
 The existing local stdio MCP server remains available for clients such as Codex and other MCP-compatible desktop tools.
 
