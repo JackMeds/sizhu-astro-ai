@@ -20,6 +20,10 @@ interface UseWebMcpToolOptions extends WebMcpToolDefinition {
   enabled?: boolean;
 }
 
+const MODEL_CONTEXT_DETECTION_INTERVAL_MS = 250;
+const MODEL_CONTEXT_DETECTION_TIMEOUT_MS = 10_000;
+const MODEL_CONTEXT_DETECTION_MAX_ATTEMPTS = MODEL_CONTEXT_DETECTION_TIMEOUT_MS / MODEL_CONTEXT_DETECTION_INTERVAL_MS;
+
 export interface WebMcpRegistrationState {
   supported: boolean;
   registered: boolean;
@@ -69,9 +73,9 @@ export function useWebMcpTool({
     async function register() {
       const modelContext = getModelContext();
       if (!modelContext?.registerTool) {
-        if (attempts < 8 && !disposed) {
+        if (attempts < MODEL_CONTEXT_DETECTION_MAX_ATTEMPTS && !disposed) {
           attempts += 1;
-          retryTimer = window.setTimeout(register, 250);
+          retryTimer = window.setTimeout(register, MODEL_CONTEXT_DETECTION_INTERVAL_MS);
         } else if (!disposed) {
           setState({ supported: false, registered: false, error: null });
         }

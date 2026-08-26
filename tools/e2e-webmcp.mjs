@@ -3,6 +3,10 @@ import { mkdir } from "node:fs/promises";
 import path from "node:path";
 
 const baseUrl = process.env.ASTROCOPY_E2E_URL || "http://127.0.0.1:4173";
+const webMcpInjectionDelayMs = Number(process.env.ASTROCOPY_WEBMCP_INJECTION_DELAY_MS ?? 2_500);
+if (!Number.isFinite(webMcpInjectionDelayMs) || webMcpInjectionDelayMs < 0) {
+  throw new Error(`ASTROCOPY_WEBMCP_INJECTION_DELAY_MS must be a non-negative number, received ${process.env.ASTROCOPY_WEBMCP_INJECTION_DELAY_MS}`);
+}
 const outputDirectory = path.resolve("artifacts/e2e");
 const foundationalTools = [
   "astrocopy.about",
@@ -20,28 +24,46 @@ const browser = await chromium.launch({ headless: true });
 const context = await browser.newContext({ viewport: { width: 1440, height: 900 } });
 const page = await context.newPage();
 
-await page.addInitScript(() => {
+await page.addInitScript(({ injectionDelayMs }) => {
   const tools = new Map();
+  const telemetry = {
+    scheduledAt: performance.now(),
+    injectedAt: null,
+    registrations: [],
+    aborts: []
+  };
   const registerTool = (tool, options = {}) => {
     tools.set(tool.name, tool);
-    const unregister = () => tools.delete(tool.name);
+    telemetry.registrations.push({ name: tool.name, title: tool.title ?? null });
+    const unregister = () => {
+      telemetry.aborts.push(tool.name);
+      if (tools.get(tool.name) === tool) tools.delete(tool.name);
+    };
     options.signal?.addEventListener?.("abort", unregister, { once: true });
     return unregister;
   };
 
-  Object.defineProperty(document, "modelContext", {
-    configurable: true,
-    value: { registerTool }
-  });
-  Object.defineProperty(navigator, "modelContext", {
-    configurable: true,
-    value: { registerTool }
-  });
   Object.defineProperty(window, "__astrocopyTools", {
     configurable: true,
     value: tools
   });
-});
+  Object.defineProperty(window, "__astrocopyWebMcpTelemetry", {
+    configurable: true,
+    value: telemetry
+  });
+
+  window.setTimeout(() => {
+    telemetry.injectedAt = performance.now();
+    Object.defineProperty(document, "modelContext", {
+      configurable: true,
+      value: { registerTool }
+    });
+    Object.defineProperty(navigator, "modelContext", {
+      configurable: true,
+      value: { registerTool }
+    });
+  }, injectionDelayMs);
+}, { injectionDelayMs: webMcpInjectionDelayMs });
 
 function assert(condition, message) {
   if (!condition) throw new Error(message);
@@ -49,6 +71,14 @@ function assert(condition, message) {
 
 async function toolNames() {
   return page.evaluate(() => [...window.__astrocopyTools.keys()]);
+}
+
+async function toolDescriptors() {
+  return page.evaluate(() => [...window.__astrocopyTools.values()].map(({ name, title }) => ({ name, title })));
+}
+
+async function registrationTelemetry() {
+  return page.evaluate(() => window.__astrocopyWebMcpTelemetry);
 }
 
 async function waitForTools(expected, exact = false) {
@@ -80,9 +110,28 @@ try {
   await waitForTools(foundationalTools, true);
 
   const initialNames = await toolNames();
+  const injectionElapsedMs = await page.evaluate(() => {
+    const telemetry = window.__astrocopyWebMcpTelemetry;
+    return telemetry.injectedAt - telemetry.scheduledAt;
+  });
+  assert(
+    injectionElapsedMs >= webMcpInjectionDelayMs - 50,
+    `WebMCP was injected too early: expected about ${webMcpInjectionDelayMs}ms, received ${injectionElapsedMs}ms`
+  );
   for (const expected of foundationalTools) {
     assert(initialNames.includes(expected), `Missing foundational WebMCP tool ${expected}. Registered: ${initialNames.join(", ")}`);
   }
+  for (const descriptor of await toolDescriptors()) {
+    assert(descriptor.title, `WebMCP tool ${descriptor.name} lost its human-readable title`);
+  }
+  const initialTelemetry = await registrationTelemetry();
+  for (const expected of foundationalTools) {
+    assert(
+      initialTelemetry.registrations.filter(({ name }) => name === expected).length === 1,
+      `Foundational tool ${expected} registered more than once in the production lifecycle`
+    );
+  }
+  assert(initialTelemetry.aborts.length === 0, "Foundational WebMCP tools aborted before the workspace changed");
   for (const unavailable of chartTools) {
     assert(!initialNames.includes(unavailable), `Chart-only tool registered before a chart existed: ${unavailable}`);
   }
@@ -107,6 +156,17 @@ try {
   for (const expected of [...foundationalTools, ...chartTools]) {
     assert(names.includes(expected), `Missing WebMCP tool ${expected} after chart creation. Registered: ${names.join(", ")}`);
   }
+  for (const descriptor of await toolDescriptors()) {
+    assert(descriptor.title, `WebMCP tool ${descriptor.name} lost its human-readable title`);
+  }
+  const chartTelemetry = await registrationTelemetry();
+  for (const expected of [...foundationalTools, ...chartTools]) {
+    assert(
+      chartTelemetry.registrations.filter(({ name }) => name === expected).length === 1,
+      `WebMCP tool ${expected} registered more than once in the production lifecycle`
+    );
+  }
+  assert(chartTelemetry.aborts.length === 0, "WebMCP tools aborted during the empty-to-chart transition");
   const chartText = await page.locator("body").innerText();
   assert(chartText.includes("Alex Demo"), "Created profile is not visible in the page");
   const readyText = await page.locator(".result-ready-card").innerText();
@@ -301,7 +361,7 @@ try {
   const stateAfterDstGap = parseToolJson(await callTool("astrocopy.get_workspace_state"));
   assert(stateAfterDstGap.chart?.name === "Kathmandu Quarter Hour", "Rejected DST gap corrupted the current chart");
 
-  console.log(`WebMCP smoke test passed with ${names.length} registered tools.`);
+  console.log(`WebMCP smoke test passed with ${names.length} registered tools after ${Math.round(injectionElapsedMs)}ms delayed injection.`);
   console.log(`Registered: ${names.join(", ")}`);
 } catch (error) {
   await page.screenshot({
