@@ -42,9 +42,9 @@ This file records verified execution state for the challenge branch. It is not a
 - The production JavaScript bundle is large enough to trigger Vite's chunk-size warning.
 - The challenge deadline is inconsistent across official pages. The OpenAI event page says September 3 at 5 p.m. PT, while the Devpost Official Rules say September 3 at 1 p.m. Pacific Time and state that the rules prevail on conflict. Use the earlier rules deadline: 2026-09-04 04:00 Beijing time.
 
-## Phase 1 — P0-001 through P0-003 local result
+## Phase 1 — P0-001 through P0-003 verified result
 
-Completed locally on 2026-08-26; remote CI is still required before these backlog items become `DONE`.
+Completed and verified on 2026-08-26. P0-001 through P0-003 are `DONE`.
 
 ### Implemented
 
@@ -64,10 +64,19 @@ Completed locally on 2026-08-26; remote CI is still required before these backlo
 - Visual evidence: `artifacts/e2e/webmcp-ziwei-focus.png` shows separate, correctly labelled life- and body-palace focus states
 - Current web bundle: 1,745.79 kB JavaScript / 560.73 kB gzip, still with Vite's large-chunk warning
 
+### Remote validation
+
+- Commit under test: `1129b98`
+- GitHub Actions run: [`32943800916`](https://github.com/JackMeds/sizhu-astro-ai/actions/runs/32943800916)
+- `validate`: passed in 38 seconds
+- `liuren-reference`: passed in 8 seconds
+- `webmcp-smoke`: passed in 47 seconds, including the shared browser test and screenshot upload
+- Non-blocking runner annotation: GitHub currently forces Node.js 20-based actions onto Node.js 24; project jobs themselves passed
+
 ### Engineering scan decision
 
 See [`ENGINEERING_SCAN.md`](./ENGINEERING_SCAN.md). Keep the deterministic calculation engines and the project-specific shared workspace. After the current P0 fixes are accepted, smoke-test migration from the custom registration hook to Google's small `use-webmcp-tool` package; do not add the heavier MCP-B polyfill stack unless a verified browser requirement needs it. Remove the unused `react-iztro` UI dependency in a separate cleanup.
 
 ### Next gate
 
-Push the challenge branch, require all PR checks to pass, then mark P0-001 through P0-003 `DONE`. Do not merge `main` as part of this phase.
+Start P0-004 through P0-008 with one coherent demo-state slice: pinned transit, complete undo, readable recent activity, normalized error results, and the full human-agent browser scenario. Do not merge `main` as part of this phase.

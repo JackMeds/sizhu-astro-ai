@@ -13,9 +13,9 @@
 
 | ID | 优先级 | 状态 | 任务 | 主要文件 | 验收 |
 |---|---:|---|---|---|---|
-| P0-001 | P0 | DOING | 修复 smoke 初始工具数量假设 | `tools/e2e-webmcp.mjs` | 空页 3 工具，profile 后动态工具出现 |
-| P0-002 | P0 | DOING | 统一 compare 参数为 `targetDates` | Bridge、测试、docs、agents | 全仓无错误 `dates` 示例 |
-| P0-003 | P0 | DOING | 实现 `inspect_chart.focusIds` | Bridge、workspace、Ziwei | 命宫/身宫真实高亮 |
+| P0-001 | P0 | DONE | 修复 smoke 初始工具数量假设 | `tools/e2e-webmcp.mjs` | 空页 3 工具，profile 后动态工具出现 |
+| P0-002 | P0 | DONE | 统一 compare 参数为 `targetDates` | Bridge、测试、docs、agents | 全仓无错误 `dates` 示例 |
+| P0-003 | P0 | DONE | 实现 `inspect_chart.focusIds` | Bridge、workspace、Ziwei | 命宫/身宫真实高亮 |
 | P0-004 | P0 | TODO | 实现 pinned transit 或删除 pin 文案 | workspace、Transit、docs | Demo 与实现一致 |
 | P0-005 | P0 | TODO | 完善 focus/pin/compare undo | workspace、Activity | UI 状态正确恢复 |
 | P0-006 | P0 | TODO | state 返回 pinned 和 recent activities | Bridge | Agent 读到人类最新选择 |
