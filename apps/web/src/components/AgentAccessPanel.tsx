@@ -17,13 +17,13 @@ const siteUrl = "https://astrocopy.jackmeds.top/";
 const repoUrl = "https://github.com/JackMeds/sizhu-astro-ai";
 
 const unixInstall = `DIR="$HOME/.local/share/sizhu-astro-ai"; if [ -d "$DIR/.git" ]; then git -C "$DIR" pull --ff-only; else git clone https://github.com/JackMeds/sizhu-astro-ai.git "$DIR"; fi; npm --prefix "$DIR" install && npm --prefix "$DIR" run build:mcp`;
-const unixCodex = `codex mcp add sizhu -- npm --prefix "$HOME/.local/share/sizhu-astro-ai" run start:mcp`;
+const unixCodex = `codex mcp add mingxu -- npm --prefix "$HOME/.local/share/sizhu-astro-ai" run start:mcp`;
 const windowsInstall = `$dir="$env:LOCALAPPDATA\\sizhu-astro-ai"; if (Test-Path "$dir\\.git") { git -C $dir pull --ff-only } else { git clone https://github.com/JackMeds/sizhu-astro-ai.git $dir }; npm --prefix $dir install; npm --prefix $dir run build:mcp`;
-const windowsCodex = `codex mcp add sizhu -- npm --prefix "$env:LOCALAPPDATA\\sizhu-astro-ai" run start:mcp`;
+const windowsCodex = `codex mcp add mingxu -- npm --prefix "$env:LOCALAPPDATA\\sizhu-astro-ai" run start:mcp`;
 
 const genericJson = `{
   "mcpServers": {
-    "sizhu": {
+    "mingxu": {
       "command": "npm",
       "args": [
         "--prefix",
@@ -36,12 +36,16 @@ const genericJson = `{
 }`;
 
 const webMcpTools = [
-  "astrocopy.about",
-  "astrocopy.create_birth_chart",
-  "astrocopy.get_workspace_state",
-  "astrocopy.inspect_chart",
-  "astrocopy.inspect_transit",
-  "astrocopy.compare_transits"
+  "mingxu.about",
+  "mingxu.create_birth_chart",
+  "mingxu.get_transit_snapshot",
+  "mingxu.compare_transits",
+  "mingxu.create_liuren_chart",
+  "mingxu.export_profile",
+  "mingxu.ui.get_workspace_state",
+  "mingxu.ui.inspect_chart",
+  "mingxu.ui.inspect_transit",
+  "mingxu.ui.compare_transits"
 ];
 
 interface AgentAccessPanelProps {

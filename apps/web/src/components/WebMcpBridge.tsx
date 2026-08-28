@@ -1,11 +1,9 @@
 import {
-  createAstroProfile,
   createTransitSnapshot,
-  type AstroInput,
   type AstroProfile
 } from "@sizhu/core";
+import { getAgentTool } from "@sizhu/agent-tools";
 import { useI18n } from "@/lib/i18n";
-import { getBrowserTimeZone } from "@/lib/timezone";
 import { useWebMcpTool } from "@/lib/useWebMcpTool";
 import { webMcpToolError, webMcpToolResult } from "@/lib/webMcpResult";
 import { useWorkspace, type WorkspaceView } from "@/lib/workspace";
@@ -20,56 +18,13 @@ interface WebMcpBridgeProps {
   onProfileCreated: (profile: AstroProfile) => void;
 }
 
-const locationProperties = {
-  name: { type: "string", description: "Human-readable birthplace name." },
-  longitude: { type: "number", minimum: -180, maximum: 180 },
-  latitude: { type: "number", minimum: -90, maximum: 90 }
-};
-
-const birthInputSchema = {
-  type: "object",
-  additionalProperties: false,
-  properties: {
-    name: { type: "string", default: "Untitled chart" },
-    gender: { type: "string", enum: ["male", "female"] },
-    birthDateTime: {
-      type: "string",
-      description: "Birth wall time or ISO datetime, for example 1995-03-12T14:20 or 1995-03-12T14:20:00+08:00."
-    },
-    calendar: { type: "string", enum: ["solar", "lunar"], default: "solar" },
-    timezone: {
-      type: "string",
-      description: "IANA timezone for a wall time without an explicit numeric offset, for example Asia/Shanghai or America/Los_Angeles."
-    },
-    trueSolarTime: { type: "string", enum: ["none", "longitude", "apparent"], default: "none" },
-    location: { type: "object", additionalProperties: false, properties: locationProperties },
-    sect: { type: "integer", enum: [1, 2], default: 1 }
-  },
-  required: ["birthDateTime", "gender"]
-};
-
-function normalizeTimeMode(input: unknown): AstroInput["trueSolarTime"] {
-  return input === "apparent" ? "apparent" : input === "longitude" ? "longitude" : "none";
-}
-
-function normalizeLocation(input: unknown): AstroInput["location"] {
-  return typeof input === "object" && input !== null ? input as AstroInput["location"] : undefined;
-}
-
-function normalizeBirthInput(input: Record<string, unknown> = {}, fallbackName = "Untitled chart"): AstroInput {
-  return {
-    name: typeof input.name === "string" && input.name.trim() ? input.name.trim() : fallbackName,
-    gender: input.gender === "female" ? "female" : "male",
-    birthDateTime: typeof input.birthDateTime === "string" ? input.birthDateTime : "",
-    calendar: input.calendar === "lunar" ? "lunar" : "solar",
-    timezone: typeof input.timezone === "string" && input.timezone.trim()
-      ? input.timezone.trim()
-      : getBrowserTimeZone(),
-    trueSolarTime: normalizeTimeMode(input.trueSolarTime),
-    location: normalizeLocation(input.location),
-    sect: input.sect === 2 ? 2 : 1
-  };
-}
+const aboutTool = getAgentTool("mingxu.about")!;
+const birthChartTool = getAgentTool("mingxu.create_birth_chart")!;
+const transitTool = getAgentTool("mingxu.get_transit_snapshot")!;
+const compareTool = getAgentTool("mingxu.compare_transits")!;
+const liurenTool = getAgentTool("mingxu.create_liuren_chart")!;
+const exportTool = getAgentTool("mingxu.export_profile")!;
+const birthInputSchema = birthChartTool.inputSchema;
 
 function scrollToWorkspace(view: WorkspaceView) {
   const id = view === "transit" ? "transit-inspector" : view === "overview" ? "profile-result" : "chart";
@@ -96,13 +51,12 @@ export function WebMcpBridge({ onProfileCreated }: WebMcpBridgeProps) {
   const technicalProductName = isEnglish ? "MingXu (AstroCopy engine)" : "命序（AstroCopy engine）";
 
   useWebMcpTool({
-    name: "astrocopy.about",
+    name: aboutTool.name,
     title: isEnglish ? "About MingXu" : "关于命序",
-    description: isEnglish
-      ? "Describe MingXu's deterministic Chinese metaphysics workspace, privacy model, and active collaboration tools."
-      : "介绍命序的确定性术数工作台、隐私边界和人机协作工具。",
-    inputSchema: { type: "object", additionalProperties: false, properties: {} },
+    description: aboutTool.description,
+    inputSchema: aboutTool.inputSchema,
     execute: () => webMcpToolResult({
+      ...(aboutTool.executeCore() as Record<string, unknown>),
       app: productName,
       engine: technicalProductName,
       purpose: "Deterministic BaZi, Zi Wei Dou Shu, transit and Da Liu Ren computation shared by the visible page and an AI agent.",
@@ -114,7 +68,7 @@ export function WebMcpBridge({ onProfileCreated }: WebMcpBridgeProps) {
   });
 
   useWebMcpTool({
-    name: "astrocopy.create_birth_chart",
+    name: birthChartTool.name,
     title: isEnglish ? "Create MingXu Birth Chart Workspace" : "建立命序出生命盘工作区",
     description: isEnglish
       ? "Create a deterministic BaZi and Zi Wei birth chart and render it in the visible MingXu workspace. Use this instead of calculating pillars or palaces yourself."
@@ -122,7 +76,7 @@ export function WebMcpBridge({ onProfileCreated }: WebMcpBridgeProps) {
     inputSchema: birthInputSchema,
     execute: (input = {}) => {
       try {
-        const profile = createAstroProfile(normalizeBirthInput(input, isEnglish ? "Untitled chart" : "未命名"));
+        const profile = birthChartTool.executeCore({ ...input, name: input.name || (isEnglish ? "Untitled chart" : "未命名") }) as AstroProfile;
         onProfileCreated(profile);
         window.setTimeout(() => document.getElementById("profile-result")?.scrollIntoView({ behavior: "smooth", block: "start" }), 100);
         return webMcpToolResult({
@@ -145,7 +99,63 @@ export function WebMcpBridge({ onProfileCreated }: WebMcpBridgeProps) {
   });
 
   useWebMcpTool({
-    name: "astrocopy.get_workspace_state",
+    name: transitTool.name,
+    title: isEnglish ? transitTool.title : "读取运限快照",
+    description: transitTool.description,
+    inputSchema: transitTool.inputSchema,
+    execute: (input = {}) => {
+      try {
+        return webMcpToolResult(transitTool.executeCore(input));
+      } catch (error) {
+        return webMcpToolError(error);
+      }
+    }
+  });
+
+  useWebMcpTool({
+    name: compareTool.name,
+    title: isEnglish ? compareTool.title : "比较多个运限日期",
+    description: compareTool.description,
+    inputSchema: compareTool.inputSchema,
+    execute: (input = {}) => {
+      try {
+        return webMcpToolResult(compareTool.executeCore(input));
+      } catch (error) {
+        return webMcpToolError(error);
+      }
+    }
+  });
+
+  useWebMcpTool({
+    name: liurenTool.name,
+    title: isEnglish ? liurenTool.title : "建立完整大六壬课盘",
+    description: liurenTool.description,
+    inputSchema: liurenTool.inputSchema,
+    execute: (input = {}) => {
+      try {
+        return webMcpToolResult(liurenTool.executeCore(input));
+      } catch (error) {
+        return webMcpToolError(error);
+      }
+    }
+  });
+
+  useWebMcpTool({
+    name: exportTool.name,
+    title: isEnglish ? exportTool.title : "导出命序命盘",
+    description: exportTool.description,
+    inputSchema: exportTool.inputSchema,
+    execute: (input = {}) => {
+      try {
+        return webMcpToolResult(exportTool.executeCore(input));
+      } catch (error) {
+        return webMcpToolError(error);
+      }
+    }
+  });
+
+  useWebMcpTool({
+    name: "mingxu.ui.get_workspace_state",
     title: isEnglish ? "Get MingXu Workspace State" : "读取命序工作区状态",
     description: isEnglish
       ? "Read the concise chart identity, visible view, selected and pinned transit dates, comparison set, focus and recent human-agent activity without changing the page."
@@ -177,7 +187,7 @@ export function WebMcpBridge({ onProfileCreated }: WebMcpBridgeProps) {
   });
 
   useWebMcpTool({
-    name: "astrocopy.inspect_chart",
+    name: "mingxu.ui.inspect_chart",
     title: "Inspect Chart View",
     description: "Switch the visible birth-chart workspace to an overview, BaZi, Zi Wei, transit or calculation-audit view.",
     inputSchema: {
@@ -252,7 +262,7 @@ export function WebMcpBridge({ onProfileCreated }: WebMcpBridgeProps) {
   });
 
   useWebMcpTool({
-    name: "astrocopy.inspect_transit",
+    name: "mingxu.ui.inspect_transit",
     title: "Inspect One Transit Date",
     description: "Calculate one target date from the current birth chart, open the visible transit view, and select that date on the page.",
     inputSchema: {
@@ -286,7 +296,7 @@ export function WebMcpBridge({ onProfileCreated }: WebMcpBridgeProps) {
   });
 
   useWebMcpTool({
-    name: "astrocopy.compare_transits",
+    name: "mingxu.ui.compare_transits",
     title: "Compare Transit Dates",
     description: "Compare two to five target dates from the current birth chart and render comparison cards in the visible transit workspace.",
     inputSchema: {

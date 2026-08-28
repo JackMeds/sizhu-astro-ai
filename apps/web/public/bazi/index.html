@@ -1,62 +1,173 @@
 <!doctype html>
 <html lang="zh-CN">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>免费八字排盘｜四柱、十神、大运流年、真太阳时在线排盘 - 命序</title>
-  <meta name="description" content="免费在线八字排盘：输入出生日期、时间和性别，生成四柱八字、十神、藏干、纳音、空亡、大运流年流月，并可选择真太阳时校正。结果可一键复制给你喜欢的 AI 解读。" />
-  <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1" />
-  <link rel="canonical" href="https://astrocopy.jackmeds.top/bazi/" />
-  <link rel="stylesheet" href="../guide.css" />
-  <link rel="icon" type="image/png" href="../brand/mark-light.png" media="(prefers-color-scheme: light)"><link rel="icon" type="image/png" href="../brand/mark-dark.png" media="(prefers-color-scheme: dark)">
-  <meta property="og:type" content="website" />
-  <meta property="og:title" content="免费八字排盘｜四柱、十神、大运流年、真太阳时" />
-  <meta property="og:description" content="代码排盘、本地优先，生成八字后直接复制给 ChatGPT、Claude、DeepSeek、Kimi 等 AI 解读。" />
-  <meta property="og:url" content="https://astrocopy.jackmeds.top/bazi/" />
-  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"命序 八字排盘","url":"https://astrocopy.jackmeds.top/bazi/","applicationCategory":"LifestyleApplication","operatingSystem":"Web","isAccessibleForFree":true,"description":"免费八字四柱排盘工具，提供十神、藏干、纳音、空亡、大运流年流月与真太阳时校正，并可导出结构化资料给 AI。","featureList":["八字四柱排盘","十神与藏干","纳音与空亡","大运流年流月","标准时与真太阳时","AI 结构化导出"]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"命序","item":"https://astrocopy.jackmeds.top/"},{"@type":"ListItem","position":2,"name":"八字排盘","item":"https://astrocopy.jackmeds.top/bazi/"}]}]}</script>
-</head>
-<body>
-<div class="shell">
-  <header class="top"><a class="brand" href="../">命序</a><a class="back" href="../#birth">直接排盘 →</a></header>
-  <main>
-    <section class="hero">
-      <p class="kicker">BaZi · Free Online Chart</p>
-      <h1>免费在线八字排盘</h1>
-      <p class="lead">输入出生日期、出生时间和性别，由程序直接生成四柱八字、十神、藏干、大运流年等结构。你不需要先学会命理术语，排完后可以把完整资料一键复制给自己喜欢的 AI 继续分析。</p>
-      <div class="cta"><h2>现在就排八字</h2><p>无需注册。出生资料与历史记录默认保留在当前浏览器；如果不确定真太阳时或换日口径，保持默认也可以先完成第一次排盘。</p><a href="../#birth">开始免费八字排盘</a></div>
-    </section>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>免费八字排盘｜四柱、十神、大运流年、真太阳时在线排盘 - 命序</title>
+    <meta
+      name="description"
+      content="免费在线八字排盘：输入出生日期、时间和性别，生成四柱八字、十神、藏干、纳音、空亡、大运流年流月，并可选择真太阳时校正。结果可一键复制给你喜欢的 AI 解读。"
+    />
+    <meta
+      name="robots"
+      content="index,follow,max-image-preview:large,max-snippet:-1"
+    />
+    <link rel="canonical" href="https://astrocopy.jackmeds.top/bazi/" />
+    <link rel="stylesheet" href="../guide.css" />
+    <link
+      rel="icon"
+      type="image/png"
+      href="../brand/mark-light.png"
+      media="(prefers-color-scheme: light)"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      href="../brand/mark-dark.png"
+      media="(prefers-color-scheme: dark)"
+    />
+    <meta property="og:type" content="website" />
+    <meta
+      property="og:title"
+      content="免费八字排盘｜四柱、十神、大运流年、真太阳时"
+    />
+    <meta
+      property="og:description"
+      content="代码排盘、本地优先，生成八字后直接复制给 ChatGPT、Claude、DeepSeek、Kimi 等 AI 解读。"
+    />
+    <meta property="og:url" content="https://astrocopy.jackmeds.top/bazi/" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "WebApplication",
+            "name": "命序 MingXu 八字排盘",
+            "alternateName": ["MingXu", "AstroCopy"],
+            "url": "https://astrocopy.jackmeds.top/bazi/",
+            "codeRepository": "https://github.com/JackMeds/sizhu-astro-ai",
+            "sameAs": ["https://github.com/JackMeds/sizhu-astro-ai"],
+            "applicationCategory": "LifestyleApplication",
+            "operatingSystem": "Web",
+            "isAccessibleForFree": true,
+            "description": "免费八字四柱排盘工具，提供十神、藏干、纳音、空亡、大运流年流月与真太阳时校正，并可导出结构化资料给 AI。",
+            "featureList": [
+              "八字四柱排盘",
+              "十神与藏干",
+              "纳音与空亡",
+              "大运流年流月",
+              "标准时与真太阳时",
+              "AI 结构化导出"
+            ]
+          },
+          {
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "命序",
+                "item": "https://astrocopy.jackmeds.top/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "八字排盘",
+                "item": "https://astrocopy.jackmeds.top/bazi/"
+              }
+            ]
+          }
+        ]
+      }
+    </script>
+  </head>
+  <body>
+    <div class="shell">
+      <header class="top">
+        <a class="brand" href="../">命序</a
+        ><a class="back" href="../#birth">直接排盘 →</a>
+      </header>
+      <main>
+        <section class="hero">
+          <p class="kicker">BaZi · Free Online Chart</p>
+          <h1>免费在线八字排盘</h1>
+          <p class="lead">
+            输入出生日期、出生时间和性别，由程序直接生成四柱八字、十神、藏干、大运流年等结构。你不需要先学会命理术语，排完后可以把完整资料一键复制给自己喜欢的
+            AI 继续分析。
+          </p>
+          <div class="cta">
+            <h2>现在就排八字</h2>
+            <p>
+              无需注册。出生资料与历史记录默认保留在当前浏览器；如果不确定真太阳时或换日口径，保持默认也可以先完成第一次排盘。
+            </p>
+            <a href="../#birth">开始免费八字排盘</a>
+          </div>
+        </section>
 
-    <section class="card">
-      <h2>这张八字命盘会算出什么？</h2>
-      <p>程序会先把出生时间转换成明确的年柱、月柱、日柱、时柱，再整理十神、地支藏干、纳音、空亡、五行结构、大运、流年与流月。干支的冲、合、刑、害、破、伏吟等关系也以结构事实单独保存，避免把“计算结果”和“解释结论”混成一件事。</p>
-    </section>
+        <section class="card">
+          <h2>这张八字命盘会算出什么？</h2>
+          <p>
+            程序会先把出生时间转换成明确的年柱、月柱、日柱、时柱，再整理十神、地支藏干、纳音、空亡、五行结构、大运、流年与流月。干支的冲、合、刑、害、破、伏吟等关系也以结构事实单独保存，避免把“计算结果”和“解释结论”混成一件事。
+          </p>
+        </section>
 
-    <h2>支持真太阳时，但不会强迫你选</h2>
-    <p>同一个钟表时间，在不同经度对应的地方太阳时间不同。本站把标准时、地方平太阳时和视太阳时（常说的真太阳时）分开记录，并显示修正后有没有跨时辰或跨日期。只有接近时辰、换日或节气边界时，这些差异才更值得重点检查。</p>
-    <p class="note">如果你只是第一次使用，不知道该选什么，可以先用标准时间排盘；需要严谨核对时，再比较不同时间口径。</p>
+        <h2>支持真太阳时，但不会强迫你选</h2>
+        <p>
+          同一个钟表时间，在不同经度对应的地方太阳时间不同。本站把标准时、地方平太阳时和视太阳时（常说的真太阳时）分开记录，并显示修正后有没有跨时辰或跨日期。只有接近时辰、换日或节气边界时，这些差异才更值得重点检查。
+        </p>
+        <p class="note">
+          如果你只是第一次使用，不知道该选什么，可以先用标准时间排盘；需要严谨核对时，再比较不同时间口径。
+        </p>
 
-    <h2>为什么排盘和 AI 解读要分开？</h2>
-    <p>四柱、大运和流年属于可以由历法程序重复计算的部分。让 AI 每次在聊天里重新手算，容易因为上下文、模型或提示词不同产生漂移。本站先固定计算结果，再把结构化命盘交给 AI，AI 负责解释、比较传统规则和回答你的具体问题。</p>
+        <h2>为什么排盘和 AI 解读要分开？</h2>
+        <p>
+          四柱、大运和流年属于可以由历法程序重复计算的部分。让 AI
+          每次在聊天里重新手算，容易因为上下文、模型或提示词不同产生漂移。本站先固定计算结果，再把结构化命盘交给
+          AI，AI 负责解释、比较传统规则和回答你的具体问题。
+        </p>
 
-    <h2>常见问题</h2>
-    <h3>八字排盘需要准确到分钟吗？</h3>
-    <p>距离时辰边界很远时，分钟通常不会改变时支；接近 23:00、00:00、01:00 等边界，或需要真太阳时校正时，分钟就会更重要。本站保留原始时间与修正后的有效时间，方便复核。</p>
-    <h3>23 点出生到底算哪一天？</h3>
-    <p>不同传统口径对晚子时换日存在差异。程序支持明确的换日配置，不会把某一种口径伪装成唯一答案。边界命例应固定规则后再比较结果。</p>
-    <h3>排完以后能做什么？</h3>
-    <p>可以查看完整专业盘，也可以直接选择综合、姻缘、事业、财运、流年或 XP（性癖）等分析方向，然后把已经整理好的命盘和提示词复制到 ChatGPT、Claude、DeepSeek、Kimi、Gemini 等 AI。</p>
+        <h2>常见问题</h2>
+        <h3>八字排盘需要准确到分钟吗？</h3>
+        <p>
+          距离时辰边界很远时，分钟通常不会改变时支；接近 23:00、00:00、01:00
+          等边界，或需要真太阳时校正时，分钟就会更重要。本站保留原始时间与修正后的有效时间，方便复核。
+        </p>
+        <h3>23 点出生到底算哪一天？</h3>
+        <p>
+          不同传统口径对晚子时换日存在差异。程序支持明确的换日配置，不会把某一种口径伪装成唯一答案。边界命例应固定规则后再比较结果。
+        </p>
+        <h3>排完以后能做什么？</h3>
+        <p>
+          可以查看完整专业盘，也可以直接选择综合、姻缘、事业、财运、流年或
+          XP（性癖）等分析方向，然后把已经整理好的命盘和提示词复制到
+          ChatGPT、Claude、DeepSeek、Kimi、Gemini 等 AI。
+        </p>
 
-    <h2>继续了解</h2>
-    <div class="grid">
-      <a href="../guide/bazi.html">八字排盘怎么看<span>四柱、十神、大运与结构化事实</span></a>
-      <a href="../true-solar-time/">真太阳时计算与边界<span>经度修正、均时差与跨时辰</span></a>
-      <a href="../ziwei/">紫微斗数在线排盘<span>同一份出生资料生成十二宫紫微盘</span></a>
-      <a href="../guide/dayun.html">大运流年怎么看<span>本命、大运、流年、流月如何叠加</span></a>
+        <h2>继续了解</h2>
+        <div class="grid">
+          <a href="../guide/bazi.html"
+            >八字排盘怎么看<span>四柱、十神、大运与结构化事实</span></a
+          >
+          <a href="../true-solar-time/"
+            >真太阳时计算与边界<span>经度修正、均时差与跨时辰</span></a
+          >
+          <a href="../ziwei/"
+            >紫微斗数在线排盘<span>同一份出生资料生成十二宫紫微盘</span></a
+          >
+          <a href="../guide/dayun.html"
+            >大运流年怎么看<span>本命、大运、流年、流月如何叠加</span></a
+          >
+        </div>
+      </main>
+      <footer>
+        命序 · 免费、本地优先的八字、紫微斗数与大六壬结构化排盘工具。
+      </footer>
     </div>
-  </main>
-  <footer>命序 · 免费、本地优先的八字、紫微斗数与大六壬结构化排盘工具。</footer>
-</div>
-<script type="module" src="/landing-agent.js"></script>
-<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token":"58293a9cc5ab4414b3ef5747e5545c2f"}'></script>
-</body>
+    <script type="module" src="/landing-agent.js"></script>
+    <script
+      type="module"
+      src="https://static.cloudflareinsights.com/beacon.min.js"
+      data-cf-beacon='{"token":"58293a9cc5ab4414b3ef5747e5545c2f"}'
+    ></script>
+  </body>
 </html>

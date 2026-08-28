@@ -1,0 +1,19 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.JackMeds/mingxu",
+  "title": "MingXu / 命序",
+  "description": "Deterministic BaZi, Zi Wei Dou Shu, transit, true-solar-time and Da Liu Ren tools for AI agents.",
+  "websiteUrl": "https://astrocopy.jackmeds.top/agent/",
+  "repository": {
+    "url": "https://github.com/JackMeds/sizhu-astro-ai",
+    "source": "github",
+    "subfolder": "apps/mcp"
+  },
+  "version": "0.5.0",
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://mcp.jackmeds.top/mcp"
+    }
+  ]
+}

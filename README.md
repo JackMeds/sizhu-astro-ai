@@ -1,23 +1,25 @@
-# AstroCopy
+# MingXu / 命序
 
-**A deterministic, bilingual Chinese-metaphysics workspace shared by people and AI agents.**
+**A deterministic BaZi, Zi Wei Dou Shu, Da Liu Ren, transit and true-solar-time computation workspace for humans and AI agents.**
 
-AstroCopy computes BaZi (Four Pillars), Zi Wei Dou Shu, transit structures, apparent solar time, and complete Da Liu Ren charts with code. It then exposes the same live workspace to a person and to a WebMCP-capable agent.
+MingXu (命序) computes BaZi (Four Pillars), Zi Wei Dou Shu, transit structures, apparent solar time, and complete Da Liu Ren charts with code. AstroCopy remains the internal calculation-engine identity; the public Agent namespace is `mingxu.*`.
 
 The core product idea is simple:
 
 > **Computation belongs to a deterministic engine. Interpretation belongs to the user and the AI they choose.**
 
 - Live app: <https://astrocopy.jackmeds.top/>
+- AI discovery page: <https://astrocopy.jackmeds.top/agent/>
 - Source: <https://github.com/JackMeds/sizhu-astro-ai>
 - Agent guide: <https://astrocopy.jackmeds.top/agents.md>
 - Guides: <https://astrocopy.jackmeds.top/guide/>
+- Remote MCP (deployment target): `https://mcp.jackmeds.top/mcp`
 
-## Why AstroCopy exists
+## Why MingXu exists
 
 Large language models can discuss traditional metaphysics, but they are unreliable at repeatedly calculating calendars, pillars, luck cycles, time corrections, palace structures, and Da Liu Ren transmissions from conversational context alone.
 
-AstroCopy separates the problem into two layers:
+MingXu separates the problem into two layers:
 
 ```text
 Birth or casting input
@@ -37,7 +39,7 @@ The website itself does not claim scientific predictive validity and does not re
 
 ## Human–agent workspace
 
-AstroCopy is not only a JSON endpoint embedded in a page. WebMCP actions use the same reducer and visible state as human interactions.
+MingXu is not only a JSON endpoint embedded in a page. WebMCP actions use the same reducer and visible state as human interactions.
 
 An agent can:
 
@@ -55,11 +57,13 @@ The user can then change the selected view or date manually, and the agent reads
 
 The challenge workspace uses a small task-oriented surface rather than exposing every internal function:
 
-- `astrocopy.create_birth_chart`
-- `astrocopy.inspect_chart`
-- `astrocopy.inspect_transit`
-- `astrocopy.compare_transits`
-- `astrocopy.get_workspace_state`
+- `mingxu.create_birth_chart`
+- `mingxu.get_transit_snapshot`
+- `mingxu.compare_transits`
+- `mingxu.ui.inspect_chart`
+- `mingxu.ui.inspect_transit`
+- `mingxu.ui.compare_transits`
+- `mingxu.ui.get_workspace_state`
 - Da Liu Ren tools are registered only when that workspace is relevant.
 
 The Zi Wei inspection contract uses stable semantic `focusIds`, for example
@@ -74,7 +78,7 @@ The production browser test also creates charts with New York daylight saving ti
 India's 30-minute offset, and Kathmandu's 45-minute offset, and rejects a nonexistent
 New York DST-gap wall time without replacing the current chart.
 
-The existing local stdio MCP server remains available for clients such as Codex and other MCP-compatible desktop tools.
+The existing local stdio MCP server remains available for clients such as Codex and other MCP-compatible desktop tools. The same calculation registry is also exposed through the deployment-ready stateless Streamable HTTP handler.
 
 ## Core capabilities
 
@@ -202,6 +206,10 @@ npm run dev:web
 ```
 
 Open the local URL printed by Vite.
+
+## Remote MCP
+
+`apps/mcp` keeps the local stdio server and also exposes a stateless Streamable HTTP handler for Vercel. The deployment-ready routes are `/mcp` and `/health`; see [docs/remote-mcp.md](docs/remote-mcp.md) for local testing and custom-domain setup. The public metadata candidate is [server.json](server.json).
 
 ## Tests and builds
 

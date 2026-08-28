@@ -6,12 +6,13 @@
   "license": "GPL-3.0",
   "scripts": {
     "dev": "vite --host 0.0.0.0",
-    "build": "node ../../tools/generate-sitemap.mjs && tsc -p tsconfig.json && vite build",
+    "build": "npm run build -w @sizhu/agent-tools && node ../../tools/generate-agent-docs.mjs && node ../../tools/generate-sitemap.mjs && tsc -p tsconfig.json && vite build",
     "preview": "vite preview --host 127.0.0.1",
     "test": "node --test --import tsx test/*.test.ts",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
+    "@sizhu/agent-tools": "file:../../packages/agent-tools",
     "@sizhu/core": "file:../../packages/core",
     "@sizhu/prompt": "file:../../packages/prompt",
     "@sizhu/render": "file:../../packages/render",

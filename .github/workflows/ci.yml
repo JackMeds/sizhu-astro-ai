@@ -29,6 +29,19 @@ jobs:
         run: npm run build:mcp
       - name: Build web
         run: npm run build:web
+      - name: Start stateless MCP HTTP server
+        run: |
+          nohup npm run start:http -w @sizhu/mcp > /tmp/mingxu-mcp-http.log 2>&1 &
+          for attempt in {1..30}; do
+            if curl --fail --silent http://127.0.0.1:8787/health > /dev/null; then
+              exit 0
+            fi
+            sleep 1
+          done
+          cat /tmp/mingxu-mcp-http.log
+          exit 1
+      - name: Run MCP HTTP smoke test
+        run: node tools/e2e-mcp-http.mjs
 
   webmcp-smoke:
     runs-on: ubuntu-latest

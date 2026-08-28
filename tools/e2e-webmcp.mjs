@@ -9,14 +9,18 @@ if (!Number.isFinite(webMcpInjectionDelayMs) || webMcpInjectionDelayMs < 0) {
 }
 const outputDirectory = path.resolve("artifacts/e2e");
 const foundationalTools = [
-  "astrocopy.about",
-  "astrocopy.create_birth_chart",
-  "astrocopy.get_workspace_state"
+  "mingxu.about",
+  "mingxu.create_birth_chart",
+  "mingxu.get_transit_snapshot",
+  "mingxu.compare_transits",
+  "mingxu.create_liuren_chart",
+  "mingxu.export_profile",
+  "mingxu.ui.get_workspace_state"
 ];
 const chartTools = [
-  "astrocopy.inspect_chart",
-  "astrocopy.inspect_transit",
-  "astrocopy.compare_transits"
+  "mingxu.ui.inspect_chart",
+  "mingxu.ui.inspect_transit",
+  "mingxu.ui.compare_transits"
 ];
 await mkdir(outputDirectory, { recursive: true });
 
@@ -140,7 +144,7 @@ try {
   assert(htmlLanguage?.toLowerCase().startsWith("en"), `Expected English html lang, received ${htmlLanguage}`);
   assert((await page.title()).toLowerCase().includes("mingxu"), "English page title does not contain MingXu");
 
-  await callTool("astrocopy.create_birth_chart", {
+  await callTool("mingxu.create_birth_chart", {
     name: "Alex Demo",
     gender: "female",
     birthDateTime: "1996-06-18T10:30:00+08:00",
@@ -178,7 +182,7 @@ try {
   }
   assert(!resultTabsText.includes("概览"), "English result tabs still contain hard-coded Chinese controls");
 
-  const transitResult = await callTool("astrocopy.inspect_transit", { targetDate: "2028-06-15" });
+  const transitResult = await callTool("mingxu.ui.inspect_transit", { targetDate: "2028-06-15" });
   assert(transitResult?.isError !== true, "Valid inspect_transit call failed");
   await page.locator("#transit-inspector input[type='date']").waitFor({ state: "visible", timeout: 15_000 });
   assert(
@@ -190,7 +194,7 @@ try {
     "English transit workspace title is missing"
   );
 
-  const inspectResult = await callTool("astrocopy.inspect_chart", {
+  const inspectResult = await callTool("mingxu.ui.inspect_chart", {
     view: "ziwei",
     focusIds: ["ziwei-palace-life", "ziwei-palace-body"]
   });
@@ -216,12 +220,12 @@ try {
   assert(ziweiText.includes("Zi Wei Dou Shu · Twelve Palaces"), "English Zi Wei title is missing");
   assert(!ziweiText.includes("紫微斗数十二宫\n"), "English Zi Wei panel still uses its hard-coded Chinese heading");
 
-  const legacyCompareResult = await callTool("astrocopy.compare_transits", {
+  const legacyCompareResult = await callTool("mingxu.ui.compare_transits", {
     dates: ["2027-06-15", "2029-06-15", "2032-06-15"]
   });
   assert(legacyCompareResult?.isError === true, "Legacy dates input must not be accepted as the compare contract");
 
-  const compareResult = await callTool("astrocopy.compare_transits", {
+  const compareResult = await callTool("mingxu.ui.compare_transits", {
     targetDates: ["2027-06-15", "2029-06-15", "2032-06-15"]
   });
   assert(compareResult?.isError !== true, "Canonical targetDates comparison failed");
@@ -233,7 +237,7 @@ try {
   await humanDateCard.locator("[data-action='pin-transit']").click();
   await page.locator(".transit-pinned-summary[data-pinned-transit='2029-06-15']").waitFor();
 
-  const workspace = parseToolJson(await callTool("astrocopy.get_workspace_state"));
+  const workspace = parseToolJson(await callTool("mingxu.ui.get_workspace_state"));
   const serialized = JSON.stringify(workspace);
   for (const date of ["2027-06-15", "2029-06-15", "2032-06-15"]) {
     assert(serialized.includes(date), `Workspace state does not include compared date ${date}`);
@@ -266,17 +270,17 @@ try {
     recentActivities: workspace.recentActivities
   });
   for (const [name, input] of [
-    ["astrocopy.create_birth_chart", { birthDateTime: "" }],
-    ["astrocopy.inspect_chart", { view: "unknown" }],
-    ["astrocopy.inspect_chart", { view: "ziwei", focusIds: ["unknown-focus"] }],
-    ["astrocopy.inspect_transit", { targetDate: "2029/06/15" }],
-    ["astrocopy.compare_transits", { targetDates: ["2029-06-15"] }],
-    ["astrocopy.compare_transits", { targetDates: ["2029-06-15", "2029-06-15"] }]
+    ["mingxu.create_birth_chart", { birthDateTime: "" }],
+    ["mingxu.ui.inspect_chart", { view: "unknown" }],
+    ["mingxu.ui.inspect_chart", { view: "ziwei", focusIds: ["unknown-focus"] }],
+    ["mingxu.ui.inspect_transit", { targetDate: "2029/06/15" }],
+    ["mingxu.ui.compare_transits", { targetDates: ["2029-06-15"] }],
+    ["mingxu.ui.compare_transits", { targetDates: ["2029-06-15", "2029-06-15"] }]
   ]) {
     const result = await callTool(name, input);
     assert(result?.isError === true, `${name} did not normalize invalid input to isError: true`);
   }
-  const stateAfterInvalidCalls = parseToolJson(await callTool("astrocopy.get_workspace_state"));
+  const stateAfterInvalidCalls = parseToolJson(await callTool("mingxu.ui.get_workspace_state"));
   assert(
     JSON.stringify({
       activeView: stateAfterInvalidCalls.activeView,
@@ -289,10 +293,11 @@ try {
     "Invalid tool inputs changed the shared workspace state"
   );
 
+  await page.locator(".agent-activity-toggle").click();
   const comparisonUndo = page.locator("[data-activity-type='compare-transits'] [data-action='undo-activity']");
   await comparisonUndo.click();
   await page.waitForFunction(() => document.querySelectorAll(".transit-comparison-card").length === 0);
-  const stateAfterUndo = parseToolJson(await callTool("astrocopy.get_workspace_state"));
+  const stateAfterUndo = parseToolJson(await callTool("mingxu.ui.get_workspace_state"));
   assert(stateAfterUndo.comparedTransitDates.length === 0, "Undo did not restore the previous comparison set");
   assert(stateAfterUndo.selectedTransitDate === "2029-06-15", "Undo clobbered the newer human selection");
   assert(stateAfterUndo.pinnedTransitDate === "2029-06-15", "Undo clobbered the newer human pin");
@@ -301,7 +306,7 @@ try {
     "Workspace state did not expose the undone comparison activity"
   );
 
-  const auditResult = await callTool("astrocopy.inspect_chart", { view: "audit" });
+  const auditResult = await callTool("mingxu.ui.inspect_chart", { view: "audit" });
   assert(auditResult?.isError !== true, "Valid audit view call failed");
   await page.locator(".engine-audit").waitFor({ state: "visible", timeout: 15_000 });
   assert(
@@ -329,7 +334,7 @@ try {
       expectedOffsetMinutes: 345
     }
   ]) {
-    const result = await callTool("astrocopy.create_birth_chart", {
+    const result = await callTool("mingxu.create_birth_chart", {
       name: scenario.name,
       gender: "female",
       birthDateTime: scenario.birthDateTime,
@@ -348,7 +353,7 @@ try {
     await page.waitForFunction((name) => document.body.innerText.includes(name), scenario.name);
   }
 
-  const dstGapResult = await callTool("astrocopy.create_birth_chart", {
+  const dstGapResult = await callTool("mingxu.create_birth_chart", {
     name: "Invalid DST Gap",
     gender: "female",
     birthDateTime: "2026-03-08T02:30:00",
@@ -358,7 +363,7 @@ try {
     sect: 1
   });
   assert(dstGapResult?.isError === true, "Nonexistent New York DST wall time was not rejected");
-  const stateAfterDstGap = parseToolJson(await callTool("astrocopy.get_workspace_state"));
+  const stateAfterDstGap = parseToolJson(await callTool("mingxu.ui.get_workspace_state"));
   assert(stateAfterDstGap.chart?.name === "Kathmandu Quarter Hour", "Rejected DST gap corrupted the current chart");
 
   console.log(`WebMCP smoke test passed with ${names.length} registered tools after ${Math.round(injectionElapsedMs)}ms delayed injection.`);

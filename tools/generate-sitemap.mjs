@@ -44,6 +44,10 @@ function xmlEscape(value) {
 
 function gitDate(source) {
   try {
+    execFileSync("git", ["diff", "HEAD", "--quiet", "--", source], {
+      cwd: root,
+      stdio: "ignore"
+    });
     const date = execFileSync("git", ["log", "-1", "--format=%cs", "--", source], {
       cwd: root,
       stdio: ["ignore", "pipe", "ignore"]

@@ -1,0 +1,472 @@
+{
+  "schemaVersion": "mingxu-agent-tools-v1",
+  "generatedFrom": "packages/agent-tools/src/index.ts",
+  "tools": [
+    {
+      "name": "mingxu.about",
+      "title": "About MingXu / 命序",
+      "description": "Describe MingXu's deterministic BaZi, Zi Wei Dou Shu, transit, true-solar-time and Da Liu Ren capabilities, privacy boundary, and canonical tool names.",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {}
+      }
+    },
+    {
+      "name": "mingxu.create_birth_chart",
+      "title": "Create MingXu Birth Chart",
+      "description": "Generate a deterministic BaZi and Zi Wei birth chart. Use this instead of calculating pillars or palaces yourself; preserve the returned time semantics and warnings.",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "type": "string",
+            "default": "Untitled chart"
+          },
+          "gender": {
+            "type": "string",
+            "enum": [
+              "male",
+              "female"
+            ]
+          },
+          "birthDateTime": {
+            "type": "string",
+            "description": "Birth wall time or ISO datetime, for example 1995-03-12T14:20:00+08:00."
+          },
+          "calendar": {
+            "type": "string",
+            "enum": [
+              "solar",
+              "lunar"
+            ],
+            "default": "solar"
+          },
+          "timezone": {
+            "type": "string",
+            "default": "Asia/Shanghai",
+            "description": "IANA timezone for a wall time without an explicit numeric offset."
+          },
+          "trueSolarTime": {
+            "type": "string",
+            "enum": [
+              "none",
+              "longitude",
+              "apparent"
+            ],
+            "default": "none"
+          },
+          "location": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "Human-readable birthplace or casting location."
+              },
+              "longitude": {
+                "type": "number",
+                "minimum": -180,
+                "maximum": 180
+              },
+              "latitude": {
+                "type": "number",
+                "minimum": -90,
+                "maximum": 90
+              }
+            }
+          },
+          "sect": {
+            "type": "integer",
+            "enum": [
+              1,
+              2
+            ],
+            "default": 1
+          }
+        },
+        "required": [
+          "birthDateTime",
+          "gender"
+        ]
+      }
+    },
+    {
+      "name": "mingxu.get_transit_snapshot",
+      "title": "Get Transit Snapshot",
+      "description": "For one target date, return matching BaZi luck-cycle and annual relation facts plus normalized Zi Wei dynamic scopes. The target date must be YYYY-MM-DD.",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "type": "string",
+            "default": "Untitled chart"
+          },
+          "gender": {
+            "type": "string",
+            "enum": [
+              "male",
+              "female"
+            ]
+          },
+          "birthDateTime": {
+            "type": "string",
+            "description": "Birth wall time or ISO datetime, for example 1995-03-12T14:20:00+08:00."
+          },
+          "calendar": {
+            "type": "string",
+            "enum": [
+              "solar",
+              "lunar"
+            ],
+            "default": "solar"
+          },
+          "timezone": {
+            "type": "string",
+            "default": "Asia/Shanghai",
+            "description": "IANA timezone for a wall time without an explicit numeric offset."
+          },
+          "trueSolarTime": {
+            "type": "string",
+            "enum": [
+              "none",
+              "longitude",
+              "apparent"
+            ],
+            "default": "none"
+          },
+          "location": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "Human-readable birthplace or casting location."
+              },
+              "longitude": {
+                "type": "number",
+                "minimum": -180,
+                "maximum": 180
+              },
+              "latitude": {
+                "type": "number",
+                "minimum": -90,
+                "maximum": 90
+              }
+            }
+          },
+          "sect": {
+            "type": "integer",
+            "enum": [
+              1,
+              2
+            ],
+            "default": 1
+          },
+          "targetDate": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+            "description": "Target solar date YYYY-MM-DD."
+          },
+          "targetHour": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 23
+          }
+        },
+        "required": [
+          "birthDateTime",
+          "gender",
+          "targetDate"
+        ]
+      }
+    },
+    {
+      "name": "mingxu.compare_transits",
+      "title": "Compare Transit Snapshots",
+      "description": "Compute two to five unique target dates from the same birth input and return a compact, deterministic comparison. Use targetDates, not a singular targetDate.",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "type": "string",
+            "default": "Untitled chart"
+          },
+          "gender": {
+            "type": "string",
+            "enum": [
+              "male",
+              "female"
+            ]
+          },
+          "birthDateTime": {
+            "type": "string",
+            "description": "Birth wall time or ISO datetime, for example 1995-03-12T14:20:00+08:00."
+          },
+          "calendar": {
+            "type": "string",
+            "enum": [
+              "solar",
+              "lunar"
+            ],
+            "default": "solar"
+          },
+          "timezone": {
+            "type": "string",
+            "default": "Asia/Shanghai",
+            "description": "IANA timezone for a wall time without an explicit numeric offset."
+          },
+          "trueSolarTime": {
+            "type": "string",
+            "enum": [
+              "none",
+              "longitude",
+              "apparent"
+            ],
+            "default": "none"
+          },
+          "location": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "Human-readable birthplace or casting location."
+              },
+              "longitude": {
+                "type": "number",
+                "minimum": -180,
+                "maximum": 180
+              },
+              "latitude": {
+                "type": "number",
+                "minimum": -90,
+                "maximum": 90
+              }
+            }
+          },
+          "sect": {
+            "type": "integer",
+            "enum": [
+              1,
+              2
+            ],
+            "default": 1
+          },
+          "targetDates": {
+            "type": "array",
+            "minItems": 2,
+            "maxItems": 5,
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+            },
+            "description": "Two to five unique target solar dates in YYYY-MM-DD format."
+          }
+        },
+        "required": [
+          "birthDateTime",
+          "gender",
+          "targetDates"
+        ]
+      }
+    },
+    {
+      "name": "mingxu.create_liuren_chart",
+      "title": "Create Complete Da Liu Ren Chart",
+      "description": "Generate a complete Da Liu Ren chart from time, reported-number, or selected-branch casting. Returns plates, generals, Four Lessons, Three Transmissions, voids, patterns, source-gated ShenSha, warnings, and cross-check evidence; it does not interpret the divination.",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "dateTime": {
+            "type": "string",
+            "description": "Casting/base datetime with explicit offset, for example 2026-08-15T09:30:00+08:00."
+          },
+          "timezone": {
+            "type": "string",
+            "default": "Asia/Shanghai",
+            "description": "IANA timezone when dateTime has no numeric offset."
+          },
+          "trueSolarTime": {
+            "type": "string",
+            "enum": [
+              "none",
+              "longitude",
+              "apparent"
+            ],
+            "default": "none"
+          },
+          "location": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "Human-readable birthplace or casting location."
+              },
+              "longitude": {
+                "type": "number",
+                "minimum": -180,
+                "maximum": 180
+              },
+              "latitude": {
+                "type": "number",
+                "minimum": -90,
+                "maximum": 90
+              }
+            }
+          },
+          "question": {
+            "type": "string",
+            "maxLength": 2000,
+            "description": "Optional concrete divination question."
+          },
+          "castingMethod": {
+            "type": "string",
+            "enum": [
+              "time",
+              "number",
+              "branch"
+            ],
+            "default": "time"
+          },
+          "castingNumber": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Positive reported number; mapped cyclically with 1=子 through 12=亥."
+          },
+          "castingBranch": {
+            "type": "string",
+            "enum": [
+              "子",
+              "丑",
+              "寅",
+              "卯",
+              "辰",
+              "巳",
+              "午",
+              "未",
+              "申",
+              "酉",
+              "戌",
+              "亥"
+            ]
+          }
+        },
+        "required": [
+          "dateTime"
+        ]
+      }
+    },
+    {
+      "name": "mingxu.export_profile",
+      "title": "Export MingXu Profile",
+      "description": "Generate JSON, Markdown, or plain-text output from a deterministic MingXu BaZi and Zi Wei profile for saving or passing to another AI.",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "type": "string",
+            "default": "Untitled chart"
+          },
+          "gender": {
+            "type": "string",
+            "enum": [
+              "male",
+              "female"
+            ]
+          },
+          "birthDateTime": {
+            "type": "string",
+            "description": "Birth wall time or ISO datetime, for example 1995-03-12T14:20:00+08:00."
+          },
+          "calendar": {
+            "type": "string",
+            "enum": [
+              "solar",
+              "lunar"
+            ],
+            "default": "solar"
+          },
+          "timezone": {
+            "type": "string",
+            "default": "Asia/Shanghai",
+            "description": "IANA timezone for a wall time without an explicit numeric offset."
+          },
+          "trueSolarTime": {
+            "type": "string",
+            "enum": [
+              "none",
+              "longitude",
+              "apparent"
+            ],
+            "default": "none"
+          },
+          "location": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "Human-readable birthplace or casting location."
+              },
+              "longitude": {
+                "type": "number",
+                "minimum": -180,
+                "maximum": 180
+              },
+              "latitude": {
+                "type": "number",
+                "minimum": -90,
+                "maximum": 90
+              }
+            }
+          },
+          "sect": {
+            "type": "integer",
+            "enum": [
+              1,
+              2
+            ],
+            "default": 1
+          },
+          "format": {
+            "type": "string",
+            "enum": [
+              "json",
+              "markdown",
+              "txt"
+            ],
+            "default": "markdown"
+          }
+        },
+        "required": [
+          "birthDateTime",
+          "gender"
+        ]
+      }
+    }
+  ],
+  "aliases": {
+    "astrocopy.about": "mingxu.about",
+    "astrocopy.create_birth_chart": "mingxu.create_birth_chart",
+    "astrocopy.get_transit_snapshot": "mingxu.get_transit_snapshot",
+    "astrocopy.compare_transits": "mingxu.compare_transits",
+    "astrocopy.create_liuren_chart": "mingxu.create_liuren_chart",
+    "astrocopy.export_profile": "mingxu.export_profile",
+    "sizhu.about": "mingxu.about",
+    "sizhu.create_profile": "mingxu.create_birth_chart",
+    "sizhu.create_bazi_profile": "mingxu.create_birth_chart",
+    "sizhu.create_ziwei_profile": "mingxu.create_birth_chart",
+    "sizhu.get_transit_snapshot": "mingxu.get_transit_snapshot",
+    "sizhu.create_liuren_chart": "mingxu.create_liuren_chart",
+    "sizhu.create_ai_prompt": "mingxu.export_profile",
+    "sizhu.export_profile_markdown": "mingxu.export_profile"
+  }
+}
