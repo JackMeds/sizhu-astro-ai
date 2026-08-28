@@ -8,6 +8,17 @@ export default defineConfig({
   // repository project-path used by the legacy github.io URL.
   base: "/",
   plugins: [react(), tailwindcss()],
+  build: {
+    rollupOptions: {
+      input: {
+        main: path.resolve(__dirname, "index.html"),
+        "landing-agent": path.resolve(__dirname, "src/landing-agent.ts")
+      },
+      output: {
+        entryFileNames: (chunk) => chunk.name === "landing-agent" ? "landing-agent.js" : "assets/[name]-[hash].js"
+      }
+    }
+  },
   server: {
     allowedHosts: ["mc.upcraft.cn"]
   },

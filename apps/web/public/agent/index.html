@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>命序 MingXu：AI Agent、WebMCP 与 Remote MCP 计算接口</title>
+  <meta name="description" content="命序 MingXu 是确定性优先的八字、紫微斗数、真太阳时、运限和大六壬计算工具，同时提供 WebMCP 与 MCP Agent 接口。" />
+  <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1" />
+  <link rel="canonical" href="https://astrocopy.jackmeds.top/agent/" />
+  <link rel="stylesheet" href="../guide.css" />
+  <link rel="icon" type="image/png" href="../brand/mark-light.png" media="(prefers-color-scheme: light)" />
+  <link rel="icon" type="image/png" href="../brand/mark-dark.png" media="(prefers-color-scheme: dark)" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="命序 MingXu" />
+  <meta property="og:title" content="命序 MingXu：AI Agent、WebMCP 与 Remote MCP 计算接口" />
+  <meta property="og:description" content="让 AI 调用确定性的八字、紫微斗数、运限、真太阳时和大六壬计算，而不是自行重算。" />
+  <meta property="og:url" content="https://astrocopy.jackmeds.top/agent/" />
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": ["WebApplication", "SoftwareApplication"],
+          "@id": "https://astrocopy.jackmeds.top/agent/#application",
+          "name": "命序 MingXu",
+          "alternateName": ["MingXu", "AstroCopy"],
+          "description": "确定性优先的八字、紫微斗数、真太阳时、运限和大六壬计算工具，提供 WebMCP 与 MCP Agent 接口。",
+          "url": "https://astrocopy.jackmeds.top/agent/",
+          "applicationCategory": "LifestyleApplication",
+          "operatingSystem": "Web",
+          "isAccessibleForFree": true,
+          "featureList": [
+            "BaZi / 八字四柱、十神、藏干",
+            "10-year luck cycles, annual and monthly transits",
+            "Zi Wei Dou Shu / 紫微斗数十二宫与动态运限",
+            "True Solar Time / 真太阳时与边界检查",
+            "Da Liu Ren / 大六壬四课三传与校验",
+            "Transit comparison",
+            "Structured JSON and Markdown output",
+            "WebMCP and stateless Streamable HTTP MCP"
+          ],
+          "codeRepository": "https://github.com/JackMeds/sizhu-astro-ai",
+          "sameAs": [
+            "https://github.com/JackMeds/sizhu-astro-ai",
+            "https://astrocopy.jackmeds.top/"
+          ],
+          "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+        },
+        {
+          "@type": "TechArticle",
+          "@id": "https://astrocopy.jackmeds.top/agent/#article",
+          "headline": "命序 MingXu 的 AI Agent、WebMCP 与 Remote MCP 接口",
+          "description": "命序 Agent 接口和确定性计算边界的可搜索说明。",
+          "url": "https://astrocopy.jackmeds.top/agent/",
+          "isAccessibleForFree": true,
+          "about": { "@id": "https://astrocopy.jackmeds.top/agent/#application" },
+          "author": { "@type": "Organization", "name": "命序" },
+          "publisher": { "@type": "Organization", "name": "命序" }
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "命序", "item": "https://astrocopy.jackmeds.top/" },
+            { "@type": "ListItem", "position": 2, "name": "Agent 接口", "item": "https://astrocopy.jackmeds.top/agent/" }
+          ]
+        }
+      ]
+    }
+  </script>
+</head>
+<body>
+  <main class="shell">
+    <header class="top"><a class="brand" href="../">命序 MingXu</a><a class="back" href="../">打开计算工作台 →</a></header>
+    <section class="hero">
+      <p class="kicker">MingXu · AI Agent Interface</p>
+      <h1>命序 MingXu：让 AI 调用确定性的术数计算。</h1>
+      <p class="lead">命序 MingXu 是一个确定性优先的八字、紫微斗数、真太阳时、运限和大六壬计算工具，同时提供 WebMCP 与 MCP Agent 接口。程序先生成可复核的结构，AI 再负责解释。</p>
+    </section>
+
+    <section class="card">
+      <h2>Capabilities</h2>
+      <div class="grid">
+        <a href="../bazi/"><strong>BaZi / 八字四柱</strong><span>十神、藏干、纳音、空亡与五行结构</span></a>
+        <a href="../guide/dayun.html"><strong>Luck cycles / 运限</strong><span>大运、流年、流月与多日期比较</span></a>
+        <a href="../ziwei/"><strong>Zi Wei Dou Shu / 紫微斗数</strong><span>十二宫、主星、四化、大限与动态范围</span></a>
+        <a href="../true-solar-time/"><strong>True Solar Time / 真太阳时</strong><span>经度修正、均时差、跨时辰与跨日期</span></a>
+        <a href="../liuren/"><strong>Da Liu Ren / 大六壬</strong><span>天地盘、天将、四课、三传、旬空与交叉校验</span></a>
+        <div><strong>Structured output</strong><span>JSON、Markdown、纯文本和 warning / evidence</span></div>
+      </div>
+    </section>
+
+    <h2>AI 使用原则</h2>
+    <ol>
+      <li><strong>Compute first, interpret second.</strong> 先调用命序工具生成四柱、宫位、运限或课盘，再进入解释。</li>
+      <li>保留 IANA 时区、标准时间、太阳时修正、有效时间以及跨时辰/跨日期提醒。</li>
+      <li>把结构事实、传统规则和综合解释分开；不要把五行计数当作旺衰结论。</li>
+      <li>不要为了符合叙事而自行重排四柱、紫微宫位或大六壬三传；warning 和引擎差异不可丢弃。</li>
+    </ol>
+
+    <section class="card">
+      <h2>Agent 接口</h2>
+      <div class="grid">
+        <div><h3>WebMCP</h3><p>在支持 WebMCP 的浏览器或 Agent 中打开命序页面即可发现轻量入口；进入工作台后可操作同一个可见页面状态。</p><code>mingxu.about</code><br /><code>mingxu.open_workspace</code></div>
+        <div><h3>Remote MCP</h3><p>Remote MCP 采用无状态 Streamable HTTP 设计，部署目标是独立的 MCP 服务，不与 GitHub Pages 静态站混用。</p><code>https://mcp.jackmeds.top/mcp</code></div>
+        <div><h3>Source &amp; guide</h3><p><a href="../agents.md">完整 Agent 指南</a> · <a href="https://github.com/JackMeds/sizhu-astro-ai">GitHub 源码</a></p><code>mingxu.*</code> 表示确定性计算接口；<code>mingxu.ui.*</code> 表示浏览器工作区操作。</div>
+      </div>
+    </section>
+
+    <h2>典型任务</h2>
+    <ul>
+      <li>Create a BaZi birth chart with an explicit IANA timezone.</li>
+      <li>Inspect Zi Wei Life and Body palaces.</li>
+      <li>Compare 2027 and 2029 transit snapshots.</li>
+      <li>Calculate a Da Liu Ren chart from time, number, or branch casting.</li>
+      <li>Check whether solar-time correction crosses a shichen or date boundary.</li>
+    </ul>
+
+    <div class="cta"><h2>直接进入一个可调用的工具页面</h2><p><a href="../bazi/">免费八字排盘</a> · <a href="../ziwei/">紫微斗数排盘</a> · <a href="../liuren/">大六壬排盘</a> · <a href="../true-solar-time/">真太阳时计算</a></p></div>
+  </main>
+  <footer class="shell">命序 MingXu · AstroCopy engine · 计算与解释分层的 AI-ready 术数工作台。</footer>
+  <script type="module" src="/landing-agent.js"></script>
+</body>
+</html>
