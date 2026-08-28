@@ -17,7 +17,7 @@
     "typecheck:api": "tsc -p api/tsconfig.json --noEmit",
     "test:webmcp": "node tools/e2e-webmcp.mjs",
     "start:mcp": "node apps/mcp/dist/index.js",
-    "test": "npm run test -w @sizhu/core && npm run build -w @sizhu/core && npm run test -w @sizhu/prompt && npm run test -w @sizhu/agent-tools && npm run test -w @sizhu/mcp && npm run test -w @sizhu/web",
+    "test": "npm run test -w @sizhu/core && npm run build -w @sizhu/core && npm run test -w @sizhu/prompt && npm run test -w @sizhu/agent-tools && npm run build -w @sizhu/agent-tools && npm run test -w @sizhu/mcp && npm run test -w @sizhu/web",
     "typecheck": "npm run build -w @sizhu/core && npm run build -w @sizhu/prompt && npm run build -w @sizhu/render && npm run build -w @sizhu/agent-tools && npm run typecheck -w @sizhu/web && npm run typecheck -w @sizhu/mcp && npm run typecheck:api"
   },
   "overrides": {

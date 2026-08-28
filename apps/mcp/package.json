@@ -9,6 +9,7 @@
   },
   "scripts": {
     "build": "tsc -p tsconfig.json",
+    "pretest": "npm run build -w @sizhu/agent-tools",
     "test": "node --test --import tsx test/*.test.ts",
     "start:http": "node dist/http-server.js",
     "typecheck": "tsc -p tsconfig.json --noEmit"
