@@ -1,4 +1,5 @@
-import { Bot, RotateCcw, Trash2, UserRound } from "lucide-react";
+import { Bot, ChevronDown, RotateCcw, Trash2, UserRound } from "lucide-react";
+import { useState } from "react";
 import { useI18n } from "@/lib/i18n";
 import { useWorkspace } from "@/lib/workspace";
 
@@ -13,17 +14,20 @@ function formatActivityTime(value: string, locale: string) {
 export function AgentActivityRail() {
   const { state, dispatch } = useWorkspace();
   const { locale, t } = useI18n();
+  const [open, setOpen] = useState(false);
   if (!state.activities.length) return null;
 
   return (
-    <aside className="agent-activity-rail" aria-label={t("activity.title")}>
+    <aside className={`agent-activity-rail ${open ? "is-open" : "is-collapsed"}`} aria-label={t("activity.title")}>
       <header>
-        <div><Bot size={16} /><strong>{t("activity.title")}</strong></div>
+        <button className="agent-activity-toggle" type="button" aria-expanded={open} onClick={() => setOpen((value) => !value)}>
+          <Bot size={16} /><strong>{t("activity.title")}</strong><ChevronDown size={14} />
+        </button>
         <button type="button" aria-label={t("activity.clear")} title={t("activity.clear")} onClick={() => dispatch({ type: "clear-activities" })}>
           <Trash2 size={14} />
         </button>
       </header>
-      <div className="agent-activity-list">
+      {open ? <div className="agent-activity-list">
         {state.activities.map((activity) => (
           <article
             className={activity.undone ? "is-undone" : ""}
@@ -62,7 +66,7 @@ export function AgentActivityRail() {
             ) : null}
           </article>
         ))}
-      </div>
+      </div> : null}
     </aside>
   );
 }

@@ -1,1 +1,99 @@
-:root{color-scheme:dark;--bg:#07100e;--panel:#0d1714;--text:#f2ead7;--muted:#a6b7ae;--gold:#e1b85d;--jade:#5ac7ad;--line:rgba(225,184,93,.2)}*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 20% 0,rgba(90,199,173,.08),transparent 35%),radial-gradient(circle at 80% 10%,rgba(225,184,93,.08),transparent 34%),var(--bg);color:var(--text);font-family:ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.75}a{color:var(--gold)}.shell{width:min(920px,calc(100% - 32px));margin:auto}.top{display:flex;justify-content:space-between;align-items:center;padding:22px 0;border-bottom:1px solid var(--line)}.brand{text-decoration:none;color:var(--text);font-weight:800}.back{text-decoration:none;font-size:14px}.hero{padding:72px 0 36px}.kicker{color:var(--jade);font-size:13px;font-weight:800;letter-spacing:.12em;text-transform:uppercase}.hero h1{margin:.2em 0;font-family:"Noto Serif SC","Songti SC",serif;font-size:clamp(40px,7vw,72px);line-height:1.08}.lead{max-width:760px;color:var(--muted);font-size:18px}.card{margin:18px 0;padding:24px;border:1px solid var(--line);border-radius:18px;background:rgba(13,23,20,.82)}h2{margin-top:46px;font-family:"Noto Serif SC","Songti SC",serif;font-size:28px}h3{margin-top:26px}p,li{color:#d9e1dc}.note{border-left:3px solid var(--gold);padding:12px 16px;background:rgba(225,184,93,.06);color:var(--muted)}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.grid a{display:block;padding:18px;border:1px solid var(--line);border-radius:14px;background:rgba(13,23,20,.7);text-decoration:none;color:var(--text)}.grid a span{display:block;color:var(--muted);font-size:13px;margin-top:5px}.cta{margin:48px 0;padding:28px;border-radius:20px;background:linear-gradient(135deg,rgba(90,199,173,.12),rgba(225,184,93,.1));border:1px solid var(--line)}.cta a{display:inline-flex;margin-top:8px;padding:10px 16px;border-radius:999px;background:var(--gold);color:#161108;text-decoration:none;font-weight:800}footer{padding:30px 0 50px;border-top:1px solid var(--line);color:var(--muted);font-size:13px}@media(max-width:680px){.hero{padding-top:48px}.grid{grid-template-columns:1fr}.top{align-items:flex-start;gap:12px}.hero h1{font-size:42px}}
+:root {
+  color-scheme: dark;
+  --bg: #07100e;
+  --surface: #10231e;
+  --surface-soft: rgba(117, 170, 146, .07);
+  --text: #edf3e9;
+  --muted: #a6b8ad;
+  --faint: #71857b;
+  --jade: #66d19e;
+  --jade-bright: #8de7b6;
+  --gold: #dcb467;
+  --line: rgba(163, 211, 184, .19);
+  --line-strong: rgba(141, 231, 182, .52);
+  --serif: "Noto Serif SC", "Songti SC", "STSong", Georgia, serif;
+  --sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --mono: "SFMono-Regular", Consolas, monospace;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    color-scheme: light;
+    --bg: #f3f0e7;
+    --surface: #fffdf7;
+    --surface-soft: rgba(35, 73, 56, .075);
+    --text: #17251f;
+    --muted: #4b5f54;
+    --faint: #5d7065;
+    --jade: #23734f;
+    --jade-bright: #145f40;
+    --gold: #8b5e16;
+    --line: rgba(35, 73, 56, .22);
+    --line-strong: rgba(35, 115, 79, .58);
+  }
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  min-width: 320px;
+  margin: 0;
+  color: var(--text);
+  background:
+    radial-gradient(circle at 8% -8%, color-mix(in srgb, var(--jade) 12%, transparent), transparent 32rem),
+    radial-gradient(circle at 94% 6%, color-mix(in srgb, var(--gold) 9%, transparent), transparent 30rem),
+    var(--bg);
+  font: 500 15px/1.75 var(--sans);
+}
+a { color: var(--jade-bright); }
+a:focus-visible { outline: 2px solid var(--jade-bright); outline-offset: 3px; }
+.shell { width: min(100% - 34px, 1080px); margin: 0 auto; }
+.top { display: flex; align-items: center; justify-content: space-between; gap: 18px; min-height: 68px; border-bottom: 1px solid var(--line); }
+.brand { display: inline-flex; align-items: center; gap: 9px; color: var(--text); font-weight: 800; text-decoration: none; }
+.brand::before { display: block; width: 30px; height: 30px; flex: 0 0 30px; border-radius: 8px; background: url("./brand/mark-dark.png") center / contain no-repeat; content: ""; }
+.back { color: var(--gold); font-size: 12px; font-weight: 700; text-decoration: none; }
+.back:hover { color: var(--jade-bright); }
+.hero { padding: clamp(58px, 9vw, 105px) 0 32px; }
+.kicker { margin: 0; color: var(--jade-bright); font: 700 10px/1.2 var(--mono); letter-spacing: .14em; text-transform: uppercase; }
+.hero h1 { max-width: 900px; margin: 12px 0 19px; color: var(--text); font: 650 clamp(40px, 7vw, 76px)/.99 var(--serif); letter-spacing: -.055em; text-wrap: balance; }
+.lead { max-width: 720px; margin: 0; color: var(--muted); font-size: clamp(15px, 1.7vw, 18px); line-height: 1.75; text-wrap: pretty; }
+.card, .cta { margin: 25px 0; padding: clamp(20px, 4vw, 32px); border: 1px solid var(--line); border-radius: 14px; background: linear-gradient(145deg, color-mix(in srgb, var(--surface) 96%, var(--jade) 4%), var(--surface-soft)); box-shadow: 0 20px 54px color-mix(in srgb, #000 18%, transparent); }
+h2 { margin: 42px 0 12px; color: var(--text); font: 650 clamp(24px, 3.4vw, 36px)/1.1 var(--serif); letter-spacing: -.035em; }
+.card h2, .cta h2 { margin-top: 0; }
+h3 { margin: 28px 0 8px; color: var(--text); font: 650 18px/1.25 var(--serif); }
+p, li { color: var(--muted); }
+p { max-width: 74ch; }
+li { margin: 7px 0; }
+strong { color: var(--text); }
+.note { margin: 20px 0 0; padding: 12px 15px; border-left: 2px solid var(--gold); background: color-mix(in srgb, var(--gold) 7%, transparent); color: var(--muted); font-size: 14px; }
+.grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 9px; margin: 16px 0 28px; }
+.grid a { display: grid; min-height: 108px; align-content: start; gap: 5px; padding: 14px; border: 1px solid var(--line); border-radius: 10px; color: var(--text); background: var(--surface-soft); text-decoration: none; transition: transform 180ms ease, border-color 180ms ease, background 180ms ease; }
+.grid a:hover { border-color: var(--line-strong); background: color-mix(in srgb, var(--surface-soft) 80%, var(--jade) 20%); transform: translateY(-2px); }
+.grid a span { margin-top: auto; color: var(--faint); font-size: 11px; line-height: 1.45; }
+.cta { border-color: color-mix(in srgb, var(--jade) 38%, var(--line)); background: linear-gradient(135deg, color-mix(in srgb, var(--jade) 10%, var(--surface)), color-mix(in srgb, var(--gold) 7%, var(--surface))); }
+.cta p { margin-bottom: 15px; }
+.cta a { display: inline-flex; align-items: center; min-height: 39px; padding: 0 14px; border: 1px solid var(--line-strong); border-radius: 8px; color: var(--bg); background: var(--jade); font-size: 12px; font-weight: 800; text-decoration: none; }
+.cta a:hover { background: var(--jade-bright); }
+code, pre { font-family: var(--mono); }
+pre { overflow-x: auto; padding: 14px; border: 1px solid var(--line); border-radius: 9px; color: var(--muted); background: var(--surface-soft); font-size: 12px; }
+details { margin: 16px 0; border: 1px solid var(--line); border-radius: 9px; background: var(--surface-soft); }
+summary { padding: 12px 14px; color: var(--text); cursor: pointer; font-weight: 700; }
+details > :not(summary) { margin-inline: 14px; }
+footer { margin-top: 58px; padding: 24px 0 48px; border-top: 1px solid var(--line); color: var(--faint); font-size: 12px; }
+
+@media (prefers-color-scheme: light) {
+  .brand::before { background-image: url("./brand/mark-light.png"); }
+}
+
+@media (max-width: 760px) {
+  .shell { width: min(100% - 26px, 680px); }
+  .top { align-items: flex-start; padding: 15px 0; }
+  .hero { padding-top: 53px; }
+  .hero h1 { font-size: 43px; }
+  .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 470px) {
+  .top { display: grid; gap: 8px; }
+  .hero h1 { font-size: 39px; }
+  .grid { grid-template-columns: 1fr; }
+}

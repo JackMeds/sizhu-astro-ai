@@ -138,7 +138,7 @@ try {
 
   const htmlLanguage = await page.locator("html").getAttribute("lang");
   assert(htmlLanguage?.toLowerCase().startsWith("en"), `Expected English html lang, received ${htmlLanguage}`);
-  assert((await page.title()).toLowerCase().includes("astrocopy"), "English page title does not contain AstroCopy");
+  assert((await page.title()).toLowerCase().includes("mingxu"), "English page title does not contain MingXu");
 
   await callTool("astrocopy.create_birth_chart", {
     name: "Alex Demo",

@@ -3,12 +3,12 @@ import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { Flame, Gem, Leaf, Mountain, Waves } from "lucide-react";
 import { useRuntimeLocale } from "@/lib/useRuntimeLocale";
+import { buildElementDistribution, FIVE_PHASES } from "@/lib/elementDistribution";
 
 interface BaziPlateProps {
   profile: AstroProfile;
 }
 
-const elements = ["木", "火", "土", "金", "水"];
 const elementEnglish: Record<string, string> = {
   木: "Wood",
   火: "Fire",
@@ -39,7 +39,7 @@ const branchElements: Record<string, string> = {
 };
 
 function elementOf(value: string) {
-  return stemElements[value] ?? branchElements[value] ?? elements.find((element) => value.includes(element)) ?? "";
+  return stemElements[value] ?? branchElements[value] ?? FIVE_PHASES.find((element) => value.includes(element)) ?? "";
 }
 
 function ElementMark({ element, isEnglish }: { element: string; isEnglish: boolean }) {
@@ -75,11 +75,11 @@ export function BaziPlate({ profile }: BaziPlateProps) {
   const [selectedYearIndex, setSelectedYearIndex] = useState(0);
   const [selectedMonthIndex, setSelectedMonthIndex] = useState(0);
   const pillars = profile.bazi.pillars;
-  const maxElement = Math.max(...Object.values(profile.bazi.elementCounts), 1);
   const dayunList = profile.bazi.luck.dayun;
   const selectedDayun = dayunList[Math.min(selectedDayunIndex, Math.max(0, dayunList.length - 1))];
   const selectedYear = selectedDayun?.years[Math.min(selectedYearIndex, Math.max(0, selectedDayun.years.length - 1))];
   const selectedMonth = selectedYear?.months[Math.min(selectedMonthIndex, Math.max(0, selectedYear.months.length - 1))];
+  const elementDistribution = buildElementDistribution(profile.bazi.elementCounts);
   const pillarLabels = isEnglish
     ? ["Year Pillar", "Month Pillar", "Day Pillar", "Hour Pillar"]
     : ["年柱", "月柱", "日柱", "时柱"];
@@ -175,20 +175,23 @@ export function BaziPlate({ profile }: BaziPlateProps) {
 
       <div className="bazi-secondary">
         <div className="element-panel">
-          <h3>{pick("五行分布", "Five Phases distribution")}</h3>
-          {elements.map((element) => {
-            const value = profile.bazi.elementCounts[element] ?? 0;
+          <div className="element-panel-heading">
+            <h3>{pick("五行分布", "Five Phases distribution")}</h3>
+            <span>{pick("含藏干权重", "Hidden-stem weighted")}</span>
+          </div>
+          {elementDistribution.map(({ element, value, percentage }) => {
             return (
               <div className="element-row" data-element={element} key={element}>
                 <span>
                   <ElementMark element={element} isEnglish={isEnglish} />
                   {isEnglish ? `${element} · ${elementEnglish[element]}` : element}
                 </span>
-                <div><i style={{ width: `${Math.max(6, (value / maxElement) * 100)}%` }} /></div>
-                <em>{value}</em>
+                <progress aria-label={`${element} ${percentage.toFixed(1)}%`} max={100} value={percentage} />
+                <em>{value.toFixed(2)} · {percentage.toFixed(1)}%</em>
               </div>
             );
           })}
+          <p className="element-panel-note">{pick("百分比按天干、地支与藏干权重合计计算；仅用于结构展示。", "Percentages combine stems, branches and hidden-stem weights for structural display only.")}</p>
         </div>
 
         <div className="luck-panel">

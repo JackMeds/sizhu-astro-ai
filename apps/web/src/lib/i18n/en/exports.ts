@@ -1,7 +1,7 @@
 export const exportText = {
   "export.kicker": "Next · AI handoff",
   "export.title": "Generate evidence-aware AI material",
-  "export.intro": "The chart has already been computed by code. Choose a system and focus; AstroCopy generates a prompt in the current language with time semantics, structural evidence, boundaries and engine notices.",
+  "export.intro": "The chart has already been computed by code. Choose a system and focus; MingXu generates a prompt in the current language with time semantics, structural evidence, boundaries and engine notices.",
   "export.system.title": "Which system should the AI inspect?",
   "export.system.help": "BaZi + Zi Wei is the default. The prompt keeps their evidence separate and does not force agreement.",
   "export.mode.title": "What should the analysis focus on?",
@@ -12,7 +12,7 @@ export const exportText = {
   "export.copy.done": "Copied ✓",
   "export.launch.ready": "✓ Copied — choose an AI to continue",
   "export.launch.waiting": "Quick links after copying",
-  "export.launch.privacy": "AstroCopy never sends birth data to these services automatically.",
+  "export.launch.privacy": "MingXu never sends birth data to these services automatically.",
   "export.status.default": "The default combines BaZi and Zi Wei evidence. Calculation remains in this browser.",
   "export.status.copied": "{{system}} · {{mode}} material was copied and is ready to paste into an AI.",
   "export.status.copyFailed": "Copy failed. Use the advanced preview to copy the text manually.",

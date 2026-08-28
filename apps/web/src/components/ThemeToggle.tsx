@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Monitor, Moon, Sun } from "lucide-react";
+import { getBrandMarkSource } from "@/lib/brand";
 import { useI18n } from "@/lib/i18n";
 
 type Theme = "system" | "light" | "dark";
@@ -37,6 +38,8 @@ export function useTheme() {
       setResolvedTheme(resolved);
       document.documentElement.setAttribute("data-theme", resolved === "light" ? "modern" : "classical");
       document.documentElement.setAttribute("data-theme-mode", theme);
+      const favicon = document.querySelector<HTMLLinkElement>("link[data-brand-favicon]");
+      if (favicon) favicon.href = getBrandMarkSource(resolved);
     };
 
     applyTheme();

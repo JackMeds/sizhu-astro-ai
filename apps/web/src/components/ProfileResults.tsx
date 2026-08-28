@@ -13,6 +13,7 @@ import { ZiweiSummaryPanel } from "./ZiweiSummaryPanel";
 
 interface ProfileResultsProps {
   profile: AstroProfile;
+  hideTabList?: boolean;
 }
 
 const evidenceTranslationKeyByLabel: Record<string, string> = {
@@ -28,7 +29,7 @@ const evidenceTranslationKeyByLabel: Record<string, string> = {
   紫微生年四化: "mutagens"
 };
 
-export function ProfileResults({ profile }: ProfileResultsProps) {
+export function ProfileResults({ profile, hideTabList = false }: ProfileResultsProps) {
   const { state, dispatch } = useWorkspace();
   const { t } = useI18n();
   const signature = profile.bazi.pillars.map((pillar) => pillar.ganZhi).join(" · ");
@@ -71,7 +72,7 @@ export function ProfileResults({ profile }: ProfileResultsProps) {
       </div>
 
       <Tabs.Root className="progressive-results" value={state.activeView} onValueChange={selectView}>
-        <Tabs.List className="progressive-tab-list" aria-label={t("result.tabs.label")}>
+        <Tabs.List className={`progressive-tab-list${hideTabList ? " is-external" : ""}`} aria-label={t("result.tabs.label")}>
           <Tabs.Trigger value="overview">{t("result.tab.overview")}</Tabs.Trigger>
           <Tabs.Trigger value="bazi">{t("result.tab.bazi")}</Tabs.Trigger>
           <Tabs.Trigger value="ziwei">{t("result.tab.ziwei")}</Tabs.Trigger>

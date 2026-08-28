@@ -1,6 +1,6 @@
-# AstroCopy — English Agent Guide
+# MingXu — English Agent Guide
 
-AstroCopy is a deterministic BaZi, Zi Wei Dou Shu, transit, apparent-solar-time, and Da Liu Ren workspace. Treat it as a calculation substrate and shared live page, not as a free-form fortune-telling prompt.
+MingXu (AstroCopy engine) is a deterministic BaZi, Zi Wei Dou Shu, transit, apparent-solar-time, and Da Liu Ren workspace. Treat it as a calculation substrate and shared live page, not as a free-form fortune-telling prompt.
 
 ## Rules
 
@@ -63,7 +63,7 @@ Check the Month General, Earth/Heaven plates, Generals, Four Lessons, Three Tran
 
 ## Privacy
 
-AstroCopy computes in the browser and does not automatically send chart data to an external AI. When a person explicitly invokes a WebMCP tool, its returned data becomes available to the active Agent and is processed under that provider's terms.
+MingXu computes in the browser and does not automatically send chart data to an external AI. When a person explicitly invokes a WebMCP tool, its returned data becomes available to the active Agent and is processed under that provider's terms.
 
 ## Links
 

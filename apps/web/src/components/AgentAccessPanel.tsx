@@ -1,7 +1,8 @@
-import { useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   CheckCircle2,
   Clipboard,
+  ChevronDown,
   Code2,
   ExternalLink,
   MonitorSmartphone,
@@ -43,15 +44,27 @@ const webMcpTools = [
   "astrocopy.compare_transits"
 ];
 
-export function AgentAccessPanel() {
+interface AgentAccessPanelProps {
+  compact?: boolean;
+}
+
+export function AgentAccessPanel({ compact = false }: AgentAccessPanelProps) {
   const { t } = useI18n();
   const [os, setOs] = useState<"unix" | "windows">("windows");
   const [tab, setTab] = useState<"webmcp" | "codex" | "generic">("webmcp");
-  const webMcpAvailable = useMemo(() => {
-    if (typeof document === "undefined" || typeof navigator === "undefined") return false;
-    const doc = document as unknown as { modelContext?: unknown };
-    const nav = navigator as unknown as { modelContext?: unknown };
-    return Boolean(doc.modelContext ?? nav.modelContext);
+  const [webMcpAvailable, setWebMcpAvailable] = useState(false);
+
+  useEffect(() => {
+    const checkAvailability = () => {
+      if (typeof document === "undefined" || typeof navigator === "undefined") return false;
+      const doc = document as unknown as { modelContext?: unknown };
+      const nav = navigator as unknown as { modelContext?: unknown };
+      return Boolean(doc.modelContext ?? nav.modelContext);
+    };
+    const update = () => setWebMcpAvailable(checkAvailability());
+    update();
+    const timer = window.setTimeout(update, 120);
+    return () => window.clearTimeout(timer);
   }, []);
 
   async function copy(value: string, label: string) {
@@ -69,6 +82,45 @@ export function AgentAccessPanel() {
 
   const installCommand = os === "windows" ? windowsInstall : unixInstall;
   const codexCommand = os === "windows" ? windowsCodex : unixCodex;
+
+  if (compact) {
+    return (
+      <section className="agent-access agent-access-compact panel" aria-label="WebMCP / Agent">
+        <div className="compact-agent-heading">
+          <div>
+            <p className="eyeline">WebMCP / Agent</p>
+            <h2>{t("agent.title")}</h2>
+          </div>
+          <span className={`compact-agent-dot ${webMcpAvailable ? "is-ready" : "is-pending"}`} aria-hidden="true" />
+        </div>
+        <div className="compact-agent-status">
+          <strong>{webMcpAvailable ? t("agent.webmcp.detected") : t("agent.webmcp.notDetected")}</strong>
+          <span>{t("agent.webmcp.toolCount", { count: webMcpTools.length })}</span>
+        </div>
+        <p className="compact-agent-copy">{webMcpAvailable ? t("agent.webmcp.detectedHelp") : t("agent.webmcp.notDetectedHelp")}</p>
+        <details className="agent-compact-details">
+          <summary>{t("agent.fullGuide")} <ChevronDown size={14} /></summary>
+          <div className="compact-agent-details-inner">
+            <p>{t("agent.webmcp.note")}</p>
+            <div className="compact-tool-list">
+              {webMcpTools.map((tool) => <code key={tool}>{tool}</code>)}
+            </div>
+            <button type="button" onClick={() => copy(webMcpTools.join("\n"), t("agent.copy.toolsLabel"))}>
+              <Clipboard size={14} />{t("agent.copy.tools")}
+            </button>
+            <div className="compact-command">
+              <span>{t("agent.codex.register")}</span>
+              <button type="button" onClick={() => copy(codexCommand, t("agent.copy.codexLabel"))}>
+                <Clipboard size={13} />{t("common.copy")}
+              </button>
+              <code>{codexCommand}</code>
+            </div>
+            <a href={`${import.meta.env.BASE_URL}guide/agent.html`}>{t("agent.fullGuide")} <ExternalLink size={13} /></a>
+          </div>
+        </details>
+      </section>
+    );
+  }
 
   return (
     <section className="agent-access panel" id="agent-access" aria-labelledby="agent-access-title">

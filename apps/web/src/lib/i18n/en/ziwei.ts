@@ -1,7 +1,7 @@
 export const ziwei = {
   "ziwei.title": "Zi Wei Dou Shu · Twelve Palaces",
-  "ziwei.renderer": "Native AstroCopy renderer",
-  "ziwei.engine": "Computed by iztro · structured and rendered by AstroCopy",
+  "ziwei.renderer": "Native MingXu renderer",
+  "ziwei.engine": "Computed by iztro · structured and rendered by MingXu (AstroCopy engine)",
   "ziwei.unavailable": "The Zi Wei chart is unavailable. Review the calculation notices.",
   "ziwei.palace": "Palace",
   "ziwei.noMajor": "No major star",
@@ -31,7 +31,7 @@ export const ziwei = {
   "ziwei.mutagen.quan": "Power",
   "ziwei.mutagen.ke": "Merit",
   "ziwei.mutagen.ji": "Adversity",
-  "ziwei.aria": "AstroCopy native Zi Wei Dou Shu twelve-palace chart",
+  "ziwei.aria": "MingXu native Zi Wei Dou Shu twelve-palace chart",
   "ziwei.centerAria": "Central Zi Wei chart metadata",
   "ziwei.legendAria": "Zi Wei chart legend"
 } as const;

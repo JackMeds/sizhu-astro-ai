@@ -6,12 +6,13 @@ interface HistoryRailProps {
   items: HistoryItem[];
   onClear: () => void;
   onSelect: (item: HistoryItem) => void;
+  compact?: boolean;
 }
 
-export function HistoryRail({ items, onClear, onSelect }: HistoryRailProps) {
+export function HistoryRail({ items, onClear, onSelect, compact = false }: HistoryRailProps) {
   const { t } = useI18n();
   return (
-    <section className="history-rail" aria-label={t("history.aria")}>
+    <section className={`history-rail${compact ? " history-rail-compact" : ""}`} aria-label={t("history.aria")}>
       <header>
         <div><span>{t("history.title")}</span><small>{t("history.help")}</small></div>
         {items.length ? (

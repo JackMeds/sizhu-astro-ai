@@ -155,11 +155,13 @@ export function registerWebMcpTools(getCurrentProfile: () => AstroProfile | null
   const tools: ToolDefinition[] = [
     {
       name: "sizhu.about",
-      title: "About Si Zhu Astro AI",
-      description: "Describe 四柱星盘 AI capabilities, privacy model, and available WebMCP tools.",
+      title: "About 命序 / MingXu",
+      description: "Describe 命序 (MingXu) capabilities, privacy model, and available WebMCP tools.",
       inputSchema: { type: "object", additionalProperties: false, properties: {} },
       execute: () => ({
-        app: "四柱星盘 AI",
+        app: "命序",
+        englishName: "MingXu",
+        engine: "AstroCopy engine",
         repository: "https://github.com/JackMeds/sizhu-astro-ai",
         privacy: "排盘、提示词生成和历史记录均在浏览器本地完成；WebMCP 工具不会主动读取服务器数据。",
         capabilities: ["bazi_profile", "bazi_relation_facts", "ziwei_profile", "transit_snapshot", "liuren_complete_chart", "ai_prompt", "current_chart"],

@@ -18,6 +18,7 @@ import "./styles/agent-access.css";
 import "./styles/workspace.css";
 import "./styles/ziwei-custom.css";
 import "./styles/i18n.css";
+import "./styles/workbench-redesign.css";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>

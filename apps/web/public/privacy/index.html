@@ -3,57 +3,52 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>AstroCopy Privacy</title>
-    <meta name="description" content="How AstroCopy handles birth-chart, casting, browser-history and WebMCP data." />
+    <title>MingXu Privacy</title>
+    <meta name="description" content="How MingXu handles birth-chart, casting, browser-history and WebMCP data." />
     <meta name="robots" content="index,follow" />
     <link rel="canonical" href="https://astrocopy.jackmeds.top/privacy/" />
+    <link rel="stylesheet" href="../guide.css" />
     <style>
-      :root { color-scheme: light dark; --paper:#f3f0e7; --ink:#161b1a; --surface:#fbfaf6; --jade:#326f66; --cinnabar:#b64c3e; --line:rgba(22,27,26,.16); }
-      * { box-sizing:border-box; }
-      body { margin:0; background:var(--paper); color:var(--ink); font:16px/1.72 ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif; }
-      main { width:min(860px,calc(100% - 32px)); margin:40px auto; padding:clamp(24px,5vw,58px); border:1px solid var(--line); border-radius:24px; background:var(--surface); box-shadow:0 24px 70px rgba(22,27,26,.08); }
-      h1,h2 { font-family:Iowan Old Style,"Noto Serif SC",Georgia,serif; line-height:1.15; }
-      h1 { font-size:clamp(38px,7vw,70px); margin:0 0 10px; }
-      h2 { margin-top:38px; }
-      .kicker { color:var(--jade); text-transform:uppercase; letter-spacing:.12em; font-size:12px; font-weight:800; }
-      .notice { padding:16px 18px; border-left:3px solid var(--cinnabar); background:color-mix(in srgb,var(--cinnabar) 7%,transparent); }
-      code { padding:.15em .35em; border-radius:5px; background:rgba(50,111,102,.09); }
-      a { color:var(--jade); }
-      hr { margin:52px 0; border:0; border-top:1px solid var(--line); }
-      @media (prefers-color-scheme: dark) { :root { --paper:#101513; --ink:#ece8dc; --surface:#171e1b; --line:rgba(236,232,220,.15); } }
+      .privacy-page { max-width:860px; margin:40px auto; padding:clamp(24px,5vw,58px); border:1px solid var(--line); border-radius:20px; background:var(--surface); box-shadow:0 24px 70px color-mix(in srgb, #000 10%, transparent); }
+      .privacy-page h1 { margin:0 0 10px; font:650 clamp(38px,7vw,70px)/1.08 var(--serif); letter-spacing:-.05em; }
+      .privacy-page h2 { margin-top:38px; }
+      .privacy-page .notice { margin:18px 0; padding:16px 18px; border-left:2px solid var(--gold); background:color-mix(in srgb,var(--gold) 7%,transparent); }
+      .privacy-page code { padding:.15em .35em; border-radius:5px; color:var(--jade-bright); background:var(--surface-soft); }
+      .privacy-page hr { margin:52px 0; border:0; border-top:1px solid var(--line); }
+      @media (max-width:760px) { .privacy-page { width:min(100% - 26px, 680px); margin:18px auto; padding:24px 20px 40px; } }
     </style>
-  </head>
+  <link rel="icon" type="image/png" href="../brand/mark-light.png" media="(prefers-color-scheme: light)"><link rel="icon" type="image/png" href="../brand/mark-dark.png" media="(prefers-color-scheme: dark)"></head>
   <body>
-    <main>
-      <p class="kicker">AstroCopy · Privacy</p>
+    <main class="privacy-page">
+      <p class="kicker">MingXu · Privacy</p>
       <h1>Local computation, explicit sharing.</h1>
-      <p class="notice">AstroCopy computes birth charts and Da Liu Ren structures in the browser. It does not automatically send birth or casting data to an external AI service.</p>
+      <p class="notice">MingXu computes birth charts and Da Liu Ren structures in the browser. It does not automatically send birth or casting data to an external AI service.</p>
 
       <h2>Data kept in the browser</h2>
-      <p>Birth-input drafts, generated chart history, selected views, comparison dates, and interface preferences may be stored in browser storage on the current device. AstroCopy does not require an account and does not provide automatic cloud synchronization.</p>
+      <p>Birth-input drafts, generated chart history, selected views, comparison dates, and interface preferences may be stored in browser storage on the current device. MingXu does not require an account and does not provide automatic cloud synchronization.</p>
 
       <h2>WebMCP and AI tools</h2>
       <p>When a person explicitly invokes a WebMCP tool, the tool may return chart inputs, computed structures, selected dates, warnings, or current workspace state to the active Agent. That returned data is then processed under the Agent provider's terms. “Local-first” does not mean that data explicitly shared with an Agent remains only inside the browser.</p>
 
       <h2>Copying and opening another AI</h2>
-      <p>Copy buttons place the selected structured package on the clipboard. Quick links to ChatGPT, Claude, Gemini, DeepSeek, Kimi, or another service only open that service; AstroCopy does not automatically paste or transmit the clipboard contents.</p>
+      <p>Copy buttons place the selected structured package on the clipboard. Quick links to ChatGPT, Claude, Gemini, DeepSeek, Kimi, or another service only open that service; MingXu does not automatically paste or transmit the clipboard contents.</p>
 
       <h2>Analytics</h2>
       <p>The public site may use privacy-oriented aggregate page and performance analytics. Chart inputs, birth data, generated chart JSON, casting questions, and clipboard contents are not intentionally included in those analytics events.</p>
 
       <h2>Deletion</h2>
-      <p>Use the history controls in the application to remove saved charts, or clear site data for <code>astrocopy.jackmeds.top</code> in the browser. Because AstroCopy does not maintain a user account database for these charts, there is no separate server-side chart account to delete.</p>
+      <p>Use the history controls in the application to remove saved charts, or clear site data for <code>astrocopy.jackmeds.top</code> in the browser. Because MingXu does not maintain a user account database for these charts, there is no separate server-side chart account to delete.</p>
 
       <h2>Traditional-metaphysics boundary</h2>
-      <p>AstroCopy is a cultural research and calculation tool. Traditional interpretations are not modern scientific conclusions and do not replace medical, legal, financial, safety, or other professional advice.</p>
+      <p>MingXu is a cultural research and calculation tool. Traditional interpretations are not modern scientific conclusions and do not replace medical, legal, financial, safety, or other professional advice.</p>
 
       <p><a href="/?lang=en">Back to the English workspace</a> · <a href="/?lang=zh">中文工作台</a> · <a href="https://github.com/JackMeds/sizhu-astro-ai">Source code</a></p>
 
       <hr />
 
-      <p class="kicker">AstroCopy · 隐私说明</p>
+      <p class="kicker">命序 · 隐私说明</p>
       <h1>本地计算，主动分享。</h1>
-      <p class="notice">AstroCopy 在浏览器内计算出生命盘和大六壬结构，不会自动把出生资料或占问内容发送给第三方 AI。</p>
+      <p class="notice">命序在浏览器内计算出生命盘和大六壬结构，不会自动把出生资料或占问内容发送给第三方 AI。</p>
 
       <h2>保存在浏览器里的数据</h2>
       <p>出生资料草稿、命盘历史、当前视图、比较日期和界面偏好可能保存在当前设备的浏览器存储中。项目不要求登录，也不会自动进行云端同步。</p>
@@ -62,7 +57,7 @@
       <p>当用户主动调用 WebMCP 工具时，工具可能把输入资料、程序计算结构、目标日期、警告或当前工作区状态返回给正在使用的 Agent。之后这些数据将按照对应 Agent 服务的条款处理。“本地优先”并不表示主动交给 Agent 的数据仍然只留在浏览器中。</p>
 
       <h2>复制与打开第三方 AI</h2>
-      <p>复制按钮只会把所选结构化资料写入剪贴板。ChatGPT、Claude、Gemini、DeepSeek、Kimi 等快捷链接只负责打开对应网站；AstroCopy 不会自动粘贴或发送剪贴板内容。</p>
+      <p>复制按钮只会把所选结构化资料写入剪贴板。ChatGPT、Claude、Gemini、DeepSeek、Kimi 等快捷链接只负责打开对应网站；命序不会自动粘贴或发送剪贴板内容。</p>
 
       <h2>统计与删除</h2>
       <p>公开网站可能使用隐私友好的汇总访问与性能统计，但不会有意把出生资料、命盘 JSON、占问内容或剪贴板内容放入统计事件。用户可以在网页历史控件中删除命盘，也可以清除浏览器中该站点的数据。</p>

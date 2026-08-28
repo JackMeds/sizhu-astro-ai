@@ -151,7 +151,7 @@ export function ZiweiPlate({ profile, focusedIds = [] }: ZiweiPlateProps) {
     <section className="panel ziwei-custom-plate" aria-label={t("ziwei.aria")}>
       <div className="plate-title ziwei-custom-title">
         <div>
-          <p className="eyeline">Zi Wei Dou Shu · Native AstroCopy renderer</p>
+          <p className="eyeline">Zi Wei Dou Shu · {isEnglish ? "Native MingXu renderer" : "命序原生渲染"}</p>
           <h2>{t("ziwei.title")}</h2>
         </div>
         <div className="plate-meta">
@@ -176,7 +176,7 @@ export function ZiweiPlate({ profile, focusedIds = [] }: ZiweiPlateProps) {
         ))}
 
         <section className="ziwei-center-card" aria-label={t("ziwei.centerAria")}>
-          <p>ASTROCOPY · {isEnglish ? "ZI WEI" : "紫微"}</p>
+          <p>{isEnglish ? "MINGXU" : "命序"} · {isEnglish ? "ZI WEI" : "紫微"}</p>
           <h3>{profile.input.name}</h3>
           <strong>{isEnglish ? profile.ziwei.solarDate : profile.ziwei.chineseDate || profile.ziwei.lunarDate || profile.ziwei.solarDate}</strong>
           <div className="ziwei-center-grid">

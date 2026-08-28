@@ -92,14 +92,19 @@ export function WebMcpBridge({ onProfileCreated }: WebMcpBridgeProps) {
   const { state, dispatch } = useWorkspace();
   const { locale, isEnglish, t } = useI18n();
   const hasProfile = Boolean(state.profile);
+  const productName = isEnglish ? "MingXu" : "命序";
+  const technicalProductName = isEnglish ? "MingXu (AstroCopy engine)" : "命序（AstroCopy engine）";
 
   useWebMcpTool({
     name: "astrocopy.about",
-    title: "About AstroCopy",
-    description: "Describe AstroCopy's deterministic Chinese metaphysics workspace, privacy model, and active collaboration tools.",
+    title: isEnglish ? "About MingXu" : "关于命序",
+    description: isEnglish
+      ? "Describe MingXu's deterministic Chinese metaphysics workspace, privacy model, and active collaboration tools."
+      : "介绍命序的确定性术数工作台、隐私边界和人机协作工具。",
     inputSchema: { type: "object", additionalProperties: false, properties: {} },
     execute: () => webMcpToolResult({
-      app: "AstroCopy",
+      app: productName,
+      engine: technicalProductName,
       purpose: "Deterministic BaZi, Zi Wei Dou Shu, transit and Da Liu Ren computation shared by the visible page and an AI agent.",
       privacy: "Calculations and browser history remain local to the page. Data returned by a WebMCP tool is shared with the currently connected agent.",
       activeWorkspace: state.profile ? "birth-chart" : "empty",
@@ -110,8 +115,10 @@ export function WebMcpBridge({ onProfileCreated }: WebMcpBridgeProps) {
 
   useWebMcpTool({
     name: "astrocopy.create_birth_chart",
-    title: "Create Birth Chart Workspace",
-    description: "Create a deterministic BaZi and Zi Wei birth chart and render it in the visible AstroCopy workspace. Use this instead of calculating pillars or palaces yourself.",
+    title: isEnglish ? "Create MingXu Birth Chart Workspace" : "建立命序出生命盘工作区",
+    description: isEnglish
+      ? "Create a deterministic BaZi and Zi Wei birth chart and render it in the visible MingXu workspace. Use this instead of calculating pillars or palaces yourself."
+      : "建立确定性的八字与紫微出生命盘，并渲染到当前命序工作区；请用它代替手动计算四柱或宫位。",
     inputSchema: birthInputSchema,
     execute: (input = {}) => {
       try {
@@ -139,8 +146,10 @@ export function WebMcpBridge({ onProfileCreated }: WebMcpBridgeProps) {
 
   useWebMcpTool({
     name: "astrocopy.get_workspace_state",
-    title: "Get AstroCopy Workspace State",
-    description: "Read the concise chart identity, visible view, selected and pinned transit dates, comparison set, focus and recent human-agent activity without changing the page.",
+    title: isEnglish ? "Get MingXu Workspace State" : "读取命序工作区状态",
+    description: isEnglish
+      ? "Read the concise chart identity, visible view, selected and pinned transit dates, comparison set, focus and recent human-agent activity without changing the page."
+      : "读取命序当前命盘、视图、选中与固定的运限日期、比较集合、焦点以及最近的人机活动，不改变页面。",
     inputSchema: { type: "object", additionalProperties: false, properties: {} },
     execute: () => webMcpToolResult({
       workspace: state.profile ? "birth-chart" : "empty",

@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { ArrowUpRight, Check, Copy, Download, ImageDown, ServerCog, Sparkles } from "lucide-react";
+import { ArrowUpRight, Check, ChevronDown, Copy, Download, ImageDown, ServerCog, Sparkles } from "lucide-react";
 import type { AstroProfile } from "@sizhu/core";
 import { Button } from "./Button";
 import { copySvgAsPng, copyText, downloadText } from "@/lib/utils";
@@ -15,7 +15,7 @@ import {
   type PromptSystem
 } from "@/lib/promptBuilder";
 
-interface ExportPanelProps { profile: AstroProfile; }
+interface ExportPanelProps { profile: AstroProfile; compact?: boolean; }
 
 const aiDestinations = [
   { name: "ChatGPT", href: "https://chatgpt.com/" },
@@ -179,10 +179,10 @@ function buildEnglishPrompt(
       : "Analyze only the supplied Zi Wei data. Do not invent BaZi evidence.";
 
   const sections = [
-    "# AstroCopy structured analysis request",
+    "# MingXu structured analysis request",
     "",
     "## Role and boundaries",
-    "Use the supplied chart as deterministic input from AstroCopy. Do not recalculate the Four Pillars, luck cycles, Zi Wei palaces or transformations from memory. Clearly separate: (1) program-computed facts, (2) traditional interpretive rules, and (3) your synthesis. Present traditional metaphysics as a cultural interpretive framework, not modern scientific fact. Do not replace medical, legal, financial or other professional advice.",
+    "Use the supplied chart as deterministic input from MingXu (AstroCopy engine). Do not recalculate the Four Pillars, luck cycles, Zi Wei palaces or transformations from memory. Clearly separate: (1) program-computed facts, (2) traditional interpretive rules, and (3) your synthesis. Present traditional metaphysics as a cultural interpretive framework, not modern scientific fact. Do not replace medical, legal, financial or other professional advice.",
     "",
     "## Analysis focus",
     `Focus on ${focus}. Ask for missing real-world context before making a strong practical recommendation. Preserve uncertainty and identify conclusions that depend on school-specific assumptions.`,
@@ -207,7 +207,7 @@ function buildEnglishPrompt(
     : markdown.replace(/^#{1,6}\s+/gm, "").replace(/\*\*/g, "");
 }
 
-export function ExportPanel({ profile }: ExportPanelProps) {
+export function ExportPanel({ profile, compact = false }: ExportPanelProps) {
   const { isEnglish, pick } = useRuntimeLocale();
   const [system, setSystem] = useState<PromptSystem>("combined");
   const [mode, setMode] = useState<Exclude<PromptMode, "xp">>("general");
@@ -283,6 +283,60 @@ export function ExportPanel({ profile }: ExportPanelProps) {
     }
   }
 
+  if (compact) {
+    return (
+      <aside className="panel export-panel export-panel-compact" aria-label={pick("交给 AI 分析", "AI analysis handoff")}>
+        <div className="compact-export-heading">
+          <div>
+            <p className="eyeline">AI Handoff</p>
+            <h2>{pick("交给 AI 分析", "Continue with AI")}</h2>
+          </div>
+          <Sparkles aria-hidden="true" size={17} />
+        </div>
+        <p className="compact-export-copy">{pick("命盘已由程序算好，复制结构化资料到你选择的 AI。", "The chart is computed. Copy a structured package to the AI you choose.")}</p>
+        <label className="compact-export-field">
+          <span>{pick("分析系统", "Chart system")}</span>
+          <select value={system} onChange={(event) => { setSystem(event.target.value as PromptSystem); resetCopied(); }}>
+            {promptSystems.map((item) => <option key={item.key} value={item.key}>{isEnglish ? systemEnglish[item.key].label : item.label}</option>)}
+          </select>
+        </label>
+        <div className="compact-export-modes" aria-label={pick("分析重点", "Analysis focus")}>
+          {visibleModes.map((item) => (
+            <button className={mode === item.key ? "active" : ""} key={item.key} onClick={() => { setMode(item.key); resetCopied(); }} type="button">
+              {isEnglish ? modeEnglish[item.key].label : item.label}
+            </button>
+          ))}
+        </div>
+        <Button className={`copy-prompt-button copy-prompt-button-v3 ${copied ? "is-copied" : ""}`} title={pick("复制分析资料", "Copy analysis package")} onClick={copyCurrent} variant="primary">
+          {copied ? <Check size={17} /> : <Sparkles size={17} />}
+          {copied ? pick("已复制", "Copied") : pick("复制给 AI", "Copy for AI")}
+        </Button>
+        <p className="status-line status-line-v3">{status || defaultStatus}</p>
+        <details className="compact-export-details">
+          <summary>{pick("打开 AI 链接与高级导出", "Open AI links and advanced export")} <ChevronDown size={14} /></summary>
+          <div className="compact-export-details-inner">
+            <div className="ai-destination-grid">
+              {aiDestinations.map((item) => <a href={item.href} key={item.name} target="_blank" rel="noreferrer">{item.name}<ArrowUpRight size={12} /></a>)}
+            </div>
+            <div className="export-switch">
+              {(["markdown", "txt"] as PromptFormat[]).map((item) => (
+                <button className={format === item ? "active" : ""} key={item} onClick={() => setFormat(item)} type="button">
+                  {item === "markdown" ? "Markdown" : pick("纯文本", "Plain text")}
+                </button>
+              ))}
+            </div>
+            <pre className="export-preview">{content}</pre>
+            <div className="export-actions">
+              <Button size="sm" onClick={downloadCurrent}><Download size={14} />{pick("下载", "Download")}</Button>
+              <Button size="sm" onClick={copyPromptImage}><ImageDown size={14} />{pick("复制图片", "Copy image")}</Button>
+              <Button size="sm" onClick={copyCurrent}><Copy size={14} />{pick("复制", "Copy")}</Button>
+            </div>
+          </div>
+        </details>
+      </aside>
+    );
+  }
+
   return (
     <aside className="panel export-panel export-panel-v3">
       <div className="panel-heading">
@@ -346,7 +400,7 @@ export function ExportPanel({ profile }: ExportPanelProps) {
       <div className={`ai-launcher ${copied ? "is-ready" : ""}`}>
         <div>
           <strong>{copied ? pick("✓ 已复制，选择一个 AI 继续", "✓ Copied — choose an AI to continue") : pick("复制后可快捷打开", "Quick links after copying")}</strong>
-          <small>{pick("本站不会自动把出生资料发送给这些平台。", "AstroCopy does not automatically send your birth data to these services.")}</small>
+          <small>{pick("本站不会自动把出生资料发送给这些平台。", "MingXu does not automatically send your birth data to these services.")}</small>
         </div>
         <div className="ai-destination-grid">
           {aiDestinations.map((item) => <a href={item.href} key={item.name} target="_blank" rel="noreferrer">{item.name}<ArrowUpRight size={13} /></a>)}

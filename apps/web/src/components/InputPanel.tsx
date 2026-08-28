@@ -200,7 +200,7 @@ export function InputPanel({ error, form, onChange, onSubmit }: InputPanelProps)
       : t("form.time.current.apparent");
 
   return (
-    <form className="panel input-panel input-panel-v2" onSubmit={submit}>
+    <form className="panel input-panel input-panel-v2" noValidate onSubmit={submit}>
       <div className="panel-heading">
         <div>
           <p className="eyeline">{t("form.kicker")}</p>
@@ -317,7 +317,7 @@ export function InputPanel({ error, form, onChange, onSubmit }: InputPanelProps)
       </details>
 
       <Button type="submit" variant="primary" className="generate-chart-button"><Sparkles size={17} />{t("form.submit")}</Button>
-      {error ? <p className="form-error">{error}</p> : null}
+      {error ? <p aria-live="polite" className="form-error" role="alert">{error}</p> : null}
       <div className="input-note"><CalendarDays size={16} />{t("form.localNote")}</div>
     </form>
   );

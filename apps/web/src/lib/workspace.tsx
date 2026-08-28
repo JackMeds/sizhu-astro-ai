@@ -95,7 +95,7 @@ export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction)
       return {
         ...state,
         profile: action.profile,
-        activeView: "overview",
+        activeView: "bazi",
         selectedTransitDate: null,
         pinnedTransitDate: null,
         comparedTransitDates: [],

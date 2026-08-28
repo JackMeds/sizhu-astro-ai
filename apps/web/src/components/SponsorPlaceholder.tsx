@@ -1,5 +1,6 @@
 import type { CSSProperties } from "react";
 import { ExternalLink, HeartHandshake, Star } from "lucide-react";
+import { BrandMark } from "./BrandMark";
 
 const orbitBranches = [..."子丑寅卯辰巳午未申酉戌亥"];
 
@@ -9,7 +10,7 @@ export function SponsorPlaceholder() {
       <div className="sponsor-art" aria-hidden="true">
         <div className="sponsor-orbit sponsor-orbit-outer" />
         <div className="sponsor-orbit sponsor-orbit-inner" />
-        <div className="sponsor-seal">命</div>
+        <BrandMark className="sponsor-seal" decorative />
         {orbitBranches.map((branch, index) => (
           <span
             className="sponsor-branch"
@@ -28,7 +29,7 @@ export function SponsorPlaceholder() {
         <p className="eyeline"><HeartHandshake size={14} /> Support the project</p>
         <h2 id="sponsor-title">支持这个免费的开源排盘底座</h2>
         <p>
-          四柱星盘 AI 不出售命理解读，也不锁定任何 AI 服务。这里未来可以展示与传统文化、AI 工具或开发者生态相关的赞助商 / 广告；当前先作为项目支持位保留。
+          命序不出售命理解读，也不锁定任何 AI 服务。这里未来可以展示与传统文化、AI 工具或开发者生态相关的赞助商 / 广告；当前先作为项目支持位保留。
         </p>
         <div className="sponsor-actions">
           <a href="https://github.com/JackMeds/sizhu-astro-ai" target="_blank" rel="noreferrer">

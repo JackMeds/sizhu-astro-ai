@@ -12,21 +12,20 @@ import {
   LockKeyhole,
   MessageCircleQuestion,
   Orbit,
-  PencilLine,
   Play,
   Sparkles,
   UserRound
 } from "lucide-react";
 import { AgentAccessPanel } from "./components/AgentAccessPanel";
+import { BrandMark } from "./components/BrandMark";
 import { LanguageToggle } from "./components/LanguageToggle";
-import { AgentActivityRail } from "./components/AgentActivityRail";
-import { ExportPanel } from "./components/ExportPanel";
-import { HistoryRail } from "./components/HistoryRail";
 import { InputPanel, type FormState } from "./components/InputPanel";
 import { LiurenBetaPanel } from "./components/LiurenBetaPanel";
 import { ProfileResults } from "./components/ProfileResults";
 import { ThemeToggle } from "./components/ThemeToggle";
 import { WebMcpBridge } from "./components/WebMcpBridge";
+import { WorkbenchModuleNav } from "./components/WorkbenchModuleNav";
+import { WorkbenchRightRail } from "./components/WorkbenchRightRail";
 import { loadHistory, saveHistory, toHistoryItem, type HistoryItem } from "./lib/history";
 import { useI18n } from "./lib/i18n";
 import { getBrowserTimeZone } from "./lib/timezone";
@@ -115,7 +114,6 @@ export function App() {
   const [form, setForm] = useState<FormState>(() => loadDraft());
   const [history, setHistory] = useState<HistoryItem[]>(() => loadHistory());
   const [formError, setFormError] = useState("");
-  const [inputExpanded, setInputExpanded] = useState(true);
   const signature = useMemo(
     () => profile?.bazi.pillars.map((pillar) => pillar.ganZhi).join(" · ") ?? "八字 · 紫微 · 六壬 · AI-ready JSON",
     [profile]
@@ -127,7 +125,6 @@ export function App() {
 
   function acceptProfile(nextProfile: AstroProfile, actor: WorkspaceActor, label?: string) {
     setFormError("");
-    setInputExpanded(false);
     dispatch({
       type: "set-profile",
       profile: nextProfile,
@@ -195,7 +192,7 @@ export function App() {
         <div className="texture" />
         <header className="topbar">
           <a className="brand-lockup" href="#top" aria-label={t("brand.name")}>
-            <span className="brand-seal">命</span><span><strong>{t("brand.name")}</strong><small>{t("brand.subtitle")}</small></span>
+            <BrandMark /><span><strong>{t("brand.name")}</strong><small>{t("brand.subtitle")}</small></span>
           </a>
           <nav>
             <a href="#birth">{t("nav.birth")}</a><a href="#liuren">{t("nav.liuren")}</a><a href="#guides">{t("nav.guides")}</a><a href="#agent-access">{t("nav.agent")}</a>
@@ -232,29 +229,31 @@ export function App() {
           {!profile ? <motion.button className="example-entry" type="button" onClick={tryExample} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: .22 }}><Play size={15} />{t("task.example")}</motion.button> : null}
 
           <div className={profile ? "workbench-grid workbench-generated" : "workbench-grid empty-workbench"} id="birth">
+            {profile ? <WorkbenchModuleNav /> : null}
             <aside className="side-stack">
-              {profile && !inputExpanded ? (
+              <InputPanel error={formError} form={form} onChange={setForm} onSubmit={generate} />
+              {profile ? (
                 <motion.section animate={{ opacity: 1, y: 0 }} className="panel input-summary-panel profile-summary-v2" initial={{ opacity: 0, y: 8 }}>
                   <div><p className="eyeline">{t("current.title")}</p><h2>{profile.input.name}</h2></div>
                   <p>{profile.input.gender === "male" ? t("current.male") : t("current.female")}</p>
                   <strong>{profile.time.standard.date} · {profile.time.standard.time.slice(0, 5)}</strong>
                   <small>{profile.input.timezone} · {t(`time.mode.${profile.time.effective.mode}`)} → {profile.time.effective.shichen}</small>
-                  <button onClick={() => setInputExpanded(true)} type="button"><PencilLine size={15} />{t("current.edit")}</button>
+                  <span className="profile-summary-status"><span aria-hidden="true" />{t("current.ready")}</span>
                 </motion.section>
-              ) : <InputPanel error={formError} form={form} onChange={setForm} onSubmit={generate} />}
+              ) : null}
             </aside>
 
             {profile ? (
               <div className="center-stack center-stack-v3">
-                <motion.div animate={{ opacity: 1, y: 0 }} id="export" initial={{ opacity: 0, y: 12 }} transition={{ duration: .4 }}><ExportPanel profile={profile} /></motion.div>
-                <ProfileResults profile={profile} />
+                <ProfileResults hideTabList profile={profile} />
               </div>
             ) : (
               <motion.section className="empty-stage empty-stage-v3" initial={{ opacity: 0, scale: .985 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: .08 }}>
-                <div className="empty-orbit"><i /><i /><i /><span>{isEnglish ? "BaZi" : "四柱"}</span></div>
+                <div className="empty-mark" aria-hidden="true"><span>01 / 03</span><strong>{isEnglish ? "BaZi" : "四柱"}</strong><small>{isEnglish ? "START WITH A PROFILE" : "从一张命盘开始"}</small></div>
                 <div><p className="eyeline">{t("empty.kicker")}</p><h2>{t("empty.title")}</h2><div className="three-step-list"><span><b>1</b>{t("empty.step1")}</span><span><b>2</b>{t("empty.step2")}</span><span><b>3</b>{t("empty.step3")}</span></div><p>{t("empty.note")}</p></div>
-              </motion.section>
+                </motion.section>
             )}
+            {profile ? <WorkbenchRightRail history={history} onClearHistory={clearHistory} onSelectHistory={selectHistory} profile={profile} /> : null}
           </div>
         </section>
 
@@ -281,7 +280,6 @@ export function App() {
           <div className="qa-grid">{faqDefinitions.map(([question, answer]) => <article className="qa-item" key={question}><h3>{t(question)}</h3><p>{t(answer)}</p></article>)}</div>
         </section>
 
-        <HistoryRail items={history} onClear={clearHistory} onSelect={selectHistory} />
         <footer id="mcp" className="footer-strip">
           <div className="footer-copy"><strong>{t("footer.engine")}</strong><span>{t("footer.repo")}：<a href="https://github.com/JackMeds/sizhu-astro-ai" target="_blank" rel="noreferrer">JackMeds/sizhu-astro-ai</a></span><span>{t("footer.agent")}：<a href="#agent-access">{t("footer.quick")}</a> · <a href={agentGuideHref} target="_blank" rel="noreferrer">agents.md</a></span><span>{t("footer.privacy")}</span></div>
           <div className="footer-links"><span>Core:</span><a href="https://github.com/6tail/lunar-javascript" target="_blank" rel="noreferrer">lunar-javascript</a><a href="https://iztro.com/" target="_blank" rel="noreferrer">iztro</a><a href="https://github.com/waterbeside/lunisolar" target="_blank" rel="noreferrer">lunisolar</a></div>
@@ -294,7 +292,6 @@ export function App() {
           <a href={profile ? "#export" : "#birth"}><Sparkles size={17} /><span>{t("nav.aiShort")}</span></a>
           <a href="#guides"><BookOpen size={17} /><span>{t("nav.guideShort")}</span></a>
         </nav>
-        <AgentActivityRail />
       </main>
     </>
   );
