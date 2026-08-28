@@ -1,7 +1,7 @@
 {
   "name": "sizhu-astro-ai",
   "version": "0.0.1",
-  "description": "四柱星盘 AI：本地优先的八字紫微排盘与 AI 提示词工作台",
+  "description": "命序 MingXu：本地优先的八字、紫微斗数、大六壬、真太阳时与 AI Agent 结构化计算工具",
   "private": true,
   "workspaces": [
     "apps/*",

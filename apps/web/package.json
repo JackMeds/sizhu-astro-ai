@@ -6,7 +6,7 @@
   "license": "GPL-3.0",
   "scripts": {
     "dev": "vite --host 0.0.0.0",
-    "build": "tsc -p tsconfig.json && vite build",
+    "build": "node ../../tools/generate-sitemap.mjs && tsc -p tsconfig.json && vite build",
     "preview": "vite preview --host 127.0.0.1",
     "test": "node --test --import tsx test/*.test.ts",
     "typecheck": "tsc -p tsconfig.json --noEmit"
