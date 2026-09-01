@@ -174,6 +174,18 @@ export interface ZiweiPalace {
   raw: unknown;
 }
 
+export interface ZiweiPalaceReference {
+  index: number;
+  name: string;
+  earthlyBranch: string;
+}
+
+export interface ZiweiPalaceRelation {
+  palace: ZiweiPalaceReference;
+  trine: [ZiweiPalaceReference, ZiweiPalaceReference];
+  opposite: ZiweiPalaceReference | null;
+}
+
 export interface ZiweiHoroscopeItem {
   index: number;
   name: string;
@@ -215,6 +227,8 @@ export interface ZiweiProfile {
     mutagen: string;
   }>;
   palaces: ZiweiPalace[];
+  palaceRelations: ZiweiPalaceRelation[];
+  palaceRelationWarnings?: string[];
   calculation?: {
     solarDate: string;
     timeIndex: number;
@@ -277,7 +291,7 @@ export interface AiReadableBlock {
 export interface AstroProfile {
   meta: {
     format: "astro-ai-profile";
-    formatVersion: "1.2.0";
+    formatVersion: "1.3.0";
     generatedAt: string;
     source: "sizhu-astro-ai/core";
   };

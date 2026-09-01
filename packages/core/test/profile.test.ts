@@ -16,7 +16,7 @@ const sampleInput: AstroInput = {
 test("createAstroProfile returns stable AI-readable top-level shape", () => {
   const profile = createAstroProfile(sampleInput);
   assert.deepEqual(Object.keys(profile), ["meta", "input", "time", "bazi", "ziwei", "divination", "ai", "raw", "warnings"]);
-  assert.equal(profile.meta.formatVersion, "1.2.0");
+  assert.equal(profile.meta.formatVersion, "1.3.0");
   assert.equal(profile.bazi.pillars.length, 4);
   assert.equal(profile.bazi.facts.version, "bazi-relations-v1");
   assert.ok(profile.ai.summary.includes("四柱"));

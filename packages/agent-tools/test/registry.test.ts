@@ -41,3 +41,20 @@ test("legacy aliases are explicitly marked and remain callable", () => {
   const legacy = getAgentTools({ includeAliases: true }).find((tool) => tool.name === "sizhu.create_profile");
   assert.match(legacy?.description ?? "", /Deprecated alias/);
 });
+
+test("profile export uses the unified method protocol and optional dynamic context", () => {
+  const exported = getAgentTool("mingxu.export_profile")?.executeCore({
+    ...input,
+    format: "markdown",
+    locale: "en",
+    system: "combined",
+    mode: "yearly",
+    question: "Should I change jobs?",
+    targetDate: "2029-06-15",
+    comparisonDates: ["2028-06-15", "2029-06-15"]
+  }) as { text: string };
+  assert.match(exported.text, /mingxu-structured-traditional-v1/);
+  assert.match(exported.text, /Should I change jobs/);
+  assert.match(exported.text, /Target date: 2029-06-15/);
+  assert.match(exported.text, /Target-date comparison/);
+});

@@ -1,5 +1,14 @@
 import { astro } from "iztro";
-import type { AstroInput, ZiweiHoroscopeItem, ZiweiHoroscopeSnapshot, ZiweiPalace, ZiweiProfile, ZiweiStar } from "./types.js";
+import type {
+  AstroInput,
+  ZiweiHoroscopeItem,
+  ZiweiHoroscopeSnapshot,
+  ZiweiPalace,
+  ZiweiPalaceReference,
+  ZiweiPalaceRelation,
+  ZiweiProfile,
+  ZiweiStar
+} from "./types.js";
 import { createTimeProfile } from "./time.js";
 
 function asArray(value: unknown): unknown[] {
@@ -87,6 +96,72 @@ function normalizeHoroscope(value: unknown): ZiweiHoroscopeSnapshot {
   };
 }
 
+const ZIWEI_TRINE_GROUPS: string[][] = [
+  [..."申子辰"],
+  [..."寅午戌"],
+  [..."亥卯未"],
+  [..."巳酉丑"]
+];
+
+const ZIWEI_OPPOSITES: Record<string, string> = {
+  子: "午", 午: "子", 丑: "未", 未: "丑", 寅: "申", 申: "寅",
+  卯: "酉", 酉: "卯", 辰: "戌", 戌: "辰", 巳: "亥", 亥: "巳"
+};
+
+function palaceReference(palace: ZiweiPalace): ZiweiPalaceReference {
+  return { index: palace.index, name: palace.name, earthlyBranch: palace.earthlyBranch };
+}
+
+export function createZiweiPalaceRelations(palaces: ZiweiPalace[]): {
+  relations: ZiweiPalaceRelation[];
+  warnings: string[];
+} {
+  const warnings: string[] = [];
+  const grouped = new Map<string, ZiweiPalace[]>();
+  for (const palace of palaces) {
+    const branch = palace.earthlyBranch;
+    if (!ZIWEI_OPPOSITES[branch]) {
+      warnings.push(`紫微宫位${palace.name || palace.index}缺少有效地支，未生成三方四正关系。`);
+      continue;
+    }
+    grouped.set(branch, [...(grouped.get(branch) ?? []), palace]);
+  }
+
+  const byBranch = new Map<string, ZiweiPalace>();
+  for (const [branch, matches] of grouped) {
+    if (matches.length !== 1) {
+      warnings.push(`紫微地支${branch}对应${matches.length}个宫位，关系存在歧义，已停止自动配对。`);
+      continue;
+    }
+    byBranch.set(branch, matches[0] as ZiweiPalace);
+  }
+
+  const relations: ZiweiPalaceRelation[] = [];
+  for (const palace of palaces) {
+    const branch = palace.earthlyBranch;
+    if (byBranch.get(branch) !== palace) continue;
+    const group = ZIWEI_TRINE_GROUPS.find((item) => item.includes(branch));
+    if (!group) {
+      warnings.push(`紫微地支${branch}未找到三合组，未生成关系。`);
+      continue;
+    }
+    const trinePalaces = group.filter((item) => item !== branch).map((item) => byBranch.get(item));
+    if (trinePalaces.length !== 2 || trinePalaces.some((item) => !item)) {
+      warnings.push(`紫微${palace.name || branch}宫缺少完整三合宫，未生成三方关系。`);
+      continue;
+    }
+    const opposite = byBranch.get(ZIWEI_OPPOSITES[branch] as string);
+    if (!opposite) warnings.push(`紫微${palace.name || branch}宫缺少对宫，四正关系不完整。`);
+    relations.push({
+      palace: palaceReference(palace),
+      trine: trinePalaces.map((item) => palaceReference(item as ZiweiPalace)) as [ZiweiPalaceReference, ZiweiPalaceReference],
+      opposite: opposite ? palaceReference(opposite) : null
+    });
+  }
+
+  return { relations, warnings: Array.from(new Set(warnings)) };
+}
+
 function buildAstrolabe(input: AstroInput) {
   const effective = createTimeProfile(input).effective;
   const timeIndex = Math.floor(((effective.hour + 1) % 24) / 2);
@@ -100,6 +175,7 @@ export function createZiweiProfile(input: AstroInput): ZiweiProfile {
     const { effective, timeIndex, gender, astrolabe } = buildAstrolabe(input);
     const raw = astrolabe as unknown as Record<string, unknown>;
     const palaces = asArray(raw.palaces).map(normalizePalace);
+    const palaceRelations = createZiweiPalaceRelations(palaces);
     const natalMutagens = palaces.flatMap((palace) =>
       [...palace.majorStars, ...palace.minorStars, ...palace.adjectiveStars]
         .filter((star) => star.mutagen)
@@ -123,6 +199,8 @@ export function createZiweiProfile(input: AstroInput): ZiweiProfile {
       fiveElementsClass: text(raw.fiveElementsClass),
       natalMutagens,
       palaces,
+      palaceRelations: palaceRelations.relations,
+      ...(palaceRelations.warnings.length ? { palaceRelationWarnings: palaceRelations.warnings } : {}),
       calculation: {
         solarDate: effective.date,
         timeIndex,
@@ -136,6 +214,7 @@ export function createZiweiProfile(input: AstroInput): ZiweiProfile {
       engine: "iztro",
       available: false,
       palaces: [],
+      palaceRelations: [],
       error: error instanceof Error ? error.message : String(error)
     };
   }

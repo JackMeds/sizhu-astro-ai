@@ -134,6 +134,9 @@ test("complete Liuren chart returns Three Transmissions, voids, patterns and sou
   assert.ok(chart.complete.threeTransmissions.every((item) => typeof item.dunGan === "string" && typeof item.liuQing === "string"));
   assert.ok(chart.complete.shenSha.length > 0);
   assert.ok(chart.complete.shenSha.every((item) => item.sources.length > 0));
+  assert.ok(chart.complete.focusEvidence.length > 0);
+  assert.ok(chart.complete.focusEvidence.every((item) => typeof item.target === "string" && Array.isArray(item.evidence) && Array.isArray(item.limitations)));
+  assert.ok(chart.complete.timingEvidence.length > 0);
   assert.equal(chart.engineManifest.complete, "mingyu-core@0.1.23");
   assert.equal(chart.crossCheck.status, "matched", chart.crossCheck.differences.join("\n"));
 });

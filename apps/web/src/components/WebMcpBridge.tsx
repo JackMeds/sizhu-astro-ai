@@ -158,8 +158,8 @@ export function WebMcpBridge({ onProfileCreated }: WebMcpBridgeProps) {
     name: "mingxu.ui.get_workspace_state",
     title: isEnglish ? "Get MingXu Workspace State" : "读取命序工作区状态",
     description: isEnglish
-      ? "Read the concise chart identity, visible view, selected and pinned transit dates, comparison set, focus and recent human-agent activity without changing the page."
-      : "读取命序当前命盘、视图、选中与固定的运限日期、比较集合、焦点以及最近的人机活动，不改变页面。",
+      ? "Read the concise chart identity, optional analysis question, visible view, selected and pinned transit dates, comparison set, focus and recent human-agent activity without changing the page."
+      : "读取命序当前命盘、可选分析问题、视图、选中与固定的运限日期、比较集合、焦点以及最近的人机活动，不改变页面。",
     inputSchema: { type: "object", additionalProperties: false, properties: {} },
     execute: () => webMcpToolResult({
       workspace: state.profile ? "birth-chart" : "empty",
@@ -172,6 +172,7 @@ export function WebMcpBridge({ onProfileCreated }: WebMcpBridgeProps) {
         warnings: state.profile.warnings
       } : null,
       activeView: state.activeView,
+      analysisQuestion: state.analysisQuestion || null,
       selectedTransitDate: state.selectedTransitDate,
       pinnedTransitDate: state.pinnedTransitDate,
       comparedTransitDates: state.comparedTransitDates,

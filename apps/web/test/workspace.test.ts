@@ -28,6 +28,22 @@ test("human and agent actions update one shared workspace state", () => {
   assert.equal(selected.activities[0]?.type, "select-transit");
 });
 
+test("analysis question is local workspace state, capped and reset by a new chart", () => {
+  const withQuestion = workspaceReducer(initialWorkspaceState, {
+    type: "set-analysis-question",
+    question: "问".repeat(520)
+  });
+  assert.equal(withQuestion.analysisQuestion.length, 500);
+  assert.equal(withQuestion.activities.length, 0);
+
+  const reset = workspaceReducer(withQuestion, {
+    type: "set-profile",
+    profile,
+    actor: "user"
+  });
+  assert.equal(reset.analysisQuestion, "");
+});
+
 test("transit comparisons are unique, validated and capped at five dates", () => {
   const compared = workspaceReducer(initialWorkspaceState, {
     type: "compare-transits",

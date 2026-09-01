@@ -23,7 +23,8 @@ The generated registry is available at [/agent/tools.json](https://astrocopy.jac
 4. Do not equate Five-Phase counts with Day-Master strength.
 5. Do not recalculate or alter pillars, palaces, or Da Liu Ren transmissions to fit a narrative.
 6. When Da Liu Ren `crossCheck.status` is not `matched`, explain the differences first.
-7. Present traditional metaphysics as a cultural interpretive system, not modern scientific prediction or professional advice.
+7. Use the `mingxu-structured-traditional-v1` method protocol for interpretation: evidence demands judgment, missing evidence forbids invention, and material conflicts must be explained before a primary reading is stated.
+8. Do not fabricate traditional quotations, editions, page numbers, or chart fields that the tools did not return.
 
 ## Shared WebMCP tools
 
@@ -37,7 +38,7 @@ The generated registry is available at [/agent/tools.json](https://astrocopy.jac
 
 Human clicks and Agent calls use the same reducer. After changing the page, report the visible change briefly. Important Agent mutations should create a visible activity item and remain undoable.
 
-`mingxu.ui.get_workspace_state` includes `selectedTransitDate`, `pinnedTransitDate`, `comparedTransitDates`, `focusedIds`, and concise `recentActivities`. A human pin is an explicit preference. Failed tool calls return `isError: true` and leave this state unchanged.
+`mingxu.ui.get_workspace_state` includes `analysisQuestion`, `selectedTransitDate`, `pinnedTransitDate`, `comparedTransitDates`, `focusedIds`, and concise `recentActivities`. A human pin is an explicit preference. Failed tool calls return `isError: true` and leave this state unchanged.
 
 Use stable semantic focus IDs and the canonical comparison field:
 

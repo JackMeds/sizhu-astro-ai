@@ -34,6 +34,7 @@ export interface WorkspaceActivity {
 export interface WorkspaceState {
   profile: AstroProfile | null;
   activeView: WorkspaceView;
+  analysisQuestion: string;
   selectedTransitDate: string | null;
   pinnedTransitDate: string | null;
   comparedTransitDates: string[];
@@ -48,12 +49,14 @@ export type WorkspaceAction =
   | { type: "pin-transit"; date: string | null; actor: WorkspaceActor; label?: string; detail?: string }
   | { type: "compare-transits"; dates: string[]; actor: WorkspaceActor; label?: string; detail?: string }
   | { type: "focus-items"; ids: string[]; actor: WorkspaceActor; label?: string; detail?: string }
+  | { type: "set-analysis-question"; question: string }
   | { type: "undo-activity"; id: string }
   | { type: "clear-activities" };
 
 export const initialWorkspaceState: WorkspaceState = {
   profile: null,
   activeView: "overview",
+  analysisQuestion: "",
   selectedTransitDate: null,
   pinnedTransitDate: null,
   comparedTransitDates: [],
@@ -96,6 +99,7 @@ export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction)
         ...state,
         profile: action.profile,
         activeView: "bazi",
+        analysisQuestion: "",
         selectedTransitDate: null,
         pinnedTransitDate: null,
         comparedTransitDates: [],
@@ -123,6 +127,11 @@ export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction)
           { activeView: state.activeView }
         )
       };
+    }
+    case "set-analysis-question": {
+      const analysisQuestion = action.question.slice(0, 500);
+      if (analysisQuestion === state.analysisQuestion) return state;
+      return { ...state, analysisQuestion };
     }
     case "select-transit": {
       if (!/^\d{4}-\d{2}-\d{2}$/.test(action.date)) return state;

@@ -30,7 +30,7 @@ function createAiBlock(profile: Pick<AstroProfile, "input" | "time" | "bazi" | "
       { label: "紫微摘要", value: ziweiSummary },
       { label: "紫微生年四化", value: profile.ziwei.natalMutagens?.map((item) => `${item.star}${item.mutagen}@${item.palace}`).join("、") || "未取到" }
     ],
-    recommendedPromptSections: ["输入与时间口径", "四柱结构", "确定性关系事实", "传统规则命中与适用条件", "五行与十神", "大运流年", "紫微十二宫与四化", "交叉校验与不确定性"]
+    recommendedPromptSections: ["输入与时间口径", "四柱结构", "确定性关系事实", "传统规则命中与适用条件", "五行与十神", "大运流年", "紫微十二宫、三方四正与四化", "交叉校验、分歧与主判断"]
   };
 }
 
@@ -64,13 +64,16 @@ export function createAstroProfile(rawInput: AstroInput): AstroProfile {
   if (!ziwei.available && ziwei.error) {
     warnings.push(`iztro 紫微盘生成失败：${ziwei.error}`);
   }
+  if (ziwei.palaceRelationWarnings?.length) {
+    warnings.push(...ziwei.palaceRelationWarnings);
+  }
 
   const partial = { input, time, bazi, ziwei };
 
   return {
     meta: {
       format: "astro-ai-profile",
-      formatVersion: "1.2.0",
+      formatVersion: "1.3.0",
       generatedAt: new Date().toISOString(),
       source: "sizhu-astro-ai/core"
     },

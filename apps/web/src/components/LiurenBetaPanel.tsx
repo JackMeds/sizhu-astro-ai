@@ -16,6 +16,7 @@ import {
   type LiurenCompleteChart,
   type TrueSolarTimeMode
 } from "@sizhu/core";
+import { buildLiurenAnalysisPrompt } from "@sizhu/prompt";
 import { copyText, localDateTimeToOffset } from "@/lib/utils";
 import { showFeedback } from "@/lib/feedback";
 import { useRuntimeLocale } from "@/lib/useRuntimeLocale";
@@ -60,27 +61,12 @@ function nowInput(timeZone: string) {
   }
 }
 
-function buildAiText(chart: LiurenCompleteChart, question: string, isEnglish: boolean) {
-  const payload = JSON.stringify(chart, null, 2);
-  if (isEnglish) {
-    return [
-      "Analyze the program-computed Da Liu Ren chart below. Do not recalculate the Heaven/Earth plates, Four Lessons or Three Transmissions from memory.",
-      "Separate your response into: program-computed facts, traditional rules/patterns, and synthesis. If crossCheck.status is not matched, explain the differences before interpreting the chart.",
-      "Treat Da Liu Ren as a traditional cultural interpretive framework, not modern scientific prediction. Preserve uncertainty and avoid replacing professional advice.",
-      question.trim()
-        ? `Question: ${question.trim()}`
-        : "Question: not supplied. Start with a structural overview, then ask for a concrete question before making a focused reading.",
-      "",
-      payload
-    ].join("\n");
-  }
-  return [
-    "请基于下面这份已经由程序排好的大六壬结构进行分析，不要自行重排天地盘、四课或三传。",
-    "请先区分：程序计算事实 / 传统规则与课体 / 综合解释。若 crossCheck.status 不是 matched，应先解释差异，不要跳过。",
-    question.trim() ? `占问：${question.trim()}` : "占问：未填写，请先按盘面结构做一般性说明，再提示我补充具体问题。",
-    "",
-    payload
-  ].join("\n");
+export function buildAiText(chart: LiurenCompleteChart, question: string, isEnglish: boolean) {
+  return buildLiurenAnalysisPrompt(chart, {
+    locale: isEnglish ? "en" : "zh-CN",
+    question,
+    format: "txt"
+  });
 }
 
 export function LiurenBetaPanel() {

@@ -24,10 +24,10 @@ The machine-readable registry is generated at [/agent/tools.json](https://astroc
 3. **Structural facts precede interpretation.** `bazi.facts` can establish encoded combinations, clashes, harms, breaks, punishments, Fu Yin, and Three-Harmony / Three-Meeting candidates. It does not establish fortune or a successful transformation.
 4. **Respect rule gates.** A traditional source enters evidence only when its encoded conditions match. Similar words are not a rule match.
 5. **Do not equate Five-Phase counts with strength.** `elementCounts` is a structural display, not a final Day-Master strength judgment.
-6. **Preserve uncertainty and warnings.** Surface missing longitude, time corrections crossing an hour branch or date, engine differences, and school-specific assumptions.
+6. **Preserve warnings, then make a primary judgment.** Surface missing longitude, time corrections crossing an hour branch or date, engine differences, and school-specific assumptions; do not stop at the caveat when the remaining evidence supports a main reading.
 7. **Never modify computed facts to fit a story.** Do not recalculate or rewrite the Four Pillars, Zi Wei palaces, or Da Liu Ren transmissions from memory.
 8. **Check Da Liu Ren cross-validation first.** When `crossCheck.status` is not `matched`, explain `crossCheck.differences` before interpretation.
-9. **Keep traditional metaphysics in its proper frame.** It is a cultural interpretive system, not modern scientific prediction and not a substitute for professional advice.
+9. **Use the shared method protocol.** Interpret with `mingxu-structured-traditional-v1`: evidence demands judgment, missing evidence forbids invention, and no traditional quotation, edition, page number, or missing chart field may be fabricated.
 
 ## Shared WebMCP workspace
 
@@ -91,7 +91,7 @@ Compare two to five target dates. The page creates a visible comparison workspac
 
 ### `mingxu.ui.get_workspace_state`
 
-Read the current state selected by the person or Agent, including the active view, selected and pinned transit, comparison set, current profile status, warnings, and recent activity.
+Read the current state selected by the person or Agent, including the optional `analysisQuestion`, active view, selected and pinned transit, comparison set, current profile status, warnings, and recent activity.
 
 Use this before continuing a multi-step workflow when the user may have changed the page manually.
 Treat a human `pin-transit` activity as an explicit preference. Invalid inputs return `isError: true`; do not assume a failed call changed the page.
@@ -181,7 +181,7 @@ For a natal or transit question:
 5. Open the relevant visible view.
 6. Select or compare the requested dates.
 7. Explain program facts first, then traditional rules, then synthesis.
-8. State uncertainty and ask for real-world context before strong advice.
+8. Apply the shared method protocol, answer an available `analysisQuestion` directly, grade the evidence, and state the primary reading after any material conflict.
 
 For a Da Liu Ren question:
 

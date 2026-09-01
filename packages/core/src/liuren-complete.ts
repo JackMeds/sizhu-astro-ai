@@ -27,6 +27,14 @@ export interface LiurenTransmissionNormalized {
   liuQing: "兄" | "子" | "财" | "官" | "父" | "";
 }
 
+export interface LiurenFocusEvidence {
+  target: string;
+  role: string;
+  level: "主证" | "辅证" | string;
+  evidence: string[];
+  limitations: string[];
+}
+
 export interface LiurenCompleteChart {
   format: "sizhu-liuren-chart";
   formatVersion: "1.0.0";
@@ -80,7 +88,7 @@ export interface LiurenCompleteChart {
     }>;
     lessonSummary: string;
     transmissionSummary: string;
-    focusEvidence: unknown[];
+    focusEvidence: LiurenFocusEvidence[];
     timingEvidence: string[];
   };
   crossCheck: {
@@ -294,6 +302,14 @@ export function createCompleteLiurenChart(input: LiurenCompleteInput): LiurenCom
     sources: Array.isArray(item.sources) ? item.sources.map(String) : item.source ? [String(item.source)] : [],
     limitations: Array.isArray(item.limitations) ? item.limitations.map(String) : []
   }));
+  const rawFocusEvidence = Array.isArray(raw.focusEvidence) ? raw.focusEvidence as unknown as LooseRecord[] : [];
+  const focusEvidence: LiurenFocusEvidence[] = rawFocusEvidence.map((item) => ({
+    target: String(item.target ?? ""),
+    role: String(item.role ?? ""),
+    level: String(item.level ?? ""),
+    evidence: Array.isArray(item.evidence) ? item.evidence.map(String) : [],
+    limitations: Array.isArray(item.limitations) ? item.limitations.map(String) : []
+  }));
 
   const differences = compareOverlap(native, raw);
   const resolvedBranch = native.calendar.hourGanZhi[1] ?? "";
@@ -337,7 +353,7 @@ export function createCompleteLiurenChart(input: LiurenCompleteInput): LiurenCom
       shenSha,
       lessonSummary: String(raw.lessonSummary ?? ""),
       transmissionSummary: String(raw.transmissionSummary ?? ""),
-      focusEvidence: Array.isArray(raw.focusEvidence) ? raw.focusEvidence : [],
+      focusEvidence,
       timingEvidence: Array.isArray(raw.timingEvidence) ? raw.timingEvidence.map(String) : []
     },
     crossCheck: {

@@ -137,7 +137,7 @@ export function App() {
       saveHistory(nextHistory);
       return nextHistory;
     });
-    window.setTimeout(() => document.getElementById("profile-result")?.scrollIntoView({ behavior: "smooth", block: "start" }), 120);
+    window.setTimeout(() => document.getElementById("profile-result")?.scrollIntoView({ behavior: "smooth", block: "start" }), 420);
   }
 
   function commitProfile(nextForm: FormState) {
@@ -228,9 +228,14 @@ export function App() {
           </div>
           {!profile ? <motion.button className="example-entry" type="button" onClick={tryExample} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: .22 }}><Play size={15} />{t("task.example")}</motion.button> : null}
 
-          <div className={profile ? "workbench-grid workbench-generated" : "workbench-grid empty-workbench"} id="birth">
+          <motion.div
+            className={profile ? "workbench-grid workbench-generated" : "workbench-grid empty-workbench"}
+            id="birth"
+            layout
+            transition={{ layout: { duration: .42, ease: [0.22, 1, 0.36, 1] } }}
+          >
             {profile ? <WorkbenchModuleNav /> : null}
-            <aside className="side-stack">
+            <motion.aside className="side-stack" layout transition={{ layout: { duration: .42, ease: [0.22, 1, 0.36, 1] } }}>
               <InputPanel error={formError} form={form} onChange={setForm} onSubmit={generate} />
               {profile ? (
                 <motion.section animate={{ opacity: 1, y: 0 }} className="panel input-summary-panel profile-summary-v2" initial={{ opacity: 0, y: 8 }}>
@@ -241,7 +246,7 @@ export function App() {
                   <span className="profile-summary-status"><span aria-hidden="true" />{t("current.ready")}</span>
                 </motion.section>
               ) : null}
-            </aside>
+            </motion.aside>
 
             {profile ? (
               <div className="center-stack center-stack-v3">
@@ -254,7 +259,7 @@ export function App() {
                 </motion.section>
             )}
             {profile ? <WorkbenchRightRail history={history} onClearHistory={clearHistory} onSelectHistory={selectHistory} profile={profile} /> : null}
-          </div>
+          </motion.div>
         </section>
 
         <motion.div id="liuren" className="section-reveal" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: .08 }} transition={{ duration: .45 }}><LiurenBetaPanel /></motion.div>

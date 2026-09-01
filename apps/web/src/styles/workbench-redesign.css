@@ -472,6 +472,14 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .product-v3 .mode-switch-v3 { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 7px; }
 .product-v3 .mode-switch-v3 button { padding: 6px 7px; border: 1px solid var(--border-subtle); border-radius: 6px; color: var(--text-secondary); background: var(--surface-input); font-size: 9px; }
 .product-v3 .mode-switch-v3 button.active { border-color: var(--border-strong); color: var(--accent-bright); background: var(--selected-bg); }
+.product-v3 .prompt-question-field { display: grid; gap: 5px; margin-top: 10px; }
+.product-v3 .prompt-question-field > span { color: var(--text-secondary); font-size: 9px; font-weight: 700; }
+.product-v3 .prompt-question-field textarea { width: 100%; min-height: 66px; resize: vertical; padding: 8px; border: 1px solid var(--border); border-radius: 7px; color: var(--text-primary); background: var(--surface-input); font: 9px/1.5 var(--font-sans); }
+.product-v3 .prompt-question-field textarea:focus { border-color: var(--border-strong); outline: 2px solid color-mix(in srgb, var(--accent) 15%, transparent); }
+.product-v3 .prompt-question-field small { color: var(--text-tertiary); font-size: 8px; line-height: 1.4; }
+.product-v3 .prompt-context-summary { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 8px; }
+.product-v3 .prompt-context-summary span { padding: 4px 6px; border: 1px solid var(--border-subtle); border-radius: 999px; color: var(--text-secondary); background: var(--surface-subtle); font: 7px/1.2 var(--font-mono); }
+.product-v3 .prompt-context-summary span.is-warning { color: var(--danger); border-color: color-mix(in srgb, var(--danger) 35%, var(--border)); }
 .product-v3 .copy-prompt-button-v3 { width: 100%; min-height: 40px; margin-top: 13px; border: 1px solid var(--accent-bright); border-radius: 8px; color: var(--button-ink) !important; background: var(--accent-bright); font-size: 10px; font-weight: 800; }
 .product-v3 .copy-prompt-button-v3:hover { color: var(--button-ink) !important; background: var(--accent); transform: translateY(-1px); }
 .product-v3 .ai-launcher { display: grid; gap: 8px; margin-top: 10px; padding: 9px; border: 1px solid var(--border-subtle); border-radius: 8px; background: var(--surface-subtle); }
@@ -739,6 +747,133 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   color: var(--button-ink) !important;
   background: var(--accent) !important;
   border-color: var(--accent) !important;
+}
+
+/* Browser review polish: unify the masthead, hero card and pre-chart workspace. */
+.product-v3 .topbar > .brand-lockup {
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.product-v3 .topbar > .brand-lockup:hover {
+  border-color: transparent;
+  color: var(--text-primary);
+  background: transparent;
+}
+
+.product-v3 .topbar > .brand-lockup strong,
+[data-theme="modern"] .product-v3 .topbar > .brand-lockup strong {
+  color: var(--text-primary) !important;
+  background: none !important;
+  background-clip: initial !important;
+  -webkit-background-clip: initial !important;
+  -webkit-text-fill-color: var(--text-primary) !important;
+}
+
+.product-v3 .hero-signature {
+  min-height: 0;
+  align-content: start;
+  gap: 9px;
+  padding: 18px 20px 20px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: linear-gradient(145deg, color-mix(in srgb, var(--surface-strong) 96%, var(--accent) 4%), var(--surface));
+  box-shadow: var(--shadow-panel);
+  backdrop-filter: none;
+}
+
+.product-v3 .hero-signature strong,
+.product-v3 .hero-signature span {
+  align-self: auto;
+}
+
+.product-v3 .workbench-grid.empty-workbench {
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas: none;
+  gap: 10px;
+}
+
+.product-v3 .empty-workbench > .side-stack {
+  position: static;
+  top: auto;
+  width: 100%;
+  grid-area: auto;
+}
+
+.product-v3 .empty-workbench .input-panel {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-areas:
+    "heading name compact datetime"
+    "timezone precision time-options professional"
+    "note note error submit";
+  align-items: start;
+  gap: 14px 12px;
+  width: 100%;
+  padding: clamp(18px, 2.4vw, 28px);
+  transition: transform 420ms cubic-bezier(.22, 1, .36, 1), opacity 240ms ease;
+}
+
+.product-v3 .empty-workbench .input-panel > .panel-heading { grid-area: heading; }
+.product-v3 .empty-workbench .input-panel > .field { grid-area: name; margin-top: 0; }
+.product-v3 .empty-workbench .input-panel > .compact-field-grid { grid-area: compact; margin-top: 0; }
+.product-v3 .empty-workbench .input-panel > .date-time-grid { grid-area: datetime; margin-top: 0; }
+.product-v3 .empty-workbench .input-panel > .time-zone-field { grid-area: timezone; margin-top: 0; }
+.product-v3 .empty-workbench .input-panel > .precision-picker { grid-area: precision; margin-top: 0; }
+.product-v3 .empty-workbench .input-panel > .time-settings-v3 { grid-area: time-options; margin-top: 0; }
+.product-v3 .empty-workbench .input-panel > .advanced-options:not(.time-settings-v3) { grid-area: professional; margin-top: 0; }
+.product-v3 .empty-workbench .input-panel > .generate-chart-button { grid-area: submit; align-self: end; margin-top: 0; }
+.product-v3 .empty-workbench .input-panel > .form-error { grid-area: error; margin: 0; }
+.product-v3 .empty-workbench .input-panel > .input-note { grid-area: note; align-self: center; margin: 0; }
+
+.product-v3 .empty-workbench > .empty-stage {
+  grid-area: auto;
+  min-height: 280px;
+  padding: clamp(28px, 4vw, 52px);
+}
+
+.product-v3 .qa-panel-v2 .qa-item::before {
+  content: none;
+}
+
+@media (max-width: 1180px) {
+  .product-v3 .empty-workbench .input-panel {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-areas:
+      "heading name"
+      "compact datetime"
+      "timezone precision"
+      "time-options professional"
+      "note submit"
+      "error error";
+  }
+}
+
+@media (max-width: 780px) {
+  .product-v3 .empty-workbench .input-panel {
+    display: block;
+    padding: 16px;
+  }
+
+  .product-v3 .empty-workbench .input-panel > .field,
+  .product-v3 .empty-workbench .input-panel > .compact-field-grid,
+  .product-v3 .empty-workbench .input-panel > .date-time-grid,
+  .product-v3 .empty-workbench .input-panel > .time-zone-field,
+  .product-v3 .empty-workbench .input-panel > .precision-picker,
+  .product-v3 .empty-workbench .input-panel > .advanced-options,
+  .product-v3 .empty-workbench .input-panel > .generate-chart-button,
+  .product-v3 .empty-workbench .input-panel > .form-error,
+  .product-v3 .empty-workbench .input-panel > .input-note {
+    margin-top: 13px;
+  }
+
+  .product-v3 .empty-workbench > .empty-stage {
+    min-height: 0;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -35,9 +35,10 @@ export type {
   LiurenCastingMethod,
   LiurenCompleteChart,
   LiurenCompleteInput,
+  LiurenFocusEvidence,
   LiurenTransmissionNormalized
 } from "./liuren-complete.js";
-export { createZiweiProfile, createZiweiHoroscope } from "./ziwei.js";
+export { createZiweiProfile, createZiweiHoroscope, createZiweiPalaceRelations } from "./ziwei.js";
 export { createTransitSnapshot } from "./transit.js";
 export { createDivinationProfile } from "./divination.js";
 export {
@@ -69,6 +70,8 @@ export type {
   ZiweiHoroscopeItem,
   ZiweiHoroscopeSnapshot,
   ZiweiPalace,
+  ZiweiPalaceReference,
+  ZiweiPalaceRelation,
   ZiweiProfile,
   ZiweiStar
 } from "./types.js";

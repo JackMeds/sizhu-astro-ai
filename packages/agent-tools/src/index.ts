@@ -7,7 +7,7 @@ import {
   type LiurenCompleteInput,
   type LiurenSessionInput
 } from "@sizhu/core";
-import { exportProfile, type ExportFormat } from "@sizhu/prompt";
+import { exportProfile, type ExportFormat, type PromptMode, type PromptSystem } from "@sizhu/prompt";
 
 export type JsonSchema = Record<string, unknown>;
 export type AgentToolInput = Record<string, unknown>;
@@ -119,7 +119,19 @@ const exportSchema: JsonSchema = {
   additionalProperties: false,
   properties: {
     ...birthProperties,
-    format: { type: "string", enum: ["json", "markdown", "txt"], default: "markdown" }
+    format: { type: "string", enum: ["json", "markdown", "txt"], default: "markdown" },
+    locale: { type: "string", enum: ["zh-CN", "en"], default: "zh-CN" },
+    system: { type: "string", enum: ["combined", "bazi", "ziwei"], default: "combined" },
+    mode: { type: "string", enum: ["general", "relationship", "career", "wealth", "health", "yearly", "xp"], default: "general" },
+    question: { type: "string", maxLength: 500, description: "Optional specific question the analysis must answer directly." },
+    targetDate: { type: "string", pattern: "^\\d{4}-\\d{2}-\\d{2}$", description: "Optional target date for dynamic BaZi and Zi Wei cycles." },
+    comparisonDates: {
+      type: "array",
+      minItems: 2,
+      maxItems: 5,
+      uniqueItems: true,
+      items: { type: "string", pattern: "^\\d{4}-\\d{2}-\\d{2}$" }
+    }
   },
   required: ["birthDateTime", "gender"]
 };
@@ -271,7 +283,26 @@ const canonicalTools: AgentToolDefinition[] = [
     executeCore: (input = {}) => {
       const format: ExportFormat = input.format === "json" || input.format === "txt" ? input.format : "markdown";
       const chart = profile(input) as AstroProfile;
-      return { format, text: exportProfile(chart, format) };
+      const modes: PromptMode[] = ["general", "relationship", "career", "wealth", "health", "yearly", "xp"];
+      const systems: PromptSystem[] = ["combined", "bazi", "ziwei"];
+      const mode = modes.includes(input.mode as PromptMode) ? input.mode as PromptMode : "general";
+      const system = systems.includes(input.system as PromptSystem) ? input.system as PromptSystem : "combined";
+      const targetTransit = typeof input.targetDate === "string" ? createTransitSnapshot(chart.input, input.targetDate) : undefined;
+      const comparisonDates = Array.isArray(input.comparisonDates) ? input.comparisonDates.filter((item): item is string => typeof item === "string").slice(0, 5) : [];
+      const comparisonTransits = mode === "yearly" && comparisonDates.length >= 2
+        ? comparisonDates.map((date) => createTransitSnapshot(chart.input, date))
+        : undefined;
+      return {
+        format,
+        text: exportProfile(chart, format, {
+          locale: input.locale === "en" ? "en" : "zh-CN",
+          system,
+          mode,
+          ...(typeof input.question === "string" && input.question.trim() ? { question: input.question.trim().slice(0, 500) } : {}),
+          ...(targetTransit ? { targetTransit } : {}),
+          ...(comparisonTransits ? { comparisonTransits } : {})
+        })
+      };
     }
   }
 ];
