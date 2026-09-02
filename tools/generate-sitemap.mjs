@@ -14,8 +14,8 @@ const baseUrl = "https://astrocopy.jackmeds.top";
  */
 const pages = [
   { url: "/", source: "apps/web/index.html", priority: "1.0", changefreq: "weekly", alternates: true },
-  { url: "/en/", source: "apps/web/public/en/index.html", priority: "0.95", alternates: true },
-  { url: "/zh/", source: "apps/web/public/zh/index.html", priority: "0.95", alternates: true },
+  { url: "/en/", source: "apps/web/en/index.html", priority: "0.95", alternates: true },
+  { url: "/zh/", source: "apps/web/zh/index.html", priority: "0.95", alternates: true },
   { url: "/bazi/", source: "apps/web/public/bazi/index.html", priority: "0.9" },
   { url: "/ziwei/", source: "apps/web/public/ziwei/index.html", priority: "0.9" },
   { url: "/liuren/", source: "apps/web/public/liuren/index.html", priority: "0.9" },
@@ -29,7 +29,13 @@ const pages = [
   { url: "/guide/liuren.html", source: "apps/web/public/guide/liuren.html", priority: "0.75" },
   { url: "/guide/solar-time.html", source: "apps/web/public/guide/solar-time.html", priority: "0.75" },
   { url: "/guide/dayun.html", source: "apps/web/public/guide/dayun.html", priority: "0.75" },
-  { url: "/guide/agent.html", source: "apps/web/public/guide/agent.html", priority: "0.75" }
+  { url: "/guide/agent.html", source: "apps/web/public/guide/agent.html", priority: "0.75" },
+  { url: "/guide/late-zi-hour.html", source: "apps/web/public/guide/late-zi-hour.html", priority: "0.7" },
+  { url: "/guide/shichen-boundary.html", source: "apps/web/public/guide/shichen-boundary.html", priority: "0.7" },
+  { url: "/guide/true-solar-time-impact.html", source: "apps/web/public/guide/true-solar-time-impact.html", priority: "0.7" },
+  { url: "/guide/ziwei-software-differences.html", source: "apps/web/public/guide/ziwei-software-differences.html", priority: "0.7" },
+  { url: "/guide/liuren-transmission-example.html", source: "apps/web/public/guide/liuren-transmission-example.html", priority: "0.7" },
+  { url: "/guide/ai-bazi-analysis.html", source: "apps/web/public/guide/ai-bazi-analysis.html", priority: "0.7" }
 ];
 
 function xmlEscape(value) {

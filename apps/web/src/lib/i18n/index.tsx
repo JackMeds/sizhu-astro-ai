@@ -4,6 +4,7 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
   type ReactNode
 } from "react";
@@ -15,11 +16,30 @@ export type TranslationVariables = Record<string, string | number>;
 
 const STORAGE_KEY = "astrocopy-locale-v1";
 
-function initialLocale(): Locale {
-  if (typeof window === "undefined") return "zh-CN";
-  const query = new URLSearchParams(window.location.search).get("lang")?.toLowerCase();
+function localeFromPath(pathname: string): Locale | null {
+  const path = pathname.replace(/\/+$/, "") || "/";
+  if (path === "/en") return "en-US";
+  if (path === "/zh") return "zh-CN";
+  return null;
+}
+
+function localeFromQuery(search: string): Locale | null {
+  const query = new URLSearchParams(search).get("lang")?.toLowerCase();
   if (query === "en" || query === "en-us") return "en-US";
   if (query === "zh" || query === "zh-cn") return "zh-CN";
+  return null;
+}
+
+function localizedPath(locale: Locale) {
+  return locale === "en-US" ? "/en/" : "/zh/";
+}
+
+function initialLocale(): Locale {
+  if (typeof window === "undefined") return "zh-CN";
+  const pathLocale = localeFromPath(window.location.pathname);
+  if (pathLocale) return pathLocale;
+  const queryLocale = localeFromQuery(window.location.search);
+  if (queryLocale) return queryLocale;
   const stored = window.localStorage.getItem(STORAGE_KEY);
   if (stored === "en-US" || stored === "zh-CN") return stored;
   return navigator.language.toLowerCase().startsWith("zh") ? "zh-CN" : "en-US";
@@ -42,6 +62,7 @@ const I18nContext = createContext<I18nContextValue | null>(null);
 
 export function LocaleProvider({ children }: { children: ReactNode }) {
   const [locale, setLocaleState] = useState<Locale>(initialLocale);
+  const previousLocale = useRef<Locale | null>(null);
 
   const setLocale = useCallback((nextLocale: Locale) => {
     setLocaleState(nextLocale);
@@ -59,8 +80,20 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
     if (description) description.content = dictionary["meta.description"];
     window.localStorage.setItem(STORAGE_KEY, locale);
     const url = new URL(window.location.href);
-    url.searchParams.set("lang", locale === "en-US" ? "en" : "zh");
-    window.history.replaceState({}, "", url);
+    const pathLocale = localeFromPath(url.pathname);
+    const queryLocale = localeFromQuery(url.search);
+    const isFirstEffect = previousLocale.current === null;
+    const isLegacyQuery = !pathLocale && queryLocale !== null;
+    const isLocaleSwitch = !isFirstEffect && previousLocale.current !== locale;
+    if (isLegacyQuery || isLocaleSwitch) {
+      url.pathname = localizedPath(locale);
+      url.searchParams.delete("lang");
+      window.history.replaceState({}, "", url);
+    } else if (pathLocale) {
+      url.searchParams.delete("lang");
+      window.history.replaceState({}, "", url);
+    }
+    previousLocale.current = locale;
   }, [locale]);
 
   const t = useCallback((key: string, variables?: TranslationVariables) => {

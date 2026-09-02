@@ -12,7 +12,7 @@ The core product idea is simple:
 - AI discovery page: <https://astrocopy.jackmeds.top/agent/>
 - Source: <https://github.com/JackMeds/sizhu-astro-ai>
 - Agent guide: <https://astrocopy.jackmeds.top/agents.md>
-- Guides: <https://astrocopy.jackmeds.top/guide/>
+- Guides: <https://astrocopy.jackmeds.top/guide/> · <https://astrocopy.jackmeds.top/guide/late-zi-hour.html> · <https://astrocopy.jackmeds.top/guide/shichen-boundary.html> · <https://astrocopy.jackmeds.top/guide/true-solar-time-impact.html> · <https://astrocopy.jackmeds.top/guide/ziwei-software-differences.html> · <https://astrocopy.jackmeds.top/guide/liuren-transmission-example.html> · <https://astrocopy.jackmeds.top/guide/ai-bazi-analysis.html>
 - Remote MCP (deployment target): `https://mcp.jackmeds.top/mcp`
 
 ## Why MingXu exists

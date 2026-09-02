@@ -12,6 +12,8 @@ export default defineConfig({
     rollupOptions: {
       input: {
         main: path.resolve(__dirname, "index.html"),
+        zh: path.resolve(__dirname, "zh/index.html"),
+        en: path.resolve(__dirname, "en/index.html"),
         "landing-agent": path.resolve(__dirname, "src/landing-agent.ts")
       },
       output: {
