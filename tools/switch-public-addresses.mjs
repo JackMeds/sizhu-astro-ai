@@ -15,6 +15,7 @@ const selected = files.filter((file) =>
    file === "tools/generate-sitemap.mjs" || file === "packages/agent-tools/src/index.ts" || file === "docs/search-console.md" || file === "docs/technical-overview.md" ||
    file.startsWith("apps/web/")) &&
   !file.startsWith("apps/web/public/migration/") &&
+  file !== "docs/brand-proof.md" &&
   !file.includes("/backup") && !file.includes("/assets/") &&
   /\.(?:md|json|html|ts|tsx|txt|xml|mjs)$|\/CNAME$/.test(file));
 let changed = 0;

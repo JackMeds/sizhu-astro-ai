@@ -27,7 +27,15 @@ export default {
       const response = await env.ASSETS.fetch(new Request(source, request));
       if (response.status === 404 && !source.pathname.split("/").at(-1).includes(".")) {
         source.pathname += "/index.html";
-        return env.ASSETS.fetch(new Request(source, request));
+        const directoryIndex = await env.ASSETS.fetch(new Request(source, request));
+        if (directoryIndex.status === 200) {
+          // Keep directory-relative links (agent/tools.md, tools.json) correct.
+          // Resolve from the incoming URL, never from NEW_ORIGIN while on hold.
+          const canonical = new URL(request.url);
+          canonical.pathname += "/";
+          return new Response(null, { status: 307, headers: { Location: canonical.toString(), "Cache-Control": "no-store" } });
+        }
+        return directoryIndex;
       }
       return response;
     }

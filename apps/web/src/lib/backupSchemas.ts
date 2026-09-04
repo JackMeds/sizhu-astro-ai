@@ -14,13 +14,32 @@ const wall = {
 const mode = z.enum(["none", "longitude", "apparent"]);
 const star = obj({ name: text, type: text, scope: text, brightness: optionalText, mutagen: optionalText });
 const reference = obj({ index: num, name: text, earthlyBranch: text });
+const pillarKey = z.enum(["year", "month", "day", "time"]);
 const relation = obj({
-  id: text, kind: text, label: text, status: text, ruleSet: z.literal("bazi-relations-v1"),
-  participants: z.array(obj({ scope: text, label: text, key: optionalText, ganZhi: optionalText, stem: optionalText, branch: optionalText })),
+  id: text,
+  kind: z.enum(["stem-combination", "branch-liuhe", "branch-clash", "branch-harm", "branch-break", "branch-punishment", "branch-self-punishment", "three-harmony", "three-meeting", "fuyin"]),
+  label: text, status: z.enum(["observed", "candidate", "complete"]), ruleSet: z.literal("bazi-relations-v1"),
+  participants: z.array(obj({ scope: z.enum(["natal", "dayun", "year", "month", "custom"]), label: text, key: pillarKey.optional(), ganZhi: optionalText, stem: optionalText, branch: optionalText })),
   note: optionalText,
   transformation: obj({ targetElement: text, status: z.literal("candidate"), note: text }).optional()
 });
-const divination = obj({ available: z.boolean(), source: text, summary: text, raw: z.unknown().optional(), error: optionalText });
+const divination = { available: z.boolean(), summary: text, raw: z.unknown().optional(), error: optionalText };
+const ruleCondition = obj({
+  field: z.enum(["year.stem", "year.branch", "year.ganZhi", "month.stem", "month.branch", "month.ganZhi", "day.stem", "day.branch", "day.ganZhi", "time.stem", "time.branch", "time.ganZhi"]),
+  expected: text, actual: text, matched: z.boolean()
+});
+const ruleAudit = {
+  ruleId: text,
+  source: obj({ id: text, title: text, section: text }),
+  conditions: z.array(ruleCondition), summary: text, boundary: text,
+  // The audit UI also understands these optional presentation fields.
+  id: optionalText, text: optionalText
+};
+const traditionalRules = obj({
+  version: z.literal("bazi-rule-evidence-v1"),
+  hits: z.array(obj({ ...ruleAudit, status: z.literal("matched") })),
+  audits: z.array(obj({ ...ruleAudit, status: z.enum(["matched", "blocked"]) }))
+});
 
 export const historyItemSchema = obj({
   id: text.min(1), name: text, generatedAt: text, birthDateTime: text, dayMaster: text, pillars: text,
@@ -39,7 +58,7 @@ export const historyItemSchema = obj({
     }),
     bazi: obj({
       engine: z.literal("lunar-javascript"), lunarText: text, solarText: text, zodiac: text,
-      pillars: z.array(obj({ key: z.enum(["year", "month", "day", "time"]), label: text, stem: text, branch: text, ganZhi: text, hiddenStems: texts, tenGod: text, nayin: text, empty: text, element: text })).length(4),
+      pillars: z.array(obj({ key: pillarKey, label: text, stem: text, branch: text, ganZhi: text, hiddenStems: texts, tenGod: text, nayin: text, empty: text, element: text })).length(4),
       dayMaster: text, elementCounts: z.record(num), strengthHint: text,
       facts: obj({ version: z.literal("bazi-relations-v1"), natal: z.array(relation) }),
       luck: obj({ startText: text, dayun: z.array(obj({
@@ -66,9 +85,14 @@ export const historyItemSchema = obj({
       calculation: obj({ solarDate: text, timeIndex: num, shichen: text, gender: z.enum(["男", "女"]) }).optional(),
       raw: z.unknown().optional(), error: optionalText
     }),
-    divination: obj({ liuren: divination.optional(), liuyao: divination.optional() }),
+    divination: obj({
+      liuren: obj({ ...divination, source: z.enum(["liuren-ts-lib", "pending"]) }).optional(),
+      liuyao: obj({ ...divination, source: z.enum(["iching-shifa", "pending"]) }).optional()
+    }),
     ai: obj({ summary: text, evidence: z.array(obj({ label: text, value: text })), recommendedPromptSections: texts }),
-    raw: z.record(z.unknown()), warnings: texts
+    // Other raw engine payloads are opaque. traditionalRules is consumed by the
+    // audit UI, so its known fields must be validated rather than passed through.
+    raw: obj({ traditionalRules: traditionalRules.optional() }), warnings: texts
   })
 });
 

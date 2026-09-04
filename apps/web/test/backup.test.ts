@@ -106,3 +106,43 @@ test("export preserves malformed local storage for manual recovery", () => {
   storage.setItem(BACKUP_KEYS.history, "not JSON");
   assert.equal(exportBackup(storage, "old").data.history, "not JSON");
 });
+
+test("invalid known relation and audit fields reject the entire import without writes", () => {
+  const relation = { id: "fixture-relation", kind: "fuyin", label: "Fixture", status: "observed", ruleSet: "bazi-relations-v1", participants: [{ scope: "natal", key: "day", label: "Day" }] };
+  const cases: Array<[string, (profile: any) => void]> = [
+    ["unknown relation kind", profile => { profile.bazi.facts.natal = [{ ...relation, kind: "broken-kind" }]; }],
+    ["unknown relation status", profile => { profile.bazi.facts.natal = [{ ...relation, status: "broken-status" }]; }],
+    ["unknown participant scope", profile => { profile.bazi.facts.natal = [{ ...relation, participants: [{ scope: "broken-scope", label: "Day" }] }]; }],
+    ["unknown participant key", profile => { profile.bazi.facts.natal = [{ ...relation, participants: [{ scope: "natal", key: "broken-key", label: "Day" }] }]; }],
+    ["broken hits array", profile => { profile.raw.traditionalRules.hits = "broken-array"; }],
+    ["broken audits array", profile => { profile.raw.traditionalRules.audits = "broken-array"; }],
+    ["broken audit source title", profile => { profile.raw.traditionalRules.audits[0].source.title = { broken: true }; }],
+    ["broken hit text", profile => { profile.raw.traditionalRules.hits = [{ ...profile.raw.traditionalRules.audits[0], status: "matched", text: { broken: true } }]; }],
+    ["broken audit conditions", profile => { profile.raw.traditionalRules.audits[0].conditions = "broken-array"; }],
+    ["unknown audit status", profile => { profile.raw.traditionalRules.audits[0].status = "broken-status"; }]
+  ];
+  for (const [label, damage] of cases) {
+    const target = source();
+    const before = new Map(target.values);
+    const damaged = structuredClone(item);
+    damaged.id = "damaged-import";
+    damage(damaged.profile);
+    const incoming = source();
+    incoming.setItem(BACKUP_KEYS.history, JSON.stringify([{ ...item, id: "valid-addition" }, damaged]));
+    assert.throws(() => importBackup(target, encode(incoming)), undefined, label);
+    assert.deepEqual(target.values, before, label);
+  }
+});
+
+test("unknown extension fields survive while all known audit fields remain validated", () => {
+  const extended = structuredClone(item);
+  extended.profile.futureExtension = { vendor: ["unrecognized", "but opaque"] };
+  extended.profile.raw.vendorExtension = { payload: { future: true } };
+  extended.profile.raw.traditionalRules.vendorExtension = ["future"];
+  extended.profile.raw.traditionalRules.audits[0].futureEvidence = { opaque: true };
+  const incoming = source();
+  incoming.setItem(BACKUP_KEYS.history, JSON.stringify([extended]));
+  const target = new MemoryStorage();
+  assert.equal(importBackup(target, encode(incoming)).imported, 1);
+  assert.equal(target.getItem(BACKUP_KEYS.history), incoming.getItem(BACKUP_KEYS.history));
+});

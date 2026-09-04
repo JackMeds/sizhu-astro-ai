@@ -15,11 +15,19 @@ test("fallback resolves root and extensionless directories while retaining .html
     const pathname = new URL(request.url).pathname;
     return new Response(pathname, { status: ["/index.html", "/agent/index.html", "/guide/bazi.html"].includes(pathname) ? 200 : 404 });
   } } };
-  for (const [input, expected] of [["/", "/index.html"], ["/agent", "/agent/index.html"], ["/guide/bazi.html", "/guide/bazi.html"]]) {
+  for (const [input, expected] of [["/", "/index.html"], ["/agent/", "/agent/index.html"], ["/guide/bazi.html", "/guide/bazi.html"]]) {
     const response = await worker.fetch(new Request(`https://astrocopy.jackmeds.top${input}`), settings);
     assert.equal(response.status, 200);
     assert.equal(await response.text(), expected);
   }
+  const response = await worker.fetch(new Request("https://astrocopy.jackmeds.top/agent?lang=en&x=1"), settings);
+  assert.equal(response.status, 307);
+  assert.equal(response.headers.get("Location"), "https://astrocopy.jackmeds.top/agent/?lang=en&x=1");
+  assert.equal(new URL("tools.md", response.headers.get("Location")).href, "https://astrocopy.jackmeds.top/agent/tools.md");
+  assert.equal(new URL("tools.json", response.headers.get("Location")).href, "https://astrocopy.jackmeds.top/agent/tools.json");
+  const missing = await worker.fetch(new Request("https://astrocopy.jackmeds.top/not-a-directory?x=1"), settings);
+  assert.equal(missing.status, 404);
+  assert.equal(missing.headers.get("Location"), null);
 });
 test("ready redirect preserves paths, encoded segments and query parameters", async () => {
   const response = await worker.fetch(new Request("https://astrocopy.jackmeds.top/guide/a%20b.html?lang=en&x=%E4%B8%AD"), env("true"));

@@ -6,7 +6,7 @@ The full unit/migration suites, typecheck and build passed on Node.js 24.20.0 (d
 
 | Check | Result |
 | --- | --- |
-| Existing `npm test` suite, including new backup tests | 94 passed: core 40, prompt 8, registry 4, MCP 2, web 40 |
+| Existing suite plus follow-up web regression checks | 96 passed: core 40, prompt 8, registry 4, MCP 2, web 42 |
 | TypeScript workspaces and API | `npm run typecheck` passed |
 | Production web and MCP build | `npm run build` passed; existing large-main-bundle warning remains |
 | Legacy Worker routing | 6 passed, including old-origin recovery, readiness, directory indexes, path/query redirect and non-GET handling |
@@ -15,6 +15,8 @@ The full unit/migration suites, typecheck and build passed on Node.js 24.20.0 (d
 | Browser layouts | 1280px/light and 390px/dark checked; no horizontal overflow |
 | Existing WebMCP browser smoke | Passed with 10 tools after delayed injection, including existing workspace interactions |
 | Cloudflare Worker dry-run | Wrangler 4.129.0 validated ASSETS binding and false readiness; no deployment |
+
+Review follow-up: imported relation enum values and known `raw.traditionalRules` structures now reject malformed values before any write, while preserving unknown extension fields. Ten malformed-field cases cover relation kinds/statuses/participants and audit arrays/source/text/conditions. Hold-mode directory URLs receive same-origin trailing-slash redirects, keeping relative Agent metadata links usable and preserving queries. Screenshot-provenance documentation is excluded from address rewriting.
 
 Screenshots are generated locally under ignored `artifacts/e2e/`. The ignored recovery snapshot under `infra/legacy-recovery/assets/` contains the last-working preparation build and standalone recovery page. It must be retained separately before a production switch.
 
