@@ -1,3 +1,10 @@
+<!-- jackmeds-brand:start -->
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/brand/hero-dark.svg">
+  <img src="assets/brand/hero-light.svg" alt="MingXu / 命序 — Compute the chart. Keep the interpretation yours." width="1200">
+</picture>
+<!-- jackmeds-brand:end -->
+
 # MingXu / 命序
 
 **Deterministic chart computation. A shared workspace for people and AI agents.**

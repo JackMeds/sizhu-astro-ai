@@ -1,3 +1,10 @@
+<!-- jackmeds-brand:start -->
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/brand/hero-dark.svg">
+  <img src="assets/brand/hero-light.svg" alt="MingXu / 命序 — Compute the chart. Keep the interpretation yours." width="1200">
+</picture>
+<!-- jackmeds-brand:end -->
+
 # 命序 MingXu
 
 **把历法和排盘交给可复现代码，把解释交给你选择的 AI。**
@@ -5,6 +12,10 @@
 命序是本地优先的八字、紫微斗数、大六壬、运限与真太阳时工作台。用户与支持 WebMCP 的 Agent 可以查看并操作同一张网页命盘，每一步都有可见状态与计算依据。
 
 [打开工作台](https://astrocopy.jackmeds.top/) · [English](README.md) · [Agent 接入](https://astrocopy.jackmeds.top/agents.zh-CN.md)
+
+![命序真实工作台，使用站点内置的虚构示例命盘](assets/brand/product-proof.png)
+
+[截图来源与复现](docs/brand-proof.md)。截图展示确定性计算结果，不模拟 AI 对话。
 
 ## 先试一张命盘
 
