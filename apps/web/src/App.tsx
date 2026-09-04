@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { motion } from "motion/react";
-import { createAstroProfile, type AstroProfile } from "@sizhu/core";
+import { createAstroProfile, type AstroProfile } from "@mingxu/core";
 import {
   ArrowRight,
   ArrowUpRight,
@@ -286,6 +286,7 @@ export function App() {
         </section>
 
         <footer id="mcp" className="footer-strip">
+          <a href="/backup/">{isEnglish ? "Local backup & import" : "本地备份与导入"}</a>
           <div className="footer-copy"><strong>{t("footer.engine")}</strong><span>{t("footer.repo")}：<a href="https://github.com/JackMeds/sizhu-astro-ai" target="_blank" rel="noreferrer">JackMeds/sizhu-astro-ai</a></span><span>{t("footer.agent")}：<a href="#agent-access">{t("footer.quick")}</a> · <a href={agentGuideHref} target="_blank" rel="noreferrer">agents.md</a></span><span>{t("footer.privacy")}</span></div>
           <div className="footer-links"><span>Core:</span><a href="https://github.com/6tail/lunar-javascript" target="_blank" rel="noreferrer">lunar-javascript</a><a href="https://iztro.com/" target="_blank" rel="noreferrer">iztro</a><a href="https://github.com/waterbeside/lunisolar" target="_blank" rel="noreferrer">lunisolar</a></div>
         </footer>

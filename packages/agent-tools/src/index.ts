@@ -6,8 +6,8 @@ import {
   type AstroProfile,
   type LiurenCompleteInput,
   type LiurenSessionInput
-} from "@sizhu/core";
-import { exportProfile, type ExportFormat, type PromptMode, type PromptSystem } from "@sizhu/prompt";
+} from "@mingxu/core";
+import { exportProfile, type ExportFormat, type PromptMode, type PromptSystem } from "@mingxu/prompt";
 
 export type JsonSchema = Record<string, unknown>;
 export type AgentToolInput = Record<string, unknown>;

@@ -1,7 +1,7 @@
 import * as Tabs from "@radix-ui/react-tabs";
 import { motion } from "motion/react";
 import { ArrowDown, CheckCircle2, Orbit, ShieldCheck, Sparkles } from "lucide-react";
-import type { AstroProfile } from "@sizhu/core";
+import type { AstroProfile } from "@mingxu/core";
 import { useI18n } from "@/lib/i18n";
 import { useWorkspace, type WorkspaceView } from "@/lib/workspace";
 import { BaziFactsPanel } from "./BaziFactsPanel";

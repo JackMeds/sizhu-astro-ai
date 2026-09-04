@@ -4,7 +4,7 @@ import {
   createAstroProfile,
   createCompleteLiurenChart,
   createTransitSnapshot
-} from "@sizhu/core";
+} from "@mingxu/core";
 import {
   buildAiPrompt,
   buildAnalysisPrompt,

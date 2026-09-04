@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>命序 MingXu · 本地备份 / Local backup</title>
+    <link rel="icon" href="/brand/mark-dark.png" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="/brand/mark-light.png" media="(prefers-color-scheme: light)" />
+    <style>
+      :root { color-scheme: light dark; font-family: system-ui, sans-serif; line-height: 1.65; }
+      body { max-width: 720px; margin: 0 auto; padding: 40px 24px; }
+      h1 { line-height: 1.2; } button, input { font: inherit; margin: 8px 12px 8px 0; }
+      button { padding: 10px 16px; cursor: pointer; } #status { white-space: pre-wrap; }
+      section { border-top: 1px solid #8886; margin-top: 30px; padding-top: 12px; }
+    </style>
+  </head>
+  <body>
+    <a href="/">← 命序 MingXu</a>
+    <h1>本地备份<br />Local backup</h1>
+    <p>备份包含出生资料、历史记录、表单草稿、主题和语言。整个操作只在当前浏览器运行，不上传文件。请妥善保管备份。</p>
+    <p>Your backup contains birth data, history, draft, theme and language. Files stay in this browser; nothing is uploaded. Store your backup privately.</p>
+    <section>
+      <h2>导出 / Export</h2>
+      <button id="export" type="button">下载 JSON 备份 / Download backup</button>
+      <p>旧域名的数据请使用原浏览器打开 <a href="https://astrocopy.jackmeds.top/migration/">旧站恢复页</a> 导出。不同域名无法直接读取彼此的数据。</p>
+    </section>
+    <section>
+      <h2>导入 / Import</h2>
+      <p>当前站点的记录和设置优先保留，最多显示 12 条历史；超过上限的记录仍保存在原备份文件里。导入前建议先导出当前站点。</p>
+      <p>Existing local records and settings win conflicts. History keeps 12 records; overflow stays in your original file. Export this site's data before importing.</p>
+      <label for="backup-file">选择 JSON / Select JSON</label><br />
+      <input id="backup-file" type="file" accept=".json,application/json" />
+      <button id="import" type="button" disabled>导入所选文件 / Import selected file</button>
+    </section>
+    <p id="status" role="status" aria-live="polite"></p>
+    <script type="module" src="../src/backup-page.ts"></script>
+  </body>
+</html>

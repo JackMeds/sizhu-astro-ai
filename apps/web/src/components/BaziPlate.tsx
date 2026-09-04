@@ -1,4 +1,4 @@
-import type { AstroProfile } from "@sizhu/core";
+import type { AstroProfile } from "@mingxu/core";
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { Flame, Gem, Leaf, Mountain, Waves } from "lucide-react";

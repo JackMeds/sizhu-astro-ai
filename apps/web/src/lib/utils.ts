@@ -1,4 +1,4 @@
-import { zonedLocalDateTimeToOffset } from "@sizhu/core";
+import { zonedLocalDateTimeToOffset } from "@mingxu/core";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 

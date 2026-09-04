@@ -7,3 +7,5 @@ dist/
 .worktrees/
 *.log
 artifacts/
+infra/legacy-recovery/assets/
+.wrangler/

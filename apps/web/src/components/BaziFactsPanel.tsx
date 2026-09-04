@@ -1,4 +1,4 @@
-import type { AstroProfile, BaziRelationFact } from "@sizhu/core";
+import type { AstroProfile, BaziRelationFact } from "@mingxu/core";
 import { Braces, GitCompareArrows } from "lucide-react";
 import { useRuntimeLocale } from "@/lib/useRuntimeLocale";
 

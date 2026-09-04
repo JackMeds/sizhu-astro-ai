@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import type { AstroProfile } from "@sizhu/core";
+import type { AstroProfile } from "@mingxu/core";
 import { initialWorkspaceState, workspaceReducer } from "../src/lib/workspace";
 
 const profile = {

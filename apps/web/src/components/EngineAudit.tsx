@@ -1,4 +1,4 @@
-import type { AstroProfile } from "@sizhu/core";
+import type { AstroProfile } from "@mingxu/core";
 import { CheckCircle2, GitCompareArrows, ShieldAlert } from "lucide-react";
 import { useRuntimeLocale } from "@/lib/useRuntimeLocale";
 

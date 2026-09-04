@@ -8,9 +8,9 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"],
-      "@sizhu/core": ["../../packages/core/src/index.ts"],
-      "@sizhu/prompt": ["../../packages/prompt/src/index.ts"],
-      "@sizhu/render": ["../../packages/render/src/index.ts"]
+      "@mingxu/core": ["../../packages/core/src/index.ts"],
+      "@mingxu/prompt": ["../../packages/prompt/src/index.ts"],
+      "@mingxu/render": ["../../packages/render/src/index.ts"]
     },
     "noEmit": true
   },

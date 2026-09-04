@@ -80,7 +80,7 @@ All activity and package facts below were checked on 2026-08-26. “Coverage” 
 
 - URL/type/domain: [lunar-javascript](https://github.com/6tail/lunar-javascript), [iztro](https://github.com/SylarLong/iztro), [lunisolar](https://github.com/waterbeside/lunisolar), and `mingyu-core`; calendar, BaZi, Zi Wei, and supporting Chinese-metaphysics computation.
 - Input/output shape: normalized birth/time/location/config input to structured pillars, palaces, stars, time layers, warnings, and audit metadata.
-- Stack/license/activity: JavaScript/TypeScript packages already installed in `@sizhu/core`; project compatibility is established by the current GPL-3.0 distribution and tests.
+- Stack/license/activity: JavaScript/TypeScript packages already installed in `@mingxu/core`; project compatibility is established by the current GPL-3.0 distribution and tests.
 - Documentation/installability/demo: installable packages with upstream docs; exercised through the repository's core tests and live profile creation.
 - Capabilities: deterministic calculations, established domain vocabularies, structured results, no model dependency.
 - Missing: a unified normalized contract and UI semantics, which AstroCopy already supplies. Upstream flags require domain verification—for example, iztro's `isOriginalPalace` means `来因宫`, not `命宫`.

@@ -1,4 +1,4 @@
-import type { ZiweiPalace } from "@sizhu/core";
+import type { ZiweiPalace } from "@mingxu/core";
 
 export const ZIWEI_FOCUS_IDS = [
   "ziwei-palace-life",

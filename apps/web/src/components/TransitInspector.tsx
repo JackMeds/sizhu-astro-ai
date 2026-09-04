@@ -6,7 +6,7 @@ import {
   type AstroProfile,
   type BaziRelationParticipant,
   type ZiweiHoroscopeItem
-} from "@sizhu/core";
+} from "@mingxu/core";
 import { CalendarSearch, GitCompareArrows, Orbit, Pin, PinOff } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
 import { currentLocalDateTime } from "@/lib/timezone";

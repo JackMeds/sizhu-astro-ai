@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex"><meta name="referrer" content="no-referrer">
+  <title>命序 MingXu · 旧站数据恢复 / Data recovery</title>
+  <link rel="icon" href="data:,">
+  <!-- Original seals: /brand/mark-dark.png and /brand/mark-light.png. Recovery has no external asset dependencies. -->
+  <style>:root{color-scheme:light dark;font:17px/1.65 system-ui,sans-serif}body{max-width:700px;margin:auto;padding:40px 24px}h1{line-height:1.2}button{font:inherit;padding:12px 18px;cursor:pointer}#status{white-space:pre-wrap}</style>
+</head>
+<body>
+  <p>MINGXU / 命序</p><h1>取回旧站的本地数据<br>Recover your local data</h1>
+  <p>请在以前使用的浏览器与用户配置中打开此页。这里只导出，不修改或清空数据。历史、草稿、主题和语言均保留原始内容；文件包含出生资料，请妥善保存。</p>
+  <p>Open this page in your original browser profile. Export is read-only; history, draft, theme and language remain untouched. The file contains birth data, so keep it private.</p>
+  <button id="export" type="button">下载旧站 JSON 备份 / Download backup</button>
+  <p id="status" role="status" aria-live="polite"></p>
+  <p>下载后前往 <a href="https://mingxu.jackmeds.top/backup/">命序新站导入 / Import on MingXu</a>。若新站尚未启用，请先保留文件；旧域名和新域名不能自动共享本地存储。</p>
+  <script>
+    document.querySelector('#export').addEventListener('click', function () {
+      const status = document.querySelector('#status');
+      try {
+        const keys = {history:'sizhu-ai-history-v1',draft:'sizhu-ai-form-draft-v1',theme:'sizhu-theme',locale:'astrocopy-locale-v1'};
+        const data = Object.fromEntries(Object.entries(keys).map(([field,key]) => [field,localStorage.getItem(key)]));
+        const backup = {format:'mingxu-browser-backup',version:1,exportedAt:new Date().toISOString(),origin:location.origin,data};
+        const url = URL.createObjectURL(new Blob([JSON.stringify(backup,null,2)],{type:'application/json'}));
+        const link = document.createElement('a');
+        link.href=url; link.download='mingxu-recovery-'+backup.exportedAt.slice(0,10)+'.json'; link.click();
+        setTimeout(() => URL.revokeObjectURL(url),1000);
+        status.textContent = Object.values(data).every(value => value === null)
+          ? '此浏览器未找到旧站数据，已下载空备份。请检查浏览器配置与网址。 / No local data found. Empty backup downloaded; check the browser profile and origin.'
+          : '已下载，旧站数据保持原样。 / Downloaded; original data is unchanged.';
+      } catch { status.textContent='无法读取本地存储。请检查浏览器权限或隐私模式。 / Cannot read local storage; check browser permissions or private mode.'; }
+    });
+  </script>
+</body>
+</html>

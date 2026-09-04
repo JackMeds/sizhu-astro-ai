@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import type { ZiweiPalace } from "@sizhu/core";
+import type { ZiweiPalace } from "@mingxu/core";
 import {
   getZiweiPalaceFocusIds,
   isZiweiFocusId,
