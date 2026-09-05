@@ -13,13 +13,13 @@ import { showFeedback } from "@/lib/feedback";
 import { useI18n } from "@/lib/i18n";
 import { copyText } from "@/lib/utils";
 
-const siteUrl = "https://astrocopy.jackmeds.top/";
-const repoUrl = "https://github.com/JackMeds/sizhu-astro-ai";
+const siteUrl = "https://mingxu.jackmeds.top/";
+const repoUrl = "https://github.com/JackMeds/mingxu";
 
-const unixInstall = `DIR="$HOME/.local/share/sizhu-astro-ai"; if [ -d "$DIR/.git" ]; then git -C "$DIR" pull --ff-only; else git clone https://github.com/JackMeds/sizhu-astro-ai.git "$DIR"; fi; npm --prefix "$DIR" install && npm --prefix "$DIR" run build:mcp`;
-const unixCodex = `codex mcp add mingxu -- npm --prefix "$HOME/.local/share/sizhu-astro-ai" run start:mcp`;
-const windowsInstall = `$dir="$env:LOCALAPPDATA\\sizhu-astro-ai"; if (Test-Path "$dir\\.git") { git -C $dir pull --ff-only } else { git clone https://github.com/JackMeds/sizhu-astro-ai.git $dir }; npm --prefix $dir install; npm --prefix $dir run build:mcp`;
-const windowsCodex = `codex mcp add mingxu -- npm --prefix "$env:LOCALAPPDATA\\sizhu-astro-ai" run start:mcp`;
+const unixInstall = `DIR="$HOME/.local/share/mingxu"; if [ -d "$DIR/.git" ]; then git -C "$DIR" pull --ff-only; else git clone https://github.com/JackMeds/mingxu.git "$DIR"; fi; npm --prefix "$DIR" install && npm --prefix "$DIR" run build:mcp`;
+const unixCodex = `codex mcp add mingxu -- npm --prefix "$HOME/.local/share/mingxu" run start:mcp`;
+const windowsInstall = `$dir="$env:LOCALAPPDATA\\mingxu"; if (Test-Path "$dir\\.git") { git -C $dir pull --ff-only } else { git clone https://github.com/JackMeds/mingxu.git $dir }; npm --prefix $dir install; npm --prefix $dir run build:mcp`;
+const windowsCodex = `codex mcp add mingxu -- npm --prefix "$env:LOCALAPPDATA\\mingxu" run start:mcp`;
 
 const genericJson = `{
   "mcpServers": {
@@ -27,7 +27,7 @@ const genericJson = `{
       "command": "npm",
       "args": [
         "--prefix",
-        "/ABSOLUTE/PATH/TO/sizhu-astro-ai",
+        "/ABSOLUTE/PATH/TO/mingxu",
         "run",
         "start:mcp"
       ]

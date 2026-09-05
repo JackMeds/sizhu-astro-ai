@@ -197,7 +197,7 @@ export function App() {
           <nav>
             <a href="#birth">{t("nav.birth")}</a><a href="#liuren">{t("nav.liuren")}</a><a href="#guides">{t("nav.guides")}</a><a href="#agent-access">{t("nav.agent")}</a>
             {profile ? <a className="nav-ai-link" href="#export">{t("nav.ai")}</a> : null}
-            <a aria-label="GitHub" className="nav-icon-link" href="https://github.com/JackMeds/sizhu-astro-ai" target="_blank" rel="noreferrer"><Github size={17} /></a>
+            <a aria-label="GitHub" className="nav-icon-link" href="https://github.com/JackMeds/mingxu" target="_blank" rel="noreferrer"><Github size={17} /></a>
             <LanguageToggle />
             <ThemeToggle />
           </nav>
@@ -287,7 +287,7 @@ export function App() {
 
         <footer id="mcp" className="footer-strip">
           <a href="/backup/">{isEnglish ? "Local backup & import" : "本地备份与导入"}</a>
-          <div className="footer-copy"><strong>{t("footer.engine")}</strong><span>{t("footer.repo")}：<a href="https://github.com/JackMeds/sizhu-astro-ai" target="_blank" rel="noreferrer">JackMeds/sizhu-astro-ai</a></span><span>{t("footer.agent")}：<a href="#agent-access">{t("footer.quick")}</a> · <a href={agentGuideHref} target="_blank" rel="noreferrer">agents.md</a></span><span>{t("footer.privacy")}</span></div>
+          <div className="footer-copy"><strong>{t("footer.engine")}</strong><span>{t("footer.repo")}：<a href="https://github.com/JackMeds/mingxu" target="_blank" rel="noreferrer">JackMeds/mingxu</a></span><span>{t("footer.agent")}：<a href="#agent-access">{t("footer.quick")}</a> · <a href={agentGuideHref} target="_blank" rel="noreferrer">agents.md</a></span><span>{t("footer.privacy")}</span></div>
           <div className="footer-links"><span>Core:</span><a href="https://github.com/6tail/lunar-javascript" target="_blank" rel="noreferrer">lunar-javascript</a><a href="https://iztro.com/" target="_blank" rel="noreferrer">iztro</a><a href="https://github.com/waterbeside/lunisolar" target="_blank" rel="noreferrer">lunisolar</a></div>
         </footer>
 

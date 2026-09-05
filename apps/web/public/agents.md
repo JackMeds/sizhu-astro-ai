@@ -7,7 +7,7 @@ Treat 命序 as a **calculation substrate and shared browser workspace**, not as
 <!-- MINGXU:CANONICAL-TOOLS:START -->
 ## Canonical computation registry
 
-The machine-readable registry is generated at [/agent/tools.json](https://astrocopy.jackmeds.top/agent/tools.json), with a human-readable summary at [/agent/tools.md](https://astrocopy.jackmeds.top/agent/tools.md). Canonical deterministic tools use the `mingxu.*` namespace; browser-only state operations use `mingxu.ui.*`.
+The machine-readable registry is generated at [/agent/tools.json](https://mingxu.jackmeds.top/agent/tools.json), with a human-readable summary at [/agent/tools.md](https://mingxu.jackmeds.top/agent/tools.md). Canonical deterministic tools use the `mingxu.*` namespace; browser-only state operations use `mingxu.ui.*`.
 
 - `mingxu.about`
 - `mingxu.create_birth_chart`
@@ -200,12 +200,12 @@ When a user invokes a WebMCP tool, the tool result is available to the current A
 
 ## Links
 
-- App: <https://astrocopy.jackmeds.top/>
-- Repository: <https://github.com/JackMeds/sizhu-astro-ai>
-- Guides: <https://astrocopy.jackmeds.top/guide/>
-- AI discovery page: <https://astrocopy.jackmeds.top/agent/>
-- Sitemap: <https://astrocopy.jackmeds.top/sitemap.xml>
-- Lightweight index: <https://astrocopy.jackmeds.top/llms.txt>
+- App: <https://mingxu.jackmeds.top/>
+- Repository: <https://github.com/JackMeds/mingxu>
+- Guides: <https://mingxu.jackmeds.top/guide/>
+- AI discovery page: <https://mingxu.jackmeds.top/agent/>
+- Sitemap: <https://mingxu.jackmeds.top/sitemap.xml>
+- Lightweight index: <https://mingxu.jackmeds.top/llms.txt>
 - Remote MCP: `https://mcp.jackmeds.top/mcp`
 
 ---

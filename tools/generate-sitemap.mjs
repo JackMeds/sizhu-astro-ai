@@ -6,7 +6,7 @@ import { fileURLToPath } from "node:url";
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const webRoot = path.join(root, "apps", "web");
 const publicRoot = path.join(webRoot, "public");
-const baseUrl = "https://astrocopy.jackmeds.top";
+const baseUrl = "https://mingxu.jackmeds.top";
 
 /**
  * Keep this registry intentionally small and hand-curated. Every URL must

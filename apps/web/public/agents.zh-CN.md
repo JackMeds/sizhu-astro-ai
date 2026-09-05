@@ -5,7 +5,7 @@
 <!-- MINGXU:CANONICAL-TOOLS:START -->
 ## 确定性计算工具注册表
 
-自动生成的机器可读注册表位于 [/agent/tools.json](https://astrocopy.jackmeds.top/agent/tools.json)，可读摘要位于 [/agent/tools.md](https://astrocopy.jackmeds.top/agent/tools.md)。确定性计算使用 `mingxu.*`，浏览器状态操作使用 `mingxu.ui.*`。
+自动生成的机器可读注册表位于 [/agent/tools.json](https://mingxu.jackmeds.top/agent/tools.json)，可读摘要位于 [/agent/tools.md](https://mingxu.jackmeds.top/agent/tools.md)。确定性计算使用 `mingxu.*`，浏览器状态操作使用 `mingxu.ui.*`。
 
 - `mingxu.about`
 - `mingxu.create_birth_chart`
@@ -80,8 +80,8 @@ createCompleteLiurenChart(input)
 
 ## 链接
 
-- 中文工作台：<https://astrocopy.jackmeds.top/zh/>
-- 隐私说明：<https://astrocopy.jackmeds.top/privacy/>
-- 仓库：<https://github.com/JackMeds/sizhu-astro-ai>
-- AI 发现页：<https://astrocopy.jackmeds.top/agent/>
+- 中文工作台：<https://mingxu.jackmeds.top/zh/>
+- 隐私说明：<https://mingxu.jackmeds.top/privacy/>
+- 仓库：<https://github.com/JackMeds/mingxu>
+- AI 发现页：<https://mingxu.jackmeds.top/agent/>
 - Remote MCP：`https://mcp.jackmeds.top/mcp`

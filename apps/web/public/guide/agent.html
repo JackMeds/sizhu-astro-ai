@@ -9,19 +9,19 @@
       content="命序的 Agent / MCP 接入指南：网页 WebMCP、本地 stdio MCP、Codex 一键注册、通用 mcpServers 配置和工具清单。"
     />
     <meta name="robots" content="index,follow,max-image-preview:large" />
-    <link rel="canonical" href="https://astrocopy.jackmeds.top/guide/agent.html" />
+    <link rel="canonical" href="https://mingxu.jackmeds.top/guide/agent.html" />
     <meta property="og:type" content="article" />
     <meta property="og:locale" content="zh_CN" />
     <meta property="og:site_name" content="命序" />
-    <meta property="og:url" content="https://astrocopy.jackmeds.top/guide/agent.html" />
+    <meta property="og:url" content="https://mingxu.jackmeds.top/guide/agent.html" />
     <meta property="og:title" content="Agent / MCP 接入：WebMCP、Codex 与本地 MCP" />
     <meta property="og:description" content="让 Agent 调用命序的确定性排盘工具，并理解 WebMCP、Remote MCP 与本地 MCP 的边界。" />
-    <meta property="og:image" content="https://astrocopy.jackmeds.top/brand/mark-dark.png" />
+    <meta property="og:image" content="https://mingxu.jackmeds.top/brand/mark-dark.png" />
     <meta property="og:image:alt" content="命序 Agent 指南" />
     <meta name="twitter:card" content="summary" />
     <meta name="twitter:title" content="Agent / MCP 接入：WebMCP、Codex 与本地 MCP" />
     <meta name="twitter:description" content="命序确定性计算工具的 Agent 接入说明。" />
-    <meta name="twitter:image" content="https://astrocopy.jackmeds.top/brand/mark-dark.png" />
+    <meta name="twitter:image" content="https://mingxu.jackmeds.top/brand/mark-dark.png" />
     <link rel="stylesheet" href="../guide.css" />
     <style>
       main {
@@ -208,15 +208,15 @@
         <h3>1. 安装 / 更新并构建 MCP</h3>
         <div class="code" id="win-install">
           <button class="copy" data-copy="win-install">复制</button
-          >$dir="$env:LOCALAPPDATA\sizhu-astro-ai"; if (Test-Path "$dir\.git") {
+          >$dir="$env:LOCALAPPDATA\mingxu"; if (Test-Path "$dir\.git") {
           git -C $dir pull --ff-only } else { git clone
-          https://github.com/JackMeds/sizhu-astro-ai.git $dir }; npm --prefix
+          https://github.com/JackMeds/mingxu.git $dir }; npm --prefix
           $dir install; npm --prefix $dir run build:mcp
         </div>
         <h3>2. 注册到 Codex</h3>
         <div class="code" id="win-codex">
           <button class="copy" data-copy="win-codex">复制</button>codex mcp add
-          mingxu -- npm --prefix "$env:LOCALAPPDATA\sizhu-astro-ai" run
+          mingxu -- npm --prefix "$env:LOCALAPPDATA\mingxu" run
           start:mcp
         </div>
       </div>
@@ -225,15 +225,15 @@
         <h3>1. 安装 / 更新并构建 MCP</h3>
         <div class="code" id="unix-install">
           <button class="copy" data-copy="unix-install">复制</button
-          >DIR="$HOME/.local/share/sizhu-astro-ai"; if [ -d "$DIR/.git" ]; then
+          >DIR="$HOME/.local/share/mingxu"; if [ -d "$DIR/.git" ]; then
           git -C "$DIR" pull --ff-only; else git clone
-          https://github.com/JackMeds/sizhu-astro-ai.git "$DIR"; fi; npm
+          https://github.com/JackMeds/mingxu.git "$DIR"; fi; npm
           --prefix "$DIR" install &amp;&amp; npm --prefix "$DIR" run build:mcp
         </div>
         <h3>2. 注册到 Codex</h3>
         <div class="code" id="unix-codex">
           <button class="copy" data-copy="unix-codex">复制</button>codex mcp add
-          mingxu -- npm --prefix "$HOME/.local/share/sizhu-astro-ai" run
+          mingxu -- npm --prefix "$HOME/.local/share/mingxu" run
           start:mcp
         </div>
       </div>
@@ -250,7 +250,7 @@
       <div class="code" id="generic-json">
         <button class="copy" data-copy="generic-json">复制</button>{
         "mcpServers": { "mingxu": { "command": "npm", "args": [ "--prefix",
-        "/ABSOLUTE/PATH/TO/sizhu-astro-ai", "run", "start:mcp" ] } } }
+        "/ABSOLUTE/PATH/TO/mingxu", "run", "start:mcp" ] } } }
       </div>
 
       <h2>WebMCP：网页直接注册的工具</h2>
@@ -299,7 +299,7 @@
       <p>
         <a href="../agent/">AI Agent 发现页</a> ·
         <a href="../#agent-access">返回首页 Agent 接入区</a> ·
-        <a href="https://github.com/JackMeds/sizhu-astro-ai"
+        <a href="https://github.com/JackMeds/mingxu"
           >查看 GitHub 仓库</a
         >
       </p>

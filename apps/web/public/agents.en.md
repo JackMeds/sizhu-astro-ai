@@ -5,7 +5,7 @@ MingXu (AstroCopy engine) is a deterministic BaZi, Zi Wei Dou Shu, transit, appa
 <!-- MINGXU:CANONICAL-TOOLS:START -->
 ## Canonical computation registry
 
-The generated registry is available at [/agent/tools.json](https://astrocopy.jackmeds.top/agent/tools.json), with a readable summary at [/agent/tools.md](https://astrocopy.jackmeds.top/agent/tools.md). Canonical deterministic tools use `mingxu.*`; browser-only state operations use `mingxu.ui.*`.
+The generated registry is available at [/agent/tools.json](https://mingxu.jackmeds.top/agent/tools.json), with a readable summary at [/agent/tools.md](https://mingxu.jackmeds.top/agent/tools.md). Canonical deterministic tools use `mingxu.*`; browser-only state operations use `mingxu.ui.*`.
 
 - `mingxu.about`
 - `mingxu.create_birth_chart`
@@ -83,8 +83,8 @@ MingXu computes in the browser and does not automatically send chart data to an 
 
 ## Links
 
-- App: <https://astrocopy.jackmeds.top/en/>
-- Privacy: <https://astrocopy.jackmeds.top/privacy/>
-- Repository: <https://github.com/JackMeds/sizhu-astro-ai>
-- AI discovery page: <https://astrocopy.jackmeds.top/agent/>
+- App: <https://mingxu.jackmeds.top/en/>
+- Privacy: <https://mingxu.jackmeds.top/privacy/>
+- Repository: <https://github.com/JackMeds/mingxu>
+- AI discovery page: <https://mingxu.jackmeds.top/agent/>
 - Remote MCP: `https://mcp.jackmeds.top/mcp`

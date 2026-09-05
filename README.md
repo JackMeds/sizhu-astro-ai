@@ -11,7 +11,7 @@
 
 MingXu calculates BaZi (Four Pillars), Zi Wei Dou Shu, Da Liu Ren, transits and apparent solar time with reproducible code. Explore the same visible chart with an agent, then interpret the evidence with the AI you choose.
 
-[Open the workspace](https://astrocopy.jackmeds.top/) · [中文说明](README.zh-CN.md) · [Agent setup](https://astrocopy.jackmeds.top/agents.md)
+[Open the workspace](https://mingxu.jackmeds.top/) · [中文说明](README.zh-CN.md) · [Agent setup](https://mingxu.jackmeds.top/agents.md)
 
 ![MingXu's real workspace with the built-in fictional example chart](assets/brand/product-proof.png)
 
@@ -40,8 +40,8 @@ See the [technical overview](docs/technical-overview.md) for calculation coverag
 Requires Node.js 24 and npm.
 
 ```bash
-git clone https://github.com/JackMeds/sizhu-astro-ai.git
-cd sizhu-astro-ai
+git clone https://github.com/JackMeds/mingxu.git
+cd mingxu
 npm ci
 npm run dev:web
 ```
@@ -59,7 +59,7 @@ The canonical namespace is `mingxu.*`. Existing `sizhu.*` and `astrocopy.*` alia
 
 Birth-chart and casting calculations run in the browser. Drafts and up to 12 history records stay in that browser unless you explicitly export or share them. The website does not automatically send birth data to an AI provider. Agent calls or copied exports share data with the service you choose.
 
-[Local backup and import](https://astrocopy.jackmeds.top/backup/) transfers history, draft, theme and language using a private JSON file. Existing destination data wins conflicts. Keep the original file: records beyond the 12-item limit remain there. The [old-origin recovery page](https://astrocopy.jackmeds.top/migration/) stays export-only.
+[Local backup and import](https://mingxu.jackmeds.top/backup/) transfers history, draft, theme and language using a private JSON file. Existing destination data wins conflicts. Keep the original file: records beyond the 12-item limit remain there. The [old-origin recovery page](https://astrocopy.jackmeds.top/migration/) stays export-only.
 
 MingXu is a traditional-culture research and software tool. It makes no claim of scientific predictive validity and does not replace medical, legal, financial or other professional advice. Results retain the original AstroCopy engine identities.
 
@@ -73,10 +73,10 @@ npm run build
 ```
 
 - [Architecture and calculation details](docs/technical-overview.md)
-- [Agent guide](https://astrocopy.jackmeds.top/agents.md) · [Learning guides](https://astrocopy.jackmeds.top/guide/)
+- [Agent guide](https://mingxu.jackmeds.top/agents.md) · [Learning guides](https://mingxu.jackmeds.top/guide/)
 - [Migration, compatibility and rollback](docs/mingxu-migration.md)
-- [Report an issue](https://github.com/JackMeds/sizhu-astro-ai/issues)
+- [Report an issue](https://github.com/JackMeds/mingxu/issues)
 
-Internal packages now use `@mingxu/*`; private `@sizhu/*` forwarding workspaces remain through at least the next stable release. This preparation does not publish packages or change the live domain.
+Internal packages now use `@mingxu/*`; private `@sizhu/*` forwarding workspaces remain through at least the next stable release. This address-switch delivery does not publish packages. Its new links become live only after the reviewed repository, DNS and deployment cutover in the [migration checklist](docs/mingxu-migration.md).
 
 Licensed under [GPL-3.0](LICENSE).

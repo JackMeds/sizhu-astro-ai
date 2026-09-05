@@ -441,7 +441,7 @@ export const dictionary = {
   "agent.codex.note": "注册后可在 Codex 中用 /mcp 查看工具。服务器通过 stdio 启动，不需要额外端口。",
   "agent.generic.install": "先安装项目",
   "agent.generic.config": "通用 stdio MCP 配置示例",
-  "agent.generic.note": "把 /ABSOLUTE/PATH/TO/sizhu-astro-ai 替换成实际安装目录，并按客户端的 stdio MCP 配置格式填写相同 command/args。",
+  "agent.generic.note": "把 /ABSOLUTE/PATH/TO/mingxu 替换成实际安装目录，并按客户端的 stdio MCP 配置格式填写相同 command/args。",
   "agent.footer.question": "想让 Agent 先读规则？",
   "agent.footer.agents": "打开 agents.md",
   "agent.footer.source": "查看源码"

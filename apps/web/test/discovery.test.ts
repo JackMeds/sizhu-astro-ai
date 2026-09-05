@@ -13,11 +13,11 @@ test("SEO discovery infrastructure exposes the Agent page and canonical links", 
   const sitemap = readFileSync(`${publicRoot}/sitemap.xml`, "utf8");
 
   for (const path of ["/bazi/", "/ziwei/", "/liuren/", "/true-solar-time/"]) assert.match(home, new RegExp(`href=\\"${path.replaceAll("/", "\\/")}\\"`));
-  assert.match(agent, /<link rel="canonical" href="https:\/\/astrocopy\.jackmeds\.top\/agent\/"/);
+  assert.match(agent, /<link rel="canonical" href="https:\/\/mingxu\.jackmeds\.top\/agent\/"/);
   assert.match(agent, /"@type": \["WebApplication", "SoftwareApplication"\]/);
   assert.match(agent, /landing-agent\.js/);
   assert.match(robots, /User-agent: OAI-SearchBot\s+Allow: \//);
-  assert.match(sitemap, /<loc>https:\/\/astrocopy\.jackmeds\.top\/agent\/<\/loc>/);
+  assert.match(sitemap, /<loc>https:\/\/mingxu\.jackmeds\.top\/agent\/<\/loc>/);
   assert.doesNotMatch(agent, /noindex/i);
 });
 
@@ -34,9 +34,9 @@ test("localized application entries are direct, indexable Vite pages", () => {
   const en = readFileSync(`${webRoot}/en/index.html`, "utf8");
 
   for (const [source, canonical, language] of [
-    [root, "https://astrocopy.jackmeds.top/", "zh-CN"],
-    [zh, "https://astrocopy.jackmeds.top/zh/", "zh-CN"],
-    [en, "https://astrocopy.jackmeds.top/en/", "en-US"]
+    [root, "https://mingxu.jackmeds.top/", "zh-CN"],
+    [zh, "https://mingxu.jackmeds.top/zh/", "zh-CN"],
+    [en, "https://mingxu.jackmeds.top/en/", "en-US"]
   ] as const) {
     assert.match(source, new RegExp(`<html lang="${language}">`));
     assert.match(source, new RegExp(`<link rel="canonical" href="${canonical.replaceAll("/", "\\/")}"`));
@@ -48,9 +48,9 @@ test("localized application entries are direct, indexable Vite pages", () => {
   }
 
   for (const hreflang of [
-    'hreflang="en" href="https://astrocopy.jackmeds.top/en/"',
-    'hreflang="zh-Hans" href="https://astrocopy.jackmeds.top/zh/"',
-    'hreflang="x-default" href="https://astrocopy.jackmeds.top/"'
+    'hreflang="en" href="https://mingxu.jackmeds.top/en/"',
+    'hreflang="zh-Hans" href="https://mingxu.jackmeds.top/zh/"',
+    'hreflang="x-default" href="https://mingxu.jackmeds.top/"'
   ]) {
     assert.match(root, new RegExp(hreflang.replaceAll("/", "\\/")));
     assert.match(zh, new RegExp(hreflang.replaceAll("/", "\\/")));
@@ -75,16 +75,16 @@ test("sitemap URLs map to indexable source pages with matching canonicals", () =
       "ziwei-software-differences", "liuren-transmission-example", "ai-bazi-analysis"
     ].map((name) => [`/guide/${name}.html`, `${publicRoot}/guide/${name}.html`])
   ]);
-  const urls = [...sitemap.matchAll(/<loc>https:\/\/astrocopy\.jackmeds\.top([^<]+)<\/loc>/g)].map((match) => match[1]);
+  const urls = [...sitemap.matchAll(/<loc>https:\/\/mingxu\.jackmeds\.top([^<]+)<\/loc>/g)].map((match) => match[1]);
   assert.equal(urls.length, pages.size);
 
   for (const [url, sourcePath] of pages) {
-    assert.ok(sitemap.includes(`<loc>https://astrocopy.jackmeds.top${url}</loc>`), url);
+    assert.ok(sitemap.includes(`<loc>https://mingxu.jackmeds.top${url}</loc>`), url);
     const source = readFileSync(sourcePath, "utf8");
     const canonicalLink = source.match(/<link\b[^>]*\brel="canonical"[^>]*>/s)?.[0] ?? "";
-    assert.ok(canonicalLink.includes(`href="https://astrocopy.jackmeds.top${url}"`), url);
+    assert.ok(canonicalLink.includes(`href="https://mingxu.jackmeds.top${url}"`), url);
     assert.match(source, /<meta[^>]+name="robots"[^>]+content="index,follow/i, url);
-    assert.match(source, /<meta[^>]+property="og:image"[^>]+content="https:\/\/astrocopy\.jackmeds\.top\//, url);
+    assert.match(source, /<meta[^>]+property="og:image"[^>]+content="https:\/\/mingxu\.jackmeds\.top\//, url);
   }
 });
 

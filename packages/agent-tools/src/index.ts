@@ -27,8 +27,8 @@ export interface AgentToolDefinition {
   executeCore: (input?: AgentToolInput) => unknown;
 }
 
-export const MINGXU_REPOSITORY = "https://github.com/JackMeds/sizhu-astro-ai";
-export const MINGXU_WEB_URL = "https://astrocopy.jackmeds.top/";
+export const MINGXU_REPOSITORY = "https://github.com/JackMeds/mingxu";
+export const MINGXU_WEB_URL = "https://mingxu.jackmeds.top/";
 
 const locationProperties: JsonSchema = {
   type: "object",

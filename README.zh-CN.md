@@ -11,7 +11,7 @@
 
 命序是本地优先的八字、紫微斗数、大六壬、运限与真太阳时工作台。用户与支持 WebMCP 的 Agent 可以查看并操作同一张网页命盘，每一步都有可见状态与计算依据。
 
-[打开工作台](https://astrocopy.jackmeds.top/) · [English](README.md) · [Agent 接入](https://astrocopy.jackmeds.top/agents.zh-CN.md)
+[打开工作台](https://mingxu.jackmeds.top/) · [English](README.md) · [Agent 接入](https://mingxu.jackmeds.top/agents.zh-CN.md)
 
 ![命序真实工作台，使用站点内置的虚构示例命盘](assets/brand/product-proof.png)
 
@@ -38,8 +38,8 @@
 需要 Node.js 24 与 npm。
 
 ```bash
-git clone https://github.com/JackMeds/sizhu-astro-ai.git
-cd sizhu-astro-ai
+git clone https://github.com/JackMeds/mingxu.git
+cd mingxu
 npm ci
 npm run dev:web
 ```
@@ -50,7 +50,7 @@ npm run dev:web
 
 网页排盘在浏览器本地运行，表单草稿和最多 12 条历史留在当前浏览器。系统不会自动向第三方 AI 发送出生资料；主动调用 Agent 工具、复制导出或分享文件后，数据按所选服务的规则处理。
 
-[本地备份与导入](https://astrocopy.jackmeds.top/backup/) 通过 JSON 文件迁移历史、草稿、主题和语言，不上传文件。新站已有内容优先；超出历史上限的记录仍保留在原备份中，请妥善保管。[旧站恢复页](https://astrocopy.jackmeds.top/migration/) 只导出、不清空数据。跨域名迁移需要原浏览器导出后再导入。
+[本地备份与导入](https://mingxu.jackmeds.top/backup/) 通过 JSON 文件迁移历史、草稿、主题和语言，不上传文件。新站已有内容优先；超出历史上限的记录仍保留在原备份中，请妥善保管。[旧站恢复页](https://astrocopy.jackmeds.top/migration/) 只导出、不清空数据。跨域名迁移需要原浏览器导出后再导入。
 
 命序用于传统文化研究、工具开发与自我观察，不宣称科学预测效力，也不替代医学、法律、投资等专业判断。排盘结果继续保留原有计算引擎版本和来源标识。
 
@@ -63,8 +63,8 @@ npm run typecheck
 npm run build
 ```
 
-[完整技术说明](docs/technical-overview.md) · [使用指南](https://astrocopy.jackmeds.top/guide/) · [品牌迁移与回退](docs/mingxu-migration.md) · [反馈问题](https://github.com/JackMeds/sizhu-astro-ai/issues)
+[完整技术说明](docs/technical-overview.md) · [使用指南](https://mingxu.jackmeds.top/guide/) · [品牌迁移与回退](docs/mingxu-migration.md) · [反馈问题](https://github.com/JackMeds/mingxu/issues)
 
-内部包主名迁至 `@mingxu/*`，旧 `@sizhu/*` 工作区作为兼容入口至少保留至下一个稳定版本。本准备分支不发布 npm 包，也不切换线上域名。
+内部包主名迁至 `@mingxu/*`，旧 `@sizhu/*` 工作区作为兼容入口至少保留至下一个稳定版本。本地址切换交付不发布 npm 包；新链接需在按[迁移清单](docs/mingxu-migration.md)完成仓库改名、DNS 与站点部署后才会生效。
 
 许可证：[GPL-3.0](LICENSE)。
