@@ -208,7 +208,7 @@
         <h3>1. 安装 / 更新并构建 MCP</h3>
         <div class="code" id="win-install">
           <button class="copy" data-copy="win-install">复制</button
-          >$dir="$env:LOCALAPPDATA\sizhu-astro-ai"; if (Test-Path "$dir\.git") {
+          >$dir="$env:LOCALAPPDATA\mingxu"; if (Test-Path "$dir\.git") {
           git -C $dir pull --ff-only } else { git clone
           https://github.com/JackMeds/mingxu.git $dir }; npm --prefix
           $dir install; npm --prefix $dir run build:mcp
@@ -216,7 +216,7 @@
         <h3>2. 注册到 Codex</h3>
         <div class="code" id="win-codex">
           <button class="copy" data-copy="win-codex">复制</button>codex mcp add
-          mingxu -- npm --prefix "$env:LOCALAPPDATA\sizhu-astro-ai" run
+          mingxu -- npm --prefix "$env:LOCALAPPDATA\mingxu" run
           start:mcp
         </div>
       </div>
