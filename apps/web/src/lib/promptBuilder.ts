@@ -1,13 +1,13 @@
-import type { AstroProfile, TransitSnapshot } from "@sizhu/core";
+import type { AstroProfile, TransitSnapshot } from "@mingxu/core";
 import {
   buildAnalysisPrompt,
   PROMPT_MODE_META,
   type AnalysisPromptFormat,
   type PromptMode,
   type PromptSystem
-} from "@sizhu/prompt";
+} from "@mingxu/prompt";
 
-export type { PromptMode, PromptSystem } from "@sizhu/prompt";
+export type { PromptMode, PromptSystem } from "@mingxu/prompt";
 export type PromptFormat = AnalysisPromptFormat;
 
 export interface PromptBuildContext {

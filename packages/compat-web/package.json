@@ -1,0 +1,18 @@
+{
+  "name": "@sizhu/web",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "license": "GPL-3.0",
+  "description": "Legacy workspace commands forward to @mingxu/web.",
+  "scripts": {
+    "dev": "npm run dev -w @mingxu/web --",
+    "build": "npm run build -w @mingxu/web",
+    "test": "npm run test -w @mingxu/web",
+    "typecheck": "npm run typecheck -w @mingxu/web",
+    "preview": "npm run preview -w @mingxu/web --"
+  },
+  "dependencies": {
+    "@mingxu/web": "file:../../apps/web"
+  }
+}

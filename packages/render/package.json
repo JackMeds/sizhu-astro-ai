@@ -1,5 +1,5 @@
 {
-  "name": "@sizhu/render",
+  "name": "@mingxu/render",
   "version": "0.1.0",
   "type": "module",
   "license": "GPL-3.0",
@@ -15,7 +15,7 @@
     "build": "tsc -p tsconfig.json"
   },
   "dependencies": {
-    "@sizhu/core": "file:../core"
+    "@mingxu/core": "file:../core"
   },
   "devDependencies": {
     "typescript": "^5.8.3"

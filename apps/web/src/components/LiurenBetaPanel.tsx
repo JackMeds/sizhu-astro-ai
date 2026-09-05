@@ -15,8 +15,8 @@ import {
   type LiurenCastingMethod,
   type LiurenCompleteChart,
   type TrueSolarTimeMode
-} from "@sizhu/core";
-import { buildLiurenAnalysisPrompt } from "@sizhu/prompt";
+} from "@mingxu/core";
+import { buildLiurenAnalysisPrompt } from "@mingxu/prompt";
 import { copyText, localDateTimeToOffset } from "@/lib/utils";
 import { showFeedback } from "@/lib/feedback";
 import { useRuntimeLocale } from "@/lib/useRuntimeLocale";

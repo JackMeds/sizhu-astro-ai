@@ -56,7 +56,7 @@ Pinned callable invariants:
 
 ## Calendar ownership
 
-Users should **not** have to manually enter the four kinliuren parameters. `@sizhu/core` owns calendar conversion through `prepareLiurenCalendarInput(...)`, using the same explicit standard/local-mean/apparent-solar-time model as the rest of the project.
+Users should **not** have to manually enter the four kinliuren parameters. `@mingxu/core` owns calendar conversion through `prepareLiurenCalendarInput(...)`, using the same explicit standard/local-mean/apparent-solar-time model as the rest of the project.
 
 ## Browser migration order
 

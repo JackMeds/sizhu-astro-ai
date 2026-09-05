@@ -1,23 +1,28 @@
 {
-  "name": "@sizhu/mcp",
+  "name": "@mingxu/mcp",
   "version": "0.5.0",
   "type": "module",
   "license": "GPL-3.0",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": { "types": "./dist/index.d.ts", "import": "./dist/index.js" }
+  },
   "bin": {
-    "sizhu-mcp": "./dist/index.js",
-    "mingxu-mcp": "./dist/index.js"
+    "sizhu-mcp": "./bin/mingxu-mcp.mjs",
+    "mingxu-mcp": "./bin/mingxu-mcp.mjs"
   },
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "pretest": "npm run build -w @sizhu/core && npm run build -w @sizhu/prompt && npm run build -w @sizhu/agent-tools",
+    "pretest": "npm run build -w @mingxu/core && npm run build -w @mingxu/prompt && npm run build -w @mingxu/agent-tools",
     "test": "node --test --import tsx test/*.test.ts",
     "start:http": "node dist/http-server.js",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
-    "@sizhu/agent-tools": "file:../../packages/agent-tools",
-    "@sizhu/core": "file:../../packages/core",
-    "@sizhu/prompt": "file:../../packages/prompt",
+    "@mingxu/agent-tools": "file:../../packages/agent-tools",
+    "@mingxu/core": "file:../../packages/core",
+    "@mingxu/prompt": "file:../../packages/prompt",
     "@modelcontextprotocol/sdk": "^1.29.0",
     "zod": "^3.25.67"
   },

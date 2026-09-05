@@ -7,7 +7,7 @@ The repository contains a stateless Streamable HTTP MCP handler in `apps/mcp` an
 ```bash
 npm install
 npm run build:mcp
-npm run start:http -w @sizhu/mcp
+npm run start:http -w @mingxu/mcp
 node tools/e2e-mcp-http.mjs
 ```
 

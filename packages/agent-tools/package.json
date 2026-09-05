@@ -1,5 +1,5 @@
 {
-  "name": "@sizhu/agent-tools",
+  "name": "@mingxu/agent-tools",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -8,13 +8,13 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "pretest": "npm run build -w @sizhu/core && npm run build -w @sizhu/prompt",
+    "pretest": "npm run build -w @mingxu/core && npm run build -w @mingxu/prompt",
     "test": "node --test --import tsx test/*.test.ts",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
-    "@sizhu/core": "file:../core",
-    "@sizhu/prompt": "file:../prompt"
+    "@mingxu/core": "file:../core",
+    "@mingxu/prompt": "file:../prompt"
   },
   "devDependencies": {
     "tsx": "^4.20.3",

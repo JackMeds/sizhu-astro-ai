@@ -1,5 +1,5 @@
 import * as Tabs from "@radix-ui/react-tabs";
-import type { AstroProfile } from "@sizhu/core";
+import type { AstroProfile } from "@mingxu/core";
 
 interface ResultTabsProps {
   profile: AstroProfile;

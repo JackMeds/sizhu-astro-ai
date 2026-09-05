@@ -1,5 +1,5 @@
 import type { CSSProperties } from "react";
-import type { AstroProfile, ZiweiPalace, ZiweiStar } from "@sizhu/core";
+import type { AstroProfile, ZiweiPalace, ZiweiStar } from "@mingxu/core";
 import { useI18n } from "@/lib/i18n";
 import { getZiweiPalaceFocusIds } from "@/lib/ziweiFocus";
 

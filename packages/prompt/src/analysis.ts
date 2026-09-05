@@ -6,7 +6,7 @@ import {
   type ZiweiHoroscopeItem,
   type ZiweiPalaceRelation,
   type ZiweiStar
-} from "@sizhu/core";
+} from "@mingxu/core";
 
 export const PROMPT_METHOD_ID = "mingxu-structured-traditional-v1" as const;
 

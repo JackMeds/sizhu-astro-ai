@@ -1,21 +1,22 @@
 {
-  "name": "@sizhu/web",
+  "name": "@mingxu/web",
   "version": "0.1.0",
   "private": true,
   "type": "module",
   "license": "GPL-3.0",
   "scripts": {
     "dev": "vite --host 0.0.0.0",
-    "build": "npm run build -w @sizhu/core && npm run build -w @sizhu/prompt && npm run build -w @sizhu/render && npm run build -w @sizhu/agent-tools && node ../../tools/generate-agent-docs.mjs && node ../../tools/generate-sitemap.mjs && tsc -p tsconfig.json && vite build",
+    "build": "npm run build -w @mingxu/core && npm run build -w @mingxu/prompt && npm run build -w @mingxu/render && npm run build -w @mingxu/agent-tools && node ../../tools/generate-agent-docs.mjs && node ../../tools/generate-sitemap.mjs && tsc -p tsconfig.json && vite build",
     "preview": "vite preview --host 127.0.0.1",
     "test": "node --test --import tsx test/*.test.ts",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
-    "@sizhu/agent-tools": "file:../../packages/agent-tools",
-    "@sizhu/core": "file:../../packages/core",
-    "@sizhu/prompt": "file:../../packages/prompt",
-    "@sizhu/render": "file:../../packages/render",
+    "zod": "^3.25.67",
+    "@mingxu/agent-tools": "file:../../packages/agent-tools",
+    "@mingxu/core": "file:../../packages/core",
+    "@mingxu/prompt": "file:../../packages/prompt",
+    "@mingxu/render": "file:../../packages/render",
     "@radix-ui/react-tabs": "^1.1.12",
     "@tailwindcss/vite": "^4.3.1",
     "class-variance-authority": "^0.7.1",

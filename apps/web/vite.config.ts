@@ -14,6 +14,7 @@ export default defineConfig({
         main: path.resolve(__dirname, "index.html"),
         zh: path.resolve(__dirname, "zh/index.html"),
         en: path.resolve(__dirname, "en/index.html"),
+        backup: path.resolve(__dirname, "backup/index.html"),
         "landing-agent": path.resolve(__dirname, "src/landing-agent.ts")
       },
       output: {
@@ -27,9 +28,9 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "src"),
-      "@sizhu/core": path.resolve(__dirname, "../../packages/core/src/index.ts"),
-      "@sizhu/prompt": path.resolve(__dirname, "../../packages/prompt/src/index.ts"),
-      "@sizhu/render": path.resolve(__dirname, "../../packages/render/src/index.ts")
+      "@mingxu/core": path.resolve(__dirname, "../../packages/core/src/index.ts"),
+      "@mingxu/prompt": path.resolve(__dirname, "../../packages/prompt/src/index.ts"),
+      "@mingxu/render": path.resolve(__dirname, "../../packages/render/src/index.ts")
     }
   }
 });

@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { createAstroProfile, createCompleteLiurenChart } from "@sizhu/core";
+import { createAstroProfile, createCompleteLiurenChart } from "@mingxu/core";
 import { createPromptTransitContext } from "../src/components/ExportPanel";
 import { buildAiText } from "../src/components/LiurenBetaPanel";
 import { buildEnglishPrompt, buildPrompt, promptModes, type PromptMode } from "../src/lib/promptBuilder";

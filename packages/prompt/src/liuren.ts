@@ -1,4 +1,4 @@
-import type { LiurenCompleteChart } from "@sizhu/core";
+import type { LiurenCompleteChart } from "@mingxu/core";
 import { PROMPT_METHOD_ID, type AnalysisPromptFormat, type PromptLocale } from "./analysis.js";
 
 export interface LiurenPromptOptions {

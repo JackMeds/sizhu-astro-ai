@@ -1,5 +1,5 @@
-import { getAgentTools, type AgentToolDefinition } from "@sizhu/agent-tools";
-import type { AstroProfile } from "@sizhu/core";
+import { getAgentTools, type AgentToolDefinition } from "@mingxu/agent-tools";
+import type { AstroProfile } from "@mingxu/core";
 import { executeWebMcpTool } from "./webMcpResult";
 
 type ModelContextLike = {

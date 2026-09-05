@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { ArrowUpRight, Check, ChevronDown, Copy, Download, ImageDown, ServerCog, Sparkles } from "lucide-react";
-import { createTransitSnapshot, type AstroProfile, type TransitSnapshot } from "@sizhu/core";
-import { PROMPT_MODE_META, PROMPT_SYSTEM_META } from "@sizhu/prompt";
+import { createTransitSnapshot, type AstroProfile, type TransitSnapshot } from "@mingxu/core";
+import { PROMPT_MODE_META, PROMPT_SYSTEM_META } from "@mingxu/prompt";
 import { Button } from "./Button";
 import { copySvgAsPng, copyText, downloadText } from "@/lib/utils";
 import { showFeedback } from "@/lib/feedback";

@@ -4,7 +4,7 @@ import {
   type AgentToolDefinition,
   type JsonSchema,
   type AgentToolInput
-} from "@sizhu/agent-tools";
+} from "@mingxu/agent-tools";
 import { z, type ZodRawShape, type ZodTypeAny } from "zod";
 
 export interface ToolMetric {

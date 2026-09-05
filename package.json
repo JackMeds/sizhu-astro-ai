@@ -1,5 +1,5 @@
 {
-  "name": "sizhu-astro-ai",
+  "name": "mingxu",
   "version": "0.0.1",
   "description": "命序 MingXu：本地优先的八字、紫微斗数、大六壬、真太阳时与 AI Agent 结构化计算工具",
   "private": true,
@@ -9,16 +9,17 @@
   ],
   "license": "GPL-3.0",
   "scripts": {
-    "dev:web": "npm run dev -w @sizhu/web",
-    "build": "npm run build -w @sizhu/core && npm run build -w @sizhu/prompt && npm run build -w @sizhu/render && npm run build -w @sizhu/agent-tools && npm run build -w @sizhu/mcp && npm run build -w @sizhu/web",
-    "build:web": "npm run build -w @sizhu/web",
-    "build:mcp": "npm run build -w @sizhu/core && npm run build -w @sizhu/prompt && npm run build -w @sizhu/agent-tools && npm run build -w @sizhu/mcp",
-    "generate:agent-docs": "npm run build -w @sizhu/agent-tools && node tools/generate-agent-docs.mjs",
+    "test:migration": "node --test tools/recovery.test.mjs tools/address-switch.test.mjs && npm run build:mcp && npm run build -w @mingxu/render && node --test tools/compat.test.mjs && node --test --import tsx apps/web/test/backup.test.ts",
+    "dev:web": "npm run dev -w @mingxu/web",
+    "build": "npm run build -w @mingxu/core && npm run build -w @mingxu/prompt && npm run build -w @mingxu/render && npm run build -w @mingxu/agent-tools && npm run build -w @mingxu/mcp && npm run build -w @mingxu/web",
+    "build:web": "npm run build -w @mingxu/web",
+    "build:mcp": "npm run build -w @mingxu/core && npm run build -w @mingxu/prompt && npm run build -w @mingxu/agent-tools && npm run build -w @mingxu/mcp",
+    "generate:agent-docs": "npm run build -w @mingxu/agent-tools && node tools/generate-agent-docs.mjs",
     "typecheck:api": "tsc -p api/tsconfig.json --noEmit",
     "test:webmcp": "node tools/e2e-webmcp.mjs",
     "start:mcp": "node apps/mcp/dist/index.js",
-    "test": "npm run test -w @sizhu/core && npm run build -w @sizhu/core && npm run test -w @sizhu/prompt && npm run build -w @sizhu/prompt && npm run test -w @sizhu/agent-tools && npm run build -w @sizhu/agent-tools && npm run test -w @sizhu/mcp && npm run test -w @sizhu/web",
-    "typecheck": "npm run build -w @sizhu/core && npm run build -w @sizhu/prompt && npm run build -w @sizhu/render && npm run build -w @sizhu/agent-tools && npm run typecheck -w @sizhu/web && npm run typecheck -w @sizhu/mcp && npm run typecheck:api"
+    "test": "npm run test -w @mingxu/core && npm run build -w @mingxu/core && npm run test -w @mingxu/prompt && npm run build -w @mingxu/prompt && npm run test -w @mingxu/agent-tools && npm run build -w @mingxu/agent-tools && npm run test -w @mingxu/mcp && npm run test -w @mingxu/web",
+    "typecheck": "npm run build -w @mingxu/core && npm run build -w @mingxu/prompt && npm run build -w @mingxu/render && npm run build -w @mingxu/agent-tools && npm run typecheck -w @mingxu/web && npm run typecheck -w @mingxu/mcp && npm run typecheck:api"
   },
   "overrides": {
     "esbuild": "^0.28.1",

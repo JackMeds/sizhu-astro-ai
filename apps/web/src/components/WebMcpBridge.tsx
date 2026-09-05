@@ -1,8 +1,8 @@
 import {
   createTransitSnapshot,
   type AstroProfile
-} from "@sizhu/core";
-import { getAgentTool } from "@sizhu/agent-tools";
+} from "@mingxu/core";
+import { getAgentTool } from "@mingxu/agent-tools";
 import { useI18n } from "@/lib/i18n";
 import { useWebMcpTool } from "@/lib/useWebMcpTool";
 import { webMcpToolError, webMcpToolResult } from "@/lib/webMcpResult";

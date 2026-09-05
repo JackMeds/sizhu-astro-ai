@@ -1,5 +1,5 @@
 {
-  "name": "@sizhu/prompt",
+  "name": "@mingxu/prompt",
   "version": "0.1.0",
   "type": "module",
   "license": "GPL-3.0",
@@ -16,7 +16,7 @@
     "test": "node --test --import tsx test/*.test.ts"
   },
   "dependencies": {
-    "@sizhu/core": "file:../core"
+    "@mingxu/core": "file:../core"
   },
   "devDependencies": {
     "@types/node": "^20.19.0",

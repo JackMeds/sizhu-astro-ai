@@ -1,4 +1,4 @@
-import type { AstroProfile } from "@sizhu/core";
+import type { AstroProfile } from "@mingxu/core";
 
 const STORAGE_KEY = "sizhu-ai-history-v1";
 

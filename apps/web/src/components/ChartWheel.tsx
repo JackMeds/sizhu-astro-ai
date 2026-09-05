@@ -1,4 +1,4 @@
-import type { AstroProfile } from "@sizhu/core";
+import type { AstroProfile } from "@mingxu/core";
 import { motion } from "motion/react";
 
 interface ChartWheelProps {

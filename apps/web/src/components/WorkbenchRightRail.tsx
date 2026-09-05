@@ -1,4 +1,4 @@
-import type { AstroProfile } from "@sizhu/core";
+import type { AstroProfile } from "@mingxu/core";
 import { HistoryRail } from "./HistoryRail";
 import { ExportPanel } from "./ExportPanel";
 import { AgentAccessPanel } from "./AgentAccessPanel";

@@ -1,0 +1,19 @@
+{
+  "name": "@sizhu/agent-tools",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "license": "GPL-3.0",
+  "description": "Compatibility entry for @mingxu/agent-tools; retained through the next stable release.",
+  "main": "./index.js",
+  "types": "./index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "import": "./index.js"
+    }
+  },
+  "dependencies": {
+    "@mingxu/agent-tools": "file:../agent-tools"
+  }
+}

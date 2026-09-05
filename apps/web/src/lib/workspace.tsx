@@ -1,5 +1,5 @@
 import { createContext, useContext, useReducer, type Dispatch, type ReactNode } from "react";
-import type { AstroProfile } from "@sizhu/core";
+import type { AstroProfile } from "@mingxu/core";
 
 export type WorkspaceView = "overview" | "bazi" | "ziwei" | "transit" | "audit";
 export type WorkspaceActor = "user" | "agent" | "system";
