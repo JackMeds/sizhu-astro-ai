@@ -11,6 +11,7 @@ The full unit/migration suites, typecheck and build passed on Node.js 24.20.0 (d
 | Production web and MCP build | `npm run build` passed; existing large-main-bundle warning remains |
 | Legacy Worker routing | 6 passed, including old-origin recovery, readiness, directory indexes, path/query redirect and non-GET handling |
 | Package and CLI compatibility | 8 passed; identical exports for five old/new package pairs, both executable names complete MCP initialization |
+| Address-switch generator | 3 isolated Git-fixture tests passed: read-only default, applicable patch, Windows HTML/TypeScript forms, escaped regexes, protected provenance/engine/storage/MCP values, idempotent write |
 | Cross-origin browser migration | Passed: read-only recovery download, fresh destination import, duplicate/conflict handling, malformed file retention, no third-party requests, app reload |
 | Browser layouts | 1280px/light and 390px/dark checked; no horizontal overflow |
 | Existing WebMCP browser smoke | Passed with 10 tools after delayed injection, including existing workspace interactions |

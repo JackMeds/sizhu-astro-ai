@@ -32,6 +32,7 @@ for (const file of selected) {
     .replaceAll("/ABSOLUTE/PATH/TO/sizhu-astro-ai", "/ABSOLUTE/PATH/TO/mingxu")
     .replaceAll(".local/share/sizhu-astro-ai", ".local/share/mingxu")
     .replaceAll("LOCALAPPDATA\\\\sizhu-astro-ai", "LOCALAPPDATA\\\\mingxu")
+    .replaceAll("LOCALAPPDATA\\sizhu-astro-ai", "LOCALAPPDATA\\mingxu")
     .replaceAll("cd sizhu-astro-ai", "cd mingxu");
   if (before !== after) {
     changed++;
