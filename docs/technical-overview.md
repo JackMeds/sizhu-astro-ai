@@ -8,11 +8,11 @@ The core product idea is simple:
 
 > **Computation belongs to a deterministic engine. Interpretation belongs to the user and the AI they choose.**
 
-- Live app: <https://astrocopy.jackmeds.top/>
-- AI discovery page: <https://astrocopy.jackmeds.top/agent/>
-- Source: <https://github.com/JackMeds/sizhu-astro-ai>
-- Agent guide: <https://astrocopy.jackmeds.top/agents.md>
-- Guides: <https://astrocopy.jackmeds.top/guide/> · <https://astrocopy.jackmeds.top/guide/late-zi-hour.html> · <https://astrocopy.jackmeds.top/guide/shichen-boundary.html> · <https://astrocopy.jackmeds.top/guide/true-solar-time-impact.html> · <https://astrocopy.jackmeds.top/guide/ziwei-software-differences.html> · <https://astrocopy.jackmeds.top/guide/liuren-transmission-example.html> · <https://astrocopy.jackmeds.top/guide/ai-bazi-analysis.html>
+- Live app: <https://mingxu.jackmeds.top/>
+- AI discovery page: <https://mingxu.jackmeds.top/agent/>
+- Source: <https://github.com/JackMeds/mingxu>
+- Agent guide: <https://mingxu.jackmeds.top/agents.md>
+- Guides: <https://mingxu.jackmeds.top/guide/> · <https://mingxu.jackmeds.top/guide/late-zi-hour.html> · <https://mingxu.jackmeds.top/guide/shichen-boundary.html> · <https://mingxu.jackmeds.top/guide/true-solar-time-impact.html> · <https://mingxu.jackmeds.top/guide/ziwei-software-differences.html> · <https://mingxu.jackmeds.top/guide/liuren-transmission-example.html> · <https://mingxu.jackmeds.top/guide/ai-bazi-analysis.html>
 - Remote MCP (deployment target): `https://mcp.jackmeds.top/mcp`
 
 ## Why MingXu exists

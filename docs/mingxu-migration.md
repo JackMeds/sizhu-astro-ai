@@ -1,6 +1,6 @@
 # MingXu migration and rollback
 
-This preparation keeps the existing repository and website addresses usable. The public tool namespace already was `mingxu.*`; calculation results still identify the original AstroCopy engine. No DNS, repository rename, npm publication or production switch is part of this branch.
+This dependent address-switch delivery updates public references to `JackMeds/mingxu` and `https://mingxu.jackmeds.top/`. The compatibility preparation must land first. The public tool namespace already was `mingxu.*`; calculation results still identify the original AstroCopy engine. This branch does not itself rename the repository, configure DNS, publish npm packages or deploy a site. Do not merge or publish its new links until the reviewed cutover is ready.
 
 ## Compatibility contract
 
@@ -20,7 +20,7 @@ Use the same original browser profile on `https://astrocopy.jackmeds.top/migrati
 
 ## Address-switch delivery
 
-Prepare and review a separate dependent branch after the compatibility preparation has been accepted. `node tools/switch-public-addresses.mjs` lists changes without writing; `--patch` generates `artifacts/mingxu-address-switch.patch` without changing sources; `--write` performs the mechanical rewrite. It updates live pages, SEO, guides, Agent metadata, repository links, CNAME, setup instructions and discovery tests to `JackMeds/mingxu` / `mingxu.jackmeds.top`, including `project-brand.json` once tracked. Regenerate brand assets with the central brand generator after applying it. Historical challenge notes remain historical. The old recovery URL, engine identities, storage keys and `mcp.jackmeds.top` do not move.
+This branch was prepared with `node tools/switch-public-addresses.mjs --write` and a central brand regeneration. The command without flags lists changes without writing; `--patch` generates `artifacts/mingxu-address-switch.patch` without changing sources. It updates pages, SEO, guides, Agent metadata, repository links, CNAME, setup instructions and discovery tests to `JackMeds/mingxu` / `mingxu.jackmeds.top`, including `project-brand.json`. Historical challenge notes remain historical. The old recovery URL, engine identities, storage keys and `mcp.jackmeds.top` do not move.
 
 Build and verify the dependent branch before changing any external setting:
 

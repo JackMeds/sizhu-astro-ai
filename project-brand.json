@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "repo": "JackMeds/sizhu-astro-ai",
+  "repo": "JackMeds/mingxu",
   "number": "02",
   "wordmark": "MingXu",
   "displayName": "MingXu / 命序",
@@ -23,8 +23,8 @@
     "README.zh-CN.md"
   ],
   "links": {
-    "demo": "https://astrocopy.jackmeds.top/",
-    "source": "https://github.com/JackMeds/sizhu-astro-ai"
+    "demo": "https://mingxu.jackmeds.top/",
+    "source": "https://github.com/JackMeds/mingxu"
   },
   "pilot": true,
   "proof": "assets/brand/product-proof.png"

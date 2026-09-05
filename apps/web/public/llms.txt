@@ -4,18 +4,18 @@
 
 ## Core tools
 
-- BaZi / 八字四柱: https://astrocopy.jackmeds.top/bazi/
-- Zi Wei Dou Shu / 紫微斗数: https://astrocopy.jackmeds.top/ziwei/
-- Da Liu Ren / 大六壬: https://astrocopy.jackmeds.top/liuren/
-- True Solar Time / 真太阳时: https://astrocopy.jackmeds.top/true-solar-time/
+- BaZi / 八字四柱: https://mingxu.jackmeds.top/bazi/
+- Zi Wei Dou Shu / 紫微斗数: https://mingxu.jackmeds.top/ziwei/
+- Da Liu Ren / 大六壬: https://mingxu.jackmeds.top/liuren/
+- True Solar Time / 真太阳时: https://mingxu.jackmeds.top/true-solar-time/
 
 ## Agent integration
 
-- AI discovery page: https://astrocopy.jackmeds.top/agent/
-- Detailed Agent guide: https://astrocopy.jackmeds.top/agents.md
-- Generated tool registry: https://astrocopy.jackmeds.top/agent/tools.json
+- AI discovery page: https://mingxu.jackmeds.top/agent/
+- Detailed Agent guide: https://mingxu.jackmeds.top/agents.md
+- Generated tool registry: https://mingxu.jackmeds.top/agent/tools.json
 - Remote MCP endpoint: https://mcp.jackmeds.top/mcp
 
 ## Source
 
-- GitHub: https://github.com/JackMeds/sizhu-astro-ai
+- GitHub: https://github.com/JackMeds/mingxu

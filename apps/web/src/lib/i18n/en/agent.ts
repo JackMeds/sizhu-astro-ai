@@ -29,7 +29,7 @@ export const agent = {
   "agent.codex.note": "Use /mcp in Codex to inspect registered tools. The server runs over stdio and does not require a port.",
   "agent.generic.install": "Install the project first",
   "agent.generic.config": "Generic stdio MCP configuration",
-  "agent.generic.note": "Replace /ABSOLUTE/PATH/TO/sizhu-astro-ai with the actual installation path and use the same command/args in your client's stdio MCP format.",
+  "agent.generic.note": "Replace /ABSOLUTE/PATH/TO/mingxu with the actual installation path and use the same command/args in your client's stdio MCP format.",
   "agent.footer.question": "Want the agent to read the calculation rules first?",
   "agent.footer.agents": "Open agents.md",
   "agent.footer.source": "View source"

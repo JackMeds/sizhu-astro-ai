@@ -49,7 +49,7 @@ const tools: LandingTool[] = [
       links: {
         workspace: `${window.location.origin}/`,
         agentGuide: `${window.location.origin}/agents.md`,
-        repository: "https://github.com/JackMeds/sizhu-astro-ai"
+        repository: "https://github.com/JackMeds/mingxu"
       },
       privacy: "Landing pages do not collect birth data. The full workspace computes in the browser; explicitly invoked tool results are shared with the active Agent."
     })

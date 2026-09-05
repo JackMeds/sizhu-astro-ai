@@ -4,4 +4,4 @@ Allow: /
 User-agent: *
 Allow: /
 
-Sitemap: https://astrocopy.jackmeds.top/sitemap.xml
+Sitemap: https://mingxu.jackmeds.top/sitemap.xml

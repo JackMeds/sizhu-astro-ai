@@ -32,7 +32,7 @@ export function SponsorPlaceholder() {
           命序不出售命理解读，也不锁定任何 AI 服务。这里未来可以展示与传统文化、AI 工具或开发者生态相关的赞助商 / 广告；当前先作为项目支持位保留。
         </p>
         <div className="sponsor-actions">
-          <a href="https://github.com/JackMeds/sizhu-astro-ai" target="_blank" rel="noreferrer">
+          <a href="https://github.com/JackMeds/mingxu" target="_blank" rel="noreferrer">
             <Star size={16} /> GitHub Star <ExternalLink size={14} />
           </a>
           <span>赞助 / 广告合作入口 · 预留</span>
