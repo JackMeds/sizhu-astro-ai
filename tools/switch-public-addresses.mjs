@@ -25,6 +25,7 @@ for (const file of selected) {
   const after = before
     .replaceAll("https://astrocopy.jackmeds.top/migration/", "__MINGXU_OLD_RECOVERY__")
     .replaceAll("astrocopy.jackmeds.top", "mingxu.jackmeds.top")
+    .replaceAll("astrocopy\\.jackmeds\\.top", "mingxu\\.jackmeds\\.top")
     .replaceAll("__MINGXU_OLD_RECOVERY__", "https://astrocopy.jackmeds.top/migration/")
     .replaceAll("github.com/JackMeds/sizhu-astro-ai", "github.com/JackMeds/mingxu")
     .replaceAll("JackMeds/sizhu-astro-ai", "JackMeds/mingxu")
