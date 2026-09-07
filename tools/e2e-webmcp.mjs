@@ -3,6 +3,7 @@ import { mkdir } from "node:fs/promises";
 import path from "node:path";
 
 const baseUrl = process.env.ASTROCOPY_E2E_URL || "http://127.0.0.1:4173";
+const canonicalOrigin = "https://astrocopy.jackmeds.top";
 const webMcpInjectionDelayMs = Number(process.env.ASTROCOPY_WEBMCP_INJECTION_DELAY_MS ?? 2_500);
 if (!Number.isFinite(webMcpInjectionDelayMs) || webMcpInjectionDelayMs < 0) {
   throw new Error(`ASTROCOPY_WEBMCP_INJECTION_DELAY_MS must be a non-negative number, received ${process.env.ASTROCOPY_WEBMCP_INJECTION_DELAY_MS}`);
@@ -143,6 +144,23 @@ try {
   const htmlLanguage = await page.locator("html").getAttribute("lang");
   assert(htmlLanguage?.toLowerCase().startsWith("en"), `Expected English html lang, received ${htmlLanguage}`);
   assert((await page.title()).toLowerCase().includes("mingxu"), "English page title does not contain MingXu");
+  assert(new URL(page.url()).pathname === "/en/", `Legacy lang URL did not normalize to /en/: ${page.url()}`);
+  const englishSeo = await page.evaluate(() => ({
+    canonical: document.querySelector('link[rel="canonical"]')?.href,
+    ogUrl: document.querySelector('meta[property="og:url"]')?.content,
+    ogLocale: document.querySelector('meta[property="og:locale"]')?.content,
+    ogTitle: document.querySelector('meta[property="og:title"]')?.content,
+    twitterTitle: document.querySelector('meta[name="twitter:title"]')?.content,
+    jsonLd: JSON.parse(document.querySelector('script[data-app-structured-data]')?.textContent || "{}")
+  }));
+  assert(englishSeo.canonical === `${canonicalOrigin}/en/`, `English canonical drifted: ${englishSeo.canonical}`);
+  assert(englishSeo.ogUrl === englishSeo.canonical, "English OG URL does not match canonical");
+  assert(englishSeo.ogLocale === "en_US", `English OG locale drifted: ${englishSeo.ogLocale}`);
+  assert(englishSeo.ogTitle === englishSeo.twitterTitle, "English social titles are inconsistent");
+  assert(englishSeo.jsonLd["@graph"].every((item) => item.url === `${canonicalOrigin}/en/`), "English JSON-LD URLs do not match canonical");
+  for (const href of ["/benchmark/", "/open-source/", "/agent/", "/about/"]) {
+    assert(await page.locator(`main.app-shell a[href="${href}"]`).count() > 0, `React page lost discovery link ${href}`);
+  }
 
   await callTool("mingxu.create_birth_chart", {
     name: "Alex Demo",
@@ -181,6 +199,27 @@ try {
     assert(resultTabsText.includes(label), `English result tab is missing: ${label}`);
   }
   assert(!resultTabsText.includes("概览"), "English result tabs still contain hard-coded Chinese controls");
+
+  await page.locator("button.language-toggle").click();
+  await page.waitForURL((url) => url.pathname === "/zh/");
+  const chineseSeo = await page.evaluate(() => ({
+    lang: document.documentElement.lang,
+    canonical: document.querySelector('link[rel="canonical"]')?.href,
+    ogUrl: document.querySelector('meta[property="og:url"]')?.content,
+    ogLocale: document.querySelector('meta[property="og:locale"]')?.content,
+    jsonUrls: JSON.parse(document.querySelector('script[data-app-structured-data]')?.textContent || "{}")["@graph"].map((item) => item.url),
+    body: document.body.innerText
+  }));
+  assert(chineseSeo.lang === "zh-CN", `Chinese html lang drifted: ${chineseSeo.lang}`);
+  assert(chineseSeo.canonical === `${canonicalOrigin}/zh/`, `Chinese canonical drifted: ${chineseSeo.canonical}`);
+  assert(chineseSeo.ogUrl === chineseSeo.canonical, "Chinese OG URL does not match canonical");
+  assert(chineseSeo.ogLocale === "zh_CN", `Chinese OG locale drifted: ${chineseSeo.ogLocale}`);
+  assert(chineseSeo.jsonUrls.every((url) => url === `${canonicalOrigin}/zh/`), "Chinese JSON-LD URLs do not match canonical");
+  assert(chineseSeo.body.includes("Alex Demo"), "Language switch lost the active workspace profile");
+  await page.goBack({ waitUntil: "networkidle" });
+  await page.waitForURL((url) => url.pathname === "/en/");
+  assert((await page.locator("body").innerText()).includes("Alex Demo"), "History navigation lost the active workspace profile");
+  assert((await page.locator("html").getAttribute("lang")) === "en-US", "History navigation did not restore English locale");
 
   const transitResult = await callTool("mingxu.ui.inspect_transit", { targetDate: "2028-06-15" });
   assert(transitResult?.isError !== true, "Valid inspect_transit call failed");

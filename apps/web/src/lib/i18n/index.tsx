@@ -10,6 +10,7 @@ import {
 } from "react";
 import { dictionary as zh } from "./zh";
 import { dictionary as en } from "./en";
+import { applySeoProfile, seoProfileFor } from "../seo";
 
 export type Locale = "zh-CN" | "en-US";
 export type TranslationVariables = Record<string, string | number>;
@@ -40,7 +41,12 @@ function initialLocale(): Locale {
   if (pathLocale) return pathLocale;
   const queryLocale = localeFromQuery(window.location.search);
   if (queryLocale) return queryLocale;
-  const stored = window.localStorage.getItem(STORAGE_KEY);
+  let stored: string | null = null;
+  try {
+    stored = window.localStorage.getItem(STORAGE_KEY);
+  } catch {
+    // Private browsing and hardened policies can disable local storage.
+  }
   if (stored === "en-US" || stored === "zh-CN") return stored;
   return navigator.language.toLowerCase().startsWith("zh") ? "zh-CN" : "en-US";
 }
@@ -63,22 +69,35 @@ const I18nContext = createContext<I18nContextValue | null>(null);
 export function LocaleProvider({ children }: { children: ReactNode }) {
   const [locale, setLocaleState] = useState<Locale>(initialLocale);
   const previousLocale = useRef<Locale | null>(null);
+  const navigationMode = useRef<"user" | "history" | null>(null);
 
   const setLocale = useCallback((nextLocale: Locale) => {
+    navigationMode.current = "user";
     setLocaleState(nextLocale);
   }, []);
 
   const toggleLocale = useCallback(() => {
+    navigationMode.current = "user";
     setLocaleState((current) => current === "en-US" ? "zh-CN" : "en-US");
   }, []);
 
   useEffect(() => {
-    const dictionary = locale === "en-US" ? en : zh;
-    document.documentElement.lang = locale;
-    document.title = dictionary["meta.title"];
-    const description = document.querySelector<HTMLMetaElement>('meta[name="description"]');
-    if (description) description.content = dictionary["meta.description"];
-    window.localStorage.setItem(STORAGE_KEY, locale);
+    const onPopState = () => {
+      const nextLocale = localeFromPath(window.location.pathname) ?? localeFromQuery(window.location.search);
+      if (!nextLocale) return;
+      navigationMode.current = "history";
+      setLocaleState(nextLocale);
+    };
+    window.addEventListener("popstate", onPopState);
+    return () => window.removeEventListener("popstate", onPopState);
+  }, []);
+
+  useEffect(() => {
+    try {
+      window.localStorage.setItem(STORAGE_KEY, locale);
+    } catch {
+      // Language switching should still work if storage is unavailable.
+    }
     const url = new URL(window.location.href);
     const pathLocale = localeFromPath(url.pathname);
     const queryLocale = localeFromQuery(url.search);
@@ -88,11 +107,17 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
     if (isLegacyQuery || isLocaleSwitch) {
       url.pathname = localizedPath(locale);
       url.searchParams.delete("lang");
-      window.history.replaceState({}, "", url);
+      if (isLocaleSwitch && navigationMode.current === "user") {
+        window.history.pushState({}, "", url);
+      } else {
+        window.history.replaceState({}, "", url);
+      }
     } else if (pathLocale) {
       url.searchParams.delete("lang");
       window.history.replaceState({}, "", url);
     }
+    applySeoProfile(seoProfileFor(locale, url.pathname));
+    navigationMode.current = null;
     previousLocale.current = locale;
   }, [locale]);
 

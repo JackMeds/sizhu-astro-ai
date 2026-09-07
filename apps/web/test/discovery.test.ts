@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import test from "node:test";
+import { SEO_PROFILES } from "../src/lib/seo";
 
 const publicRoot = fileURLToPath(new URL("../public/", import.meta.url));
 const webRoot = fileURLToPath(new URL("../", import.meta.url));
@@ -61,6 +62,39 @@ test("localized application entries are direct, indexable Vite pages", () => {
   }
 });
 
+test("static localized entries match the shared runtime SEO contract", () => {
+  for (const [file, profile] of [
+    [`${webRoot}/index.html`, SEO_PROFILES.root],
+    [`${webRoot}/zh/index.html`, SEO_PROFILES.zh],
+    [`${webRoot}/en/index.html`, SEO_PROFILES.en]
+  ] as const) {
+    const source = readFileSync(file, "utf8");
+    assert.ok(source.includes(`<title>${profile.title}</title>`), file);
+    assert.ok(source.includes(`content="${profile.description}"`), file);
+    assert.ok(source.includes(`href="https://astrocopy.jackmeds.top${profile.canonicalPath}"`), file);
+    assert.ok(source.includes(`content="${profile.image}"`), file);
+    assert.match(source, /data-app-structured-data/);
+    for (const href of ["/benchmark/", "/open-source/", "/agent/", "/about/"]) {
+      assert.ok(source.includes(`href="${href}"`), `${file}: ${href}`);
+    }
+  }
+});
+
+test("SEO clusters use dedicated non-empty social preview images", () => {
+  for (const name of ["workspace", "bazi", "ziwei", "liuren", "solar-time", "trust"]) {
+    const image = readFileSync(`${publicRoot}/brand/og-${name}.png`);
+    assert.ok(image.byteLength > 100_000, name);
+  }
+  const expectations = new Map([
+    [`${publicRoot}/bazi/index.html`, "og-bazi.png"],
+    [`${publicRoot}/ziwei/index.html`, "og-ziwei.png"],
+    [`${publicRoot}/liuren/index.html`, "og-liuren.png"],
+    [`${publicRoot}/true-solar-time/index.html`, "og-solar-time.png"],
+    [`${publicRoot}/benchmark/index.html`, "og-trust.png"]
+  ]);
+  for (const [file, image] of expectations) assert.ok(readFileSync(file, "utf8").includes(image), file);
+});
+
 test("sitemap URLs map to indexable source pages with matching canonicals", () => {
   const sitemap = readFileSync(`${publicRoot}/sitemap.xml`, "utf8");
   const pages = new Map([
@@ -99,8 +133,12 @@ test("IndexNow discovery hook is public and runs only after Pages deployment", (
   const script = readFileSync(`${repoRoot}/tools/submit-indexnow.mjs`, "utf8");
   const workflow = readFileSync(`${repoRoot}/.github/workflows/deploy-web.yml`, "utf8");
   assert.match(script, /api\.indexnow\.org\/indexnow/);
-  assert.match(script, /sitemap\.xml/);
+  assert.match(script, /INDEXNOW_SITEMAP_URL/);
+  assert.match(script, /AbortSignal\.timeout/);
   assert.match(workflow, /Deploy to GitHub Pages[\s\S]+Notify IndexNow of current public URLs/);
+  assert.match(workflow, /fetch-depth: 0/);
+  assert.match(workflow, /INDEXNOW_SITEMAP_URL: https:\/\/astrocopy\.jackmeds\.top\/sitemap\.xml/);
+  assert.doesNotMatch(workflow, /Generate fresh sitemap for discovery notification/);
 });
 
 test("legacy lang query links remain compatible without becoming SEO URLs", () => {
@@ -108,4 +146,7 @@ test("legacy lang query links remain compatible without becoming SEO URLs", () =
   assert.match(source, /localeFromQuery/);
   assert.match(source, /url\.searchParams\.delete\("lang"\)/);
   assert.match(source, /localizedPath\(locale\)/);
+  assert.match(source, /applySeoProfile\(seoProfileFor\(locale, url\.pathname\)\)/);
+  assert.match(source, /window\.history\.pushState/);
+  assert.match(source, /popstate/);
 });

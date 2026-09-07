@@ -16,10 +16,11 @@
     <meta property="og:url" content="https://astrocopy.jackmeds.top/guide/late-zi-hour.html" />
     <meta property="og:title" content="晚子时换日为什么会产生不同八字" />
     <meta property="og:description" content="把 23:00–01:00 的换日规则、影响范围和排盘核对步骤拆开说明。" />
-    <meta property="og:image" content="https://astrocopy.jackmeds.top/brand/mark-dark.png" />
+    <meta property="og:image" content="https://astrocopy.jackmeds.top/brand/og-bazi.png" />
     <meta property="og:image:alt" content="命序晚子时换日指南" />
+    <meta name="twitter:card" content="summary_large_image" /><meta name="twitter:title" content="晚子时换日为什么会产生不同八字" /><meta name="twitter:description" content="用固定四柱测试说明两种晚子时口径的差异。" /><meta name="twitter:image" content="https://astrocopy.jackmeds.top/brand/og-bazi.png" />
     <script type="application/ld+json">
-      {"@context":"https://schema.org","@type":"Article","headline":"晚子时换日为什么会产生不同八字","description":"八字晚子时换日规则、影响范围和核对步骤。","dateModified":"2026-09-02","inLanguage":"zh-CN","author":{"@type":"Organization","name":"命序"},"publisher":{"@type":"Organization","name":"命序"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://astrocopy.jackmeds.top/guide/late-zi-hour.html"}}
+      {"@context":"https://schema.org","@type":"Article","headline":"晚子时换日为什么会产生不同八字","description":"八字晚子时换日规则、影响范围和核对步骤。","dateModified":"2026-09-07","inLanguage":"zh-CN","author":{"@type":"Organization","name":"命序"},"publisher":{"@type":"Organization","name":"命序"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://astrocopy.jackmeds.top/guide/late-zi-hour.html"}}
     </script>
   </head>
   <body>
@@ -31,15 +32,16 @@
         <h2>日柱为什么会不同？</h2>
         <p>公历日期在午夜 00:00 变化，但传统时辰把 23:00–01:00 视为子时。于是“日界”有两个容易被混在一起的概念：民用日期的午夜，以及命理算法约定的子时换日点。软件如果没有把这个设置显示出来，用户就很难判断差异来自哪里。</p>
         <h2>一个可复核的例子</h2>
-        <p>假设出生资料是 2026 年 9 月 2 日 23:30、时区为 Asia/Shanghai。固定同一历法、时区和性别，只改变换日配置，先记录两次输出的日柱与时柱，再检查是否同时跨过节气或真太阳时边界。这样可以把“换日差异”和“其他输入差异”分离，而不是凭截图猜测。</p>
+        <p>固定测试输入为 1988 年 2 月 15 日 23:30、Asia/Shanghai、标准时间。命序的 sect 1 输出“戊辰年、甲寅月、辛丑日、戊子时”，sect 2 输出“戊辰年、甲寅月、庚子日、戊子时”。年柱、月柱和时柱保持不变，日柱因晚子时口径不同而改变；该结果由核心自动测试锁定。</p>
         <ol><li>保存原始输入：日期、时间、时区、经度和时间模式。</li><li>分别运行两种明确标记的换日口径。</li><li>只比较日柱、时柱以及由它们派生的十神、关系和大运。</li><li>在最终分析中注明采用哪套规则，不把其中一套写成唯一科学答案。</li></ol>
         <h2>什么时候特别需要核对？</h2>
         <p>接近 23:00、00:00 或 01:00 时，分钟精度和经度修正更重要。如果出生地经度使地方平太阳时或视太阳时跨过边界，真太阳时模式可能进一步改变有效日期或时支。距离边界很远时，多个时间口径往往会得到相同四柱。</p>
         <h2>命序如何记录这个问题？</h2>
         <p>命序保留标准时间、地方平太阳时和视太阳时的有效时间，显示修正分钟数、是否跨时辰/跨日期，以及采用的换日配置。这样 AI 看到的是带上下文的结构化事实，而不是一个没有来源的四柱字符串。</p>
-        <div class="cta"><h2>继续核对</h2><p><a href="../bazi/">免费八字排盘</a> · <a href="shichen-boundary.html">时辰边界检查</a> · <a href="../guide/bazi.html">八字排盘基础指南</a></p></div>
+        <h2>算法与资料来源</h2><ul><li><a href="https://github.com/JackMeds/sizhu-astro-ai/blob/main/packages/core/test/benchmark.test.ts">命序晚子时 golden fixtures</a>：两种 sect 的精确四柱。</li><li><a href="https://github.com/6tail/lunar-javascript">lunar-javascript</a>：底层历法与八字排盘实现。</li></ul>
+        <div class="cta"><h2>继续核对</h2><p><a href="/bazi/">免费八字排盘</a> · <a href="/guide/shichen-boundary.html">时辰边界检查</a> · <a href="/guide/bazi.html">八字排盘基础指南</a></p></div>
       </main>
-      <footer>命序 · 内容更新时间：2026-09-02 · 用于传统文化研究与自我观察。</footer>
+      <footer>命序 · 内容更新时间：2026-09-07 · 用于传统文化研究与自我观察。</footer>
     </div>
   </body>
 </html>

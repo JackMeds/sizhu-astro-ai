@@ -23,6 +23,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
@@ -55,8 +57,12 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 24
-      - name: Generate fresh sitemap for discovery notification
-        run: node tools/generate-sitemap.mjs
       - name: Notify IndexNow of current public URLs
+        id: indexnow
         continue-on-error: true
+        env:
+          INDEXNOW_SITEMAP_URL: https://astrocopy.jackmeds.top/sitemap.xml
         run: node tools/submit-indexnow.mjs
+      - name: Report search notification result
+        if: always()
+        run: echo "IndexNow notification outcome — ${{ steps.indexnow.outcome }}" >> "$GITHUB_STEP_SUMMARY"

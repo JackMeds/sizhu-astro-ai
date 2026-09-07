@@ -1,6 +1,13 @@
 {
   "schema": "mingxu/benchmark-v1",
   "project": "MingXu / 命序",
+  "verifiedAt": "2026-09-07",
+  "versions": {
+    "sizhu-core": "0.1.0",
+    "lunar-javascript": "1.7.7",
+    "mingyu-core": "0.1.23",
+    "kinliuren-source": "3ba45a9540f08269b56d81508a061c7d46938785"
+  },
   "scope": "software reproducibility and rule-boundary validation; not scientific validation of metaphysical prediction",
   "categories": [
     {
@@ -28,6 +35,11 @@
       "cases": ["Month General", "Heaven/Earth plates", "Four Lessons", "Three Transmissions", "cross-engine overlap"],
       "sources": ["packages/core/test", "tools/liuren-reference"]
     }
+  ],
+  "representativeResults": [
+    { "id": "bazi-golden", "input": "2001-01-29T13:32:00+08:00", "output": ["庚辰", "己丑", "壬辰", "丁未"], "source": "packages/core/test/benchmark.test.ts" },
+    { "id": "solar-boundary", "input": "2026-09-02T13:03:00+08:00 @ 118E", "output": "2026-09-02T12:55:58; 未→午", "source": "packages/core/test/profile.test.ts" },
+    { "id": "liuren-complete", "input": "2026-04-10T08:26:00+08:00", "output": "返吟重审法; 寅→申→寅; crossCheck matched", "source": "packages/core/test/liuren.test.ts" }
   ],
   "commands": ["npm run test", "npm run typecheck", "npm run test:webmcp"],
   "repository": "https://github.com/JackMeds/sizhu-astro-ai"

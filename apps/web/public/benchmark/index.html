@@ -15,13 +15,13 @@
   <meta property="og:url" content="https://astrocopy.jackmeds.top/benchmark/" />
   <meta property="og:title" content="命序计算验证与边界测试 Benchmark" />
   <meta property="og:description" content="公开说明八字、紫微、大六壬、全球时区和真太阳时计算如何被测试与交叉核对。" />
-  <meta property="og:image" content="https://astrocopy.jackmeds.top/brand/mark-dark.png" />
+  <meta property="og:image" content="https://astrocopy.jackmeds.top/brand/og-trust.png" />
   <meta property="og:image:alt" content="命序计算验证" />
-  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="命序计算验证与边界测试" />
   <meta name="twitter:description" content="可复现的八字、紫微、大六壬、时区与真太阳时测试说明。" />
-  <meta name="twitter:image" content="https://astrocopy.jackmeds.top/brand/mark-dark.png" />
-  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"TechArticle","headline":"命序计算验证与边界测试 Benchmark","url":"https://astrocopy.jackmeds.top/benchmark/","description":"命序的可复现传统术数计算测试、时间边界与多引擎交叉验证说明。","about":["BaZi","Zi Wei Dou Shu","Da Liu Ren","True Solar Time","IANA time zones"],"isAccessibleForFree":true},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"命序","item":"https://astrocopy.jackmeds.top/"},{"@type":"ListItem","position":2,"name":"计算验证","item":"https://astrocopy.jackmeds.top/benchmark/"}]}]}</script>
+  <meta name="twitter:image" content="https://astrocopy.jackmeds.top/brand/og-trust.png" />
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"TechArticle","headline":"命序计算验证与边界测试 Benchmark","url":"https://astrocopy.jackmeds.top/benchmark/","description":"命序的可复现传统术数计算测试、时间边界与多引擎交叉验证说明。","dateModified":"2026-09-07","about":["BaZi","Zi Wei Dou Shu","Da Liu Ren","True Solar Time","IANA time zones"],"isAccessibleForFree":true},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"命序","item":"https://astrocopy.jackmeds.top/"},{"@type":"ListItem","position":2,"name":"计算验证","item":"https://astrocopy.jackmeds.top/benchmark/"}]}]}</script>
 </head>
 <body>
 <div class="shell">
@@ -43,6 +43,10 @@
     <h2>大六壬</h2>
     <p>完整课盘保留月将、天地盘、天将、四课、三传、旬空、遁干、六亲、课体与来源受控神煞。重叠字段会在两个 TypeScript 实现之间比较，并使用固定版本的 Python <code>kinliuren</code> 课例作为额外 CI oracle；出现差异时进入 warning / crossCheck，而不是静默抹平。</p>
 
+    <h2>代表性固定结果（2026-09-07）</h2>
+    <ul><li><strong>八字：</strong>2001-01-29 13:32 +08:00 → 庚辰、己丑、壬辰、丁未。</li><li><strong>晚子时：</strong>1988-02-15 23:30 +08:00 → sect 1 为辛丑日，sect 2 为庚子日。</li><li><strong>真太阳时：</strong>2026-09-02 13:03、东经 118° → 12:55:58，未时跨回午时。</li><li><strong>大六壬：</strong>2026-04-10 08:26 +08:00 → 返吟重审法，三传寅→申→寅；23 个交叉字段 matched。</li></ul>
+    <p>这里公布的是可回归的软件输出，不代表对传统术数预测效力的科学验证。具体断言均由仓库中的自动测试锁定。</p>
+
     <h2>如何复现</h2>
     <p>源码、测试和依赖版本均在公开仓库中。核心命令：</p>
     <pre><code>npm install
@@ -54,7 +58,7 @@ npm run test:webmcp</code></pre>
     <div class="cta"><h2>用真实边界案例来找 bug</h2><p>如果你发现不同软件在同一个时间、四柱、紫微宫位或大六壬三传上给出不同结果，欢迎附上明确时间口径、软件版本和可复现案例提交到 GitHub。</p><a href="https://github.com/JackMeds/sizhu-astro-ai/issues">提交计算案例</a></div>
     <div class="grid"><a href="../bazi/">八字排盘<span>查看四柱、运限与时间口径</span></a><a href="../true-solar-time/">真太阳时<span>检查经度修正与边界变化</span></a><a href="../liuren/">大六壬<span>查看四课三传与 cross-check</span></a><a href="../open-source/">开源说明<span>源码、许可和贡献方式</span></a></div>
   </main>
-  <footer>命序 MingXu · 免费、开源、可复现的传统术数计算工作台。</footer>
+  <footer>命序 MingXu · 内容更新时间：2026-09-07 · 免费、开源、可复现的传统术数计算工作台。</footer>
 </div>
 </body>
 </html>

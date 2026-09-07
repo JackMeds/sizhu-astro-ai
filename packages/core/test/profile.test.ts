@@ -75,3 +75,18 @@ test("apparent solar time includes equation of time in addition to longitude cor
   assert.notEqual(mean.time.effective.correctionMinutes, apparent.time.effective.correctionMinutes);
   assert.equal(apparent.time.effective.label, "视太阳时（真太阳时）");
 });
+
+test("documented 2026 true-solar-time fixture crosses the 13:00 shichen boundary", () => {
+  const profile = createAstroProfile({
+    ...sampleInput,
+    birthDateTime: "2026-09-02T13:03:00+08:00",
+    trueSolarTime: "apparent",
+    location: { name: "东经 118° 示例地点", longitude: 118 }
+  });
+  assert.equal(profile.time.standard.shichen, "未");
+  assert.equal(profile.time.effective.isoLocal, "2026-09-02T12:55:58");
+  assert.equal(profile.time.effective.shichen, "午");
+  assert.equal(profile.time.longitudeCorrectionMinutes, -8);
+  assert.equal(profile.time.equationOfTimeMinutes, 0.965);
+  assert.equal(profile.time.shichenChanged, true);
+});

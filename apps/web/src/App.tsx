@@ -278,6 +278,19 @@ export function App() {
           </div>
         </motion.section>
 
+        <section className="guide-hub" aria-labelledby="trust-title">
+          <div className="guide-heading">
+            <div><p className="eyeline">Open Source · Verification</p><h2 id="trust-title">{isEnglish ? "Inspect the method and connect your tools" : "检查方法、源码与 Agent 接入"}</h2></div>
+            <p>{isEnglish ? "Read the reproducibility notes, inspect the GPL-licensed source, or connect MingXu to an AI agent." : "查看可复现测试、GPL 开源说明，以及 AI Agent、WebMCP 和 MCP 接入方式。"}</p>
+          </div>
+          <div className="guide-grid">
+            <a href="/benchmark/"><span>Benchmark</span><h3>{isEnglish ? "Calculation verification" : "计算验证与边界测试"}</h3><p>{isEnglish ? "Fixtures, engine versions and reproducible commands." : "固定测试夹具、引擎版本和可复现命令。"}</p><i>{t("guide.read")} <ArrowUpRight size={15} /></i></a>
+            <a href="/open-source/"><span>GPL-3.0</span><h3>{isEnglish ? "Free and open source" : "免费与开源说明"}</h3><p>{isEnglish ? "License, source code, contribution and privacy boundaries." : "许可证、源码、贡献方式和隐私边界。"}</p><i>{t("guide.read")} <ArrowUpRight size={15} /></i></a>
+            <a href="/agent/"><span>Agent / MCP</span><h3>{isEnglish ? "Connect an AI agent" : "连接 AI Agent"}</h3><p>{isEnglish ? "WebMCP, remote MCP and structured tool contracts." : "WebMCP、远程 MCP 与结构化工具契约。"}</p><i>{t("guide.read")} <ArrowUpRight size={15} /></i></a>
+            <a href="/about/"><span>About</span><h3>{isEnglish ? "Method and privacy" : "计算方法与隐私"}</h3><p>{isEnglish ? "What is computed, what stays local, and what is not claimed." : "哪些内容由代码计算、哪些资料保留在本地。"}</p><i>{t("guide.read")} <ArrowUpRight size={15} /></i></a>
+          </div>
+        </section>
+
         <motion.div initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: .08 }} transition={{ duration: .4 }}><AgentAccessPanel /></motion.div>
 
         <section className="qa-panel qa-panel-v2" aria-labelledby="qa-title">
@@ -287,7 +300,7 @@ export function App() {
 
         <footer id="mcp" className="footer-strip">
           <div className="footer-copy"><strong>{t("footer.engine")}</strong><span>{t("footer.repo")}：<a href="https://github.com/JackMeds/sizhu-astro-ai" target="_blank" rel="noreferrer">JackMeds/sizhu-astro-ai</a></span><span>{t("footer.agent")}：<a href="#agent-access">{t("footer.quick")}</a> · <a href={agentGuideHref} target="_blank" rel="noreferrer">agents.md</a></span><span>{t("footer.privacy")}</span></div>
-          <div className="footer-links"><span>Core:</span><a href="https://github.com/6tail/lunar-javascript" target="_blank" rel="noreferrer">lunar-javascript</a><a href="https://iztro.com/" target="_blank" rel="noreferrer">iztro</a><a href="https://github.com/waterbeside/lunisolar" target="_blank" rel="noreferrer">lunisolar</a></div>
+          <div className="footer-links"><span>Core:</span><a href="https://github.com/6tail/lunar-javascript" target="_blank" rel="noreferrer">lunar-javascript</a><a href="https://iztro.com/" target="_blank" rel="noreferrer">iztro</a><a href="https://github.com/waterbeside/lunisolar" target="_blank" rel="noreferrer">lunisolar</a><a href="/benchmark/">Benchmark</a><a href="/open-source/">Open source</a><a href="/about/">About</a></div>
         </footer>
 
         <nav className="mobile-task-nav" aria-label={t("nav.quickAria")}>
