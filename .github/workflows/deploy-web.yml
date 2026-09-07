@@ -49,3 +49,14 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+      - name: Checkout discovery sources
+        uses: actions/checkout@v4
+      - name: Setup Node for search notification
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Generate fresh sitemap for discovery notification
+        run: node tools/generate-sitemap.mjs
+      - name: Notify IndexNow of current public URLs
+        continue-on-error: true
+        run: node tools/submit-indexnow.mjs

@@ -1,0 +1,18 @@
+cff-version: 1.2.0
+message: "If you use MingXu in research, testing, documentation, or a software comparison, please cite this repository."
+title: "MingXu / 命序: deterministic BaZi, Zi Wei Dou Shu, Da Liu Ren and true-solar-time computation"
+type: software
+authors:
+  - name: "JackMeds"
+repository-code: "https://github.com/JackMeds/sizhu-astro-ai"
+url: "https://astrocopy.jackmeds.top/"
+license: GPL-3.0
+keywords:
+  - BaZi
+  - Four Pillars
+  - Zi Wei Dou Shu
+  - Da Liu Ren
+  - true solar time
+  - Chinese metaphysics
+  - MCP
+  - WebMCP

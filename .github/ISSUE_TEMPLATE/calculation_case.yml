@@ -1,0 +1,55 @@
+name: Calculation discrepancy
+description: Report a reproducible BaZi, Zi Wei, Da Liu Ren, transit or time-calculation difference.
+title: "[calculation] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please use fictional/public data where possible. Do not post personal information you do not want public.
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - BaZi / Four Pillars
+        - Zi Wei Dou Shu
+        - Da Liu Ren
+        - Transit / luck cycles
+        - Time zone / DST
+        - True solar time
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: input
+    attributes:
+      label: Reproducible input
+      description: Include date, wall-clock time, IANA timezone, longitude/solar-time mode and casting method when relevant.
+      placeholder: "1996-07-01 10:30, Asia/Kathmandu, standard time..."
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: MingXu result
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected/comparison result
+      description: State the source, software, book/rule or implementation used for comparison.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence and version
+      description: Add links, screenshots, commit/version information, or the exact differing field.
+  - type: checkboxes
+    id: privacy
+    attributes:
+      label: Privacy check
+      options:
+        - label: I have removed unnecessary personal/private information.
+          required: true

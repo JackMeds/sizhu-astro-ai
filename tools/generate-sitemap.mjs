@@ -21,6 +21,8 @@ const pages = [
   { url: "/liuren/", source: "apps/web/public/liuren/index.html", priority: "0.9" },
   { url: "/true-solar-time/", source: "apps/web/public/true-solar-time/index.html", priority: "0.85" },
   { url: "/agent/", source: "apps/web/public/agent/index.html", priority: "0.85" },
+  { url: "/benchmark/", source: "apps/web/public/benchmark/index.html", priority: "0.8" },
+  { url: "/open-source/", source: "apps/web/public/open-source/index.html", priority: "0.75" },
   { url: "/about/", source: "apps/web/public/about/index.html", priority: "0.65" },
   { url: "/privacy/", source: "apps/web/public/privacy/index.html", priority: "0.65" },
   { url: "/guide/", source: "apps/web/public/guide/index.html", priority: "0.8" },

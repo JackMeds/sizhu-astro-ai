@@ -5,6 +5,7 @@ import test from "node:test";
 
 const publicRoot = fileURLToPath(new URL("../public/", import.meta.url));
 const webRoot = fileURLToPath(new URL("../", import.meta.url));
+const repoRoot = fileURLToPath(new URL("../../../", import.meta.url));
 
 test("SEO discovery infrastructure exposes the Agent page and canonical links", () => {
   const home = readFileSync(`${publicRoot}/../index.html`, "utf8");
@@ -12,7 +13,9 @@ test("SEO discovery infrastructure exposes the Agent page and canonical links", 
   const robots = readFileSync(`${publicRoot}/robots.txt`, "utf8");
   const sitemap = readFileSync(`${publicRoot}/sitemap.xml`, "utf8");
 
-  for (const path of ["/bazi/", "/ziwei/", "/liuren/", "/true-solar-time/"]) assert.match(home, new RegExp(`href=\\"${path.replaceAll("/", "\\/")}\\"`));
+  for (const path of ["/bazi/", "/ziwei/", "/liuren/", "/true-solar-time/", "/benchmark/", "/open-source/"]) {
+    assert.ok(home.includes(`href="${path}"`), path);
+  }
   assert.match(agent, /<link rel="canonical" href="https:\/\/astrocopy\.jackmeds\.top\/agent\/"/);
   assert.match(agent, /"@type": \["WebApplication", "SoftwareApplication"\]/);
   assert.match(agent, /landing-agent\.js/);
@@ -39,7 +42,7 @@ test("localized application entries are direct, indexable Vite pages", () => {
     [en, "https://astrocopy.jackmeds.top/en/", "en-US"]
   ] as const) {
     assert.match(source, new RegExp(`<html lang="${language}">`));
-    assert.match(source, new RegExp(`<link rel="canonical" href="${canonical.replaceAll("/", "\\/")}"`));
+    assert.ok(source.includes(`<link rel="canonical" href="${canonical}"`), canonical);
     assert.match(source, /<meta name="robots" content="index,follow/);
     assert.match(source, /<h1>[^<]+<\/h1>/);
     assert.match(source, /<meta name="description" content="[^"]+"/);
@@ -52,9 +55,9 @@ test("localized application entries are direct, indexable Vite pages", () => {
     'hreflang="zh-Hans" href="https://astrocopy.jackmeds.top/zh/"',
     'hreflang="x-default" href="https://astrocopy.jackmeds.top/"'
   ]) {
-    assert.match(root, new RegExp(hreflang.replaceAll("/", "\\/")));
-    assert.match(zh, new RegExp(hreflang.replaceAll("/", "\\/")));
-    assert.match(en, new RegExp(hreflang.replaceAll("/", "\\/")));
+    assert.ok(root.includes(hreflang));
+    assert.ok(zh.includes(hreflang));
+    assert.ok(en.includes(hreflang));
   }
 });
 
@@ -66,6 +69,8 @@ test("sitemap URLs map to indexable source pages with matching canonicals", () =
     ["/zh/", `${webRoot}/zh/index.html`],
     ...["bazi", "ziwei", "liuren", "true-solar-time"].map((name) => [`/${name}/`, `${publicRoot}/${name}/index.html`]),
     ["/agent/", `${publicRoot}/agent/index.html`],
+    ["/benchmark/", `${publicRoot}/benchmark/index.html`],
+    ["/open-source/", `${publicRoot}/open-source/index.html`],
     ["/about/", `${publicRoot}/about/index.html`],
     ["/privacy/", `${publicRoot}/privacy/index.html`],
     ["/guide/", `${publicRoot}/guide/index.html`],
@@ -86,6 +91,16 @@ test("sitemap URLs map to indexable source pages with matching canonicals", () =
     assert.match(source, /<meta[^>]+name="robots"[^>]+content="index,follow/i, url);
     assert.match(source, /<meta[^>]+property="og:image"[^>]+content="https:\/\/astrocopy\.jackmeds\.top\//, url);
   }
+});
+
+test("IndexNow discovery hook is public and runs only after Pages deployment", () => {
+  const key = "0c4adfe23233e4c22abff0434d0781f4";
+  assert.equal(readFileSync(`${publicRoot}/${key}.txt`, "utf8").trim(), key);
+  const script = readFileSync(`${repoRoot}/tools/submit-indexnow.mjs`, "utf8");
+  const workflow = readFileSync(`${repoRoot}/.github/workflows/deploy-web.yml`, "utf8");
+  assert.match(script, /api\.indexnow\.org\/indexnow/);
+  assert.match(script, /sitemap\.xml/);
+  assert.match(workflow, /Deploy to GitHub Pages[\s\S]+Notify IndexNow of current public URLs/);
 });
 
 test("legacy lang query links remain compatible without becoming SEO URLs", () => {

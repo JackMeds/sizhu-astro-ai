@@ -1,0 +1,11 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Live MingXu app
+    url: https://astrocopy.jackmeds.top/
+    about: Use the public calculator before filing a reproducible calculation case.
+  - name: Calculation benchmark
+    url: https://astrocopy.jackmeds.top/benchmark/
+    about: Read the reproducibility and boundary-test scope.
+  - name: Agent / MCP documentation
+    url: https://astrocopy.jackmeds.top/agent/
+    about: WebMCP and MCP integration documentation.

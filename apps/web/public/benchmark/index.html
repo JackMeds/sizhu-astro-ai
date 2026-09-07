@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>命序计算验证与边界测试｜八字、真太阳时、紫微、大六壬 Benchmark</title>
+  <meta name="description" content="查看命序 MingXu 的可复现计算验证：全球时区与夏令时、真太阳时跨时辰、八字历法交叉核对、紫微结构归一化和大六壬多引擎交叉验证。" />
+  <meta name="robots" content="index,follow,max-snippet:-1" />
+  <link rel="canonical" href="https://astrocopy.jackmeds.top/benchmark/" />
+  <link rel="stylesheet" href="../guide.css" />
+  <link rel="icon" type="image/png" href="../brand/mark-light.png" media="(prefers-color-scheme: light)"><link rel="icon" type="image/png" href="../brand/mark-dark.png" media="(prefers-color-scheme: dark)">
+  <meta property="og:type" content="article" />
+  <meta property="og:locale" content="zh_CN" />
+  <meta property="og:site_name" content="命序" />
+  <meta property="og:url" content="https://astrocopy.jackmeds.top/benchmark/" />
+  <meta property="og:title" content="命序计算验证与边界测试 Benchmark" />
+  <meta property="og:description" content="公开说明八字、紫微、大六壬、全球时区和真太阳时计算如何被测试与交叉核对。" />
+  <meta property="og:image" content="https://astrocopy.jackmeds.top/brand/mark-dark.png" />
+  <meta property="og:image:alt" content="命序计算验证" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="命序计算验证与边界测试" />
+  <meta name="twitter:description" content="可复现的八字、紫微、大六壬、时区与真太阳时测试说明。" />
+  <meta name="twitter:image" content="https://astrocopy.jackmeds.top/brand/mark-dark.png" />
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"TechArticle","headline":"命序计算验证与边界测试 Benchmark","url":"https://astrocopy.jackmeds.top/benchmark/","description":"命序的可复现传统术数计算测试、时间边界与多引擎交叉验证说明。","about":["BaZi","Zi Wei Dou Shu","Da Liu Ren","True Solar Time","IANA time zones"],"isAccessibleForFree":true},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"命序","item":"https://astrocopy.jackmeds.top/"},{"@type":"ListItem","position":2,"name":"计算验证","item":"https://astrocopy.jackmeds.top/benchmark/"}]}]}</script>
+</head>
+<body>
+<div class="shell">
+  <header class="top"><a class="brand" href="../">命序</a><a class="back" href="https://github.com/JackMeds/sizhu-astro-ai">查看测试源码 →</a></header>
+  <main>
+    <section class="hero"><p class="kicker">Benchmark · Reproducibility · Boundary Tests</p><h1>排盘结果不是“看起来对”就算完成，而要能被重复计算和检查。</h1><p class="lead">这个页面公开说明命序怎样测试时间、历法、八字、紫微和大六壬的确定性计算。它验证的是软件实现与规则一致性，不是在证明传统术数具有现代科学预测效力。</p></section>
+
+    <section class="card"><h2>我们重点测试什么？</h2><p>最容易出错的不是普通日期，而是边界：夏令时切换、半小时和 45 分钟时区、真太阳时跨时辰或跨日期、节气附近、不同引擎对同一结构的重叠字段，以及大六壬三传等复杂规则链。</p></section>
+
+    <h2>时间与真太阳时</h2>
+    <ul><li>IANA 时区与日期对应的真实 UTC offset。</li><li>America/New_York 等夏令时切换以及不存在的本地墙上时间。</li><li>Asia/Kolkata 的 +05:30、Asia/Kathmandu 的 +05:45、Australia/Eucla 的 +08:45 等非整点时区。</li><li>标准时、地方平太阳时、视太阳时分别记录，并显式标记修正是否跨时辰或跨日期。</li></ul>
+
+    <h2>八字与运限</h2>
+    <p>四柱、节气桥接、大运流年流月与关系事实由固定代码生成；项目还使用重叠历法实现做交叉核对。冲、合、刑、害、破、伏吟、三合/三会等在事实层保存，避免把“计算事实”和“解释结论”混成一件事。</p>
+
+    <h2>紫微斗数</h2>
+    <p>测试覆盖十二宫、星曜、亮度、四化、大限和动态运限的归一化结构。前端渲染读取统一数据模型，而不是把某个 UI 组件的显示结果当成唯一事实来源。</p>
+
+    <h2>大六壬</h2>
+    <p>完整课盘保留月将、天地盘、天将、四课、三传、旬空、遁干、六亲、课体与来源受控神煞。重叠字段会在两个 TypeScript 实现之间比较，并使用固定版本的 Python <code>kinliuren</code> 课例作为额外 CI oracle；出现差异时进入 warning / crossCheck，而不是静默抹平。</p>
+
+    <h2>如何复现</h2>
+    <p>源码、测试和依赖版本均在公开仓库中。核心命令：</p>
+    <pre><code>npm install
+npm run test
+npm run typecheck
+npm run test:webmcp</code></pre>
+    <p><a href="https://github.com/JackMeds/sizhu-astro-ai/tree/main/packages/core/test">Core tests</a> · <a href="https://github.com/JackMeds/sizhu-astro-ai/blob/main/tools/e2e-webmcp.mjs">WebMCP E2E</a> · <a href="manifest.json">机器可读 Benchmark manifest</a></p>
+
+    <div class="cta"><h2>用真实边界案例来找 bug</h2><p>如果你发现不同软件在同一个时间、四柱、紫微宫位或大六壬三传上给出不同结果，欢迎附上明确时间口径、软件版本和可复现案例提交到 GitHub。</p><a href="https://github.com/JackMeds/sizhu-astro-ai/issues">提交计算案例</a></div>
+    <div class="grid"><a href="../bazi/">八字排盘<span>查看四柱、运限与时间口径</span></a><a href="../true-solar-time/">真太阳时<span>检查经度修正与边界变化</span></a><a href="../liuren/">大六壬<span>查看四课三传与 cross-check</span></a><a href="../open-source/">开源说明<span>源码、许可和贡献方式</span></a></div>
+  </main>
+  <footer>命序 MingXu · 免费、开源、可复现的传统术数计算工作台。</footer>
+</div>
+</body>
+</html>

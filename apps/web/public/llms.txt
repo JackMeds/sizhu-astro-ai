@@ -9,6 +9,12 @@
 - Da Liu Ren / 大六壬: https://astrocopy.jackmeds.top/liuren/
 - True Solar Time / 真太阳时: https://astrocopy.jackmeds.top/true-solar-time/
 
+## Trust and reproducibility
+
+- Calculation benchmark: https://astrocopy.jackmeds.top/benchmark/
+- Open-source statement: https://astrocopy.jackmeds.top/open-source/
+- Methodology and privacy: https://astrocopy.jackmeds.top/about/
+
 ## Agent integration
 
 - AI discovery page: https://astrocopy.jackmeds.top/agent/

@@ -1,0 +1,27 @@
+name: Feature request
+description: Propose a focused feature, interoperability improvement, language addition or new test coverage.
+title: "[feature] "
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem or use case
+      description: What real user/developer/Agent problem would this solve?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives or references
+  - type: checkboxes
+    id: scope
+    attributes:
+      label: Scope check
+      options:
+        - label: This request keeps deterministic calculation facts separate from interpretation claims.

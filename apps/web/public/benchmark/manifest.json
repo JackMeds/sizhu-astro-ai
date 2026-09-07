@@ -1,0 +1,34 @@
+{
+  "schema": "mingxu/benchmark-v1",
+  "project": "MingXu / 命序",
+  "scope": "software reproducibility and rule-boundary validation; not scientific validation of metaphysical prediction",
+  "categories": [
+    {
+      "id": "timezone",
+      "cases": ["IANA date-specific offsets", "DST gap rejection", "half-hour offsets", "45-minute offsets"],
+      "sources": ["packages/core/test/time.test.ts", "tools/e2e-webmcp.mjs"]
+    },
+    {
+      "id": "solar-time",
+      "cases": ["longitude correction", "equation of time", "hour-branch crossing", "calendar-date crossing"],
+      "sources": ["packages/core/test/time.test.ts"]
+    },
+    {
+      "id": "bazi",
+      "cases": ["Four Pillars", "luck cycles", "annual/monthly transits", "structural relation facts", "overlap cross-checks"],
+      "sources": ["packages/core/test"]
+    },
+    {
+      "id": "ziwei",
+      "cases": ["twelve-palace normalization", "stars", "transformations", "dynamic scopes"],
+      "sources": ["packages/core/test"]
+    },
+    {
+      "id": "liuren",
+      "cases": ["Month General", "Heaven/Earth plates", "Four Lessons", "Three Transmissions", "cross-engine overlap"],
+      "sources": ["packages/core/test", "tools/liuren-reference"]
+    }
+  ],
+  "commands": ["npm run test", "npm run typecheck", "npm run test:webmcp"],
+  "repository": "https://github.com/JackMeds/sizhu-astro-ai"
+}
