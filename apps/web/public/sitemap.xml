@@ -73,7 +73,7 @@
   </url>
   <url>
     <loc>https://astrocopy.jackmeds.top/guide/</loc>
-    <lastmod>2026-09-07</lastmod>
+    <lastmod>2026-09-15</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
@@ -82,14 +82,29 @@
     <priority>0.75</priority>
   </url>
   <url>
+    <loc>https://astrocopy.jackmeds.top/guide/bazi-true-solar-time.html</loc>
+    <lastmod>2026-09-15</lastmod>
+    <priority>0.72</priority>
+  </url>
+  <url>
     <loc>https://astrocopy.jackmeds.top/guide/ziwei.html</loc>
     <lastmod>2026-09-07</lastmod>
     <priority>0.75</priority>
   </url>
   <url>
+    <loc>https://astrocopy.jackmeds.top/guide/ziwei-true-solar-time.html</loc>
+    <lastmod>2026-09-15</lastmod>
+    <priority>0.72</priority>
+  </url>
+  <url>
     <loc>https://astrocopy.jackmeds.top/guide/liuren.html</loc>
     <lastmod>2026-09-07</lastmod>
     <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://astrocopy.jackmeds.top/guide/liuren-number-casting.html</loc>
+    <lastmod>2026-09-15</lastmod>
+    <priority>0.72</priority>
   </url>
   <url>
     <loc>https://astrocopy.jackmeds.top/guide/solar-time.html</loc>
