@@ -95,6 +95,25 @@ test("SEO clusters use dedicated non-empty social preview images", () => {
   for (const [file, image] of expectations) assert.ok(readFileSync(file, "utf8").includes(image), file);
 });
 
+test("SEO intent guides are linked from the guide hub and expose structured metadata", () => {
+  const hub = readFileSync(`${publicRoot}/guide/index.html`, "utf8");
+  const guides = [
+    ["bazi-true-solar-time", "八字排盘要不要用真太阳时"],
+    ["ziwei-true-solar-time", "紫微斗数排盘要不要用真太阳时"],
+    ["liuren-number-casting", "大六壬报数起课怎么排"]
+  ] as const;
+
+  for (const [slug, heading] of guides) {
+    assert.ok(hub.includes(`href="${slug}.html"`), slug);
+    const source = readFileSync(`${publicRoot}/guide/${slug}.html`, "utf8");
+    assert.ok(source.includes(`<h1>${heading}？</h1>`) || source.includes(`<h1>${heading}</h1>`), slug);
+    assert.ok(source.includes(`href="https://astrocopy.jackmeds.top/guide/${slug}.html"`), slug);
+    assert.match(source, /"@type": "Article"/, slug);
+    assert.match(source, /"@type": "BreadcrumbList"/, slug);
+    assert.doesNotMatch(source, /noindex/i, slug);
+  }
+});
+
 test("sitemap URLs map to indexable source pages with matching canonicals", () => {
   const sitemap = readFileSync(`${publicRoot}/sitemap.xml`, "utf8");
   const pages = new Map([
@@ -109,8 +128,8 @@ test("sitemap URLs map to indexable source pages with matching canonicals", () =
     ["/privacy/", `${publicRoot}/privacy/index.html`],
     ["/guide/", `${publicRoot}/guide/index.html`],
     ...[
-      "bazi", "ziwei", "liuren", "solar-time", "dayun", "agent",
-      "late-zi-hour", "shichen-boundary", "true-solar-time-impact",
+      "bazi", "bazi-true-solar-time", "ziwei", "ziwei-true-solar-time", "liuren", "liuren-number-casting",
+      "solar-time", "dayun", "agent", "late-zi-hour", "shichen-boundary", "true-solar-time-impact",
       "ziwei-software-differences", "liuren-transmission-example", "ai-bazi-analysis"
     ].map((name) => [`/guide/${name}.html`, `${publicRoot}/guide/${name}.html`])
   ]);
