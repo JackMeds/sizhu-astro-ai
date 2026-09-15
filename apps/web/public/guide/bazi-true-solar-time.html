@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>八字排盘要不要用真太阳时？标准时、地方平太阳时与时柱边界｜命序</title>
+    <meta name="description" content="八字排盘真太阳时怎么选？说明标准时、地方平太阳时和视太阳时（真太阳时）的区别，以及什么时候会改变时柱、日柱或节气边界。" />
+    <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1" />
+    <link rel="canonical" href="https://astrocopy.jackmeds.top/guide/bazi-true-solar-time.html" />
+    <link rel="stylesheet" href="../guide.css" />
+    <link rel="icon" type="image/png" href="../brand/mark-light.png" media="(prefers-color-scheme: light)" />
+    <link rel="icon" type="image/png" href="../brand/mark-dark.png" media="(prefers-color-scheme: dark)" />
+    <meta property="og:type" content="article" />
+    <meta property="og:locale" content="zh_CN" />
+    <meta property="og:site_name" content="命序" />
+    <meta property="og:url" content="https://astrocopy.jackmeds.top/guide/bazi-true-solar-time.html" />
+    <meta property="og:title" content="八字排盘要不要用真太阳时？" />
+    <meta property="og:description" content="先看修正后的有效时间有没有跨过时辰、换日或节气边界，再决定真太阳时是否实际改变命盘。" />
+    <meta property="og:image" content="https://astrocopy.jackmeds.top/brand/og-bazi.png" />
+    <meta property="og:image:alt" content="命序八字排盘与真太阳时指南" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="八字排盘要不要用真太阳时？" />
+    <meta name="twitter:description" content="标准时、地方平太阳时、真太阳时与八字边界的可复现说明。" />
+    <meta name="twitter:image" content="https://astrocopy.jackmeds.top/brand/og-bazi.png" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "Article",
+            "headline": "八字排盘要不要用真太阳时？标准时、地方平太阳时与时柱边界",
+            "description": "八字排盘中标准时、地方平太阳时和视太阳时的区别，以及跨时辰、换日、节气边界时的影响。",
+            "datePublished": "2026-09-15",
+            "dateModified": "2026-09-15",
+            "inLanguage": "zh-CN",
+            "author": { "@type": "Organization", "name": "命序" },
+            "publisher": { "@type": "Organization", "name": "命序" },
+            "mainEntityOfPage": { "@type": "WebPage", "@id": "https://astrocopy.jackmeds.top/guide/bazi-true-solar-time.html" }
+          },
+          {
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              { "@type": "ListItem", "position": 1, "name": "命序", "item": "https://astrocopy.jackmeds.top/" },
+              { "@type": "ListItem", "position": 2, "name": "排盘指南", "item": "https://astrocopy.jackmeds.top/guide/" },
+              { "@type": "ListItem", "position": 3, "name": "八字排盘与真太阳时", "item": "https://astrocopy.jackmeds.top/guide/bazi-true-solar-time.html" }
+            ]
+          }
+        ]
+      }
+    </script>
+  </head>
+  <body>
+    <div class="shell">
+      <header class="top"><a class="brand" href="../">命序</a><a class="back" href="../bazi/">打开八字排盘 →</a></header>
+      <main>
+        <section class="hero">
+          <p class="kicker">BaZi · Time Standard</p>
+          <h1>八字排盘要不要用真太阳时？</h1>
+          <p class="lead">先看“修正后有没有跨边界”，不要把真太阳时当成默认更准确的开关。对八字而言，真正影响结果的是有效出生时间是否跨过时辰、换日或节气边界。</p>
+        </section>
+
+        <section class="card">
+          <h2>先给结论</h2>
+          <p><strong>离边界很远时，标准时和真太阳时可能排出完全相同的四柱；靠近边界时，几十分钟甚至几分钟的修正就可能改变命盘。</strong>因此更稳妥的做法是保留出生地、经度和时间模式，并把标准时与修正后的结果放在一起比较。</p>
+        </section>
+
+        <h2>八字排盘里的三种时间口径</h2>
+        <ul>
+          <li><strong>标准时：</strong>直接使用出生证明或记录里的当地钟表时间，并按 IANA 时区处理历史时区偏移。</li>
+          <li><strong>地方平太阳时：</strong>根据出生地经度与该时区标准经线的差异做经度修正。经度每相差 1°，时间约差 4 分钟。</li>
+          <li><strong>视太阳时（真太阳时）：</strong>在经度修正基础上，再加入随日期变化的均时差。</li>
+        </ul>
+        <p>命序把这三个时间都保留下来，并记录经度修正、均时差、最终有效时间，以及 <code>shichenChanged</code> / <code>dateChanged</code> 等边界变化标记。</p>
+
+        <h2>什么时候真太阳时会真的改变八字？</h2>
+        <h3>1. 跨过两个小时的时辰边界</h3>
+        <p>八字时柱按有效时间所在时辰生成。比如标准时间刚过 13:00 属未时，而向前修正十几分钟后回到 12 点多，就可能重新落回午时，时柱随之改变。</p>
+
+        <h3>2. 跨过日期或换日口径</h3>
+        <p>如果修正让有效时间跨过日期边界，日柱可能变化。23:00–01:00 的子时还涉及不同流派的换日口径，因此需要把“时间修正”和“晚子时规则”分开记录，而不是混成一个“真太阳时设置”。</p>
+
+        <h3>3. 靠近节气交接</h3>
+        <p>八字年柱、月柱常依节气边界而定。若出生时刻本身非常接近节气交接，修正后的有效时间可能落到边界另一侧。此时应直接比较两套结构，而不是只看修正分钟数大小。</p>
+
+        <h2>一个最实用的检查方法</h2>
+        <ol>
+          <li>先按出生记录输入标准时间和正确时区。</li>
+          <li>有准确出生地时再填经度，查看地方平太阳时和视太阳时。</li>
+          <li>观察最终有效时间是否跨过时辰、日期或节气边界。</li>
+          <li>如果没有跨界，优先把结果视为“同一命盘、不同时间记录”；如果跨界，再对照两套四柱。</li>
+          <li>把使用的时间模式和经度一起保存，避免以后换软件时无法复现。</li>
+        </ol>
+
+        <h2>为什么不同八字软件会排得不一样？</h2>
+        <p>除了真太阳时开关，差异还可能来自历史时区、晚子时换日、节气边界、夏令时资料和排运流派。看到两张盘不同，第一步不是判断谁“准”，而是先核对输入时间、经度、时区和规则口径是否相同。</p>
+
+        <section class="card">
+          <h2>在命序里怎么核对</h2>
+          <p>命序的八字引擎先通过统一时间管线得到有效出生时间，再把这个时间送入四柱计算；因此八字、紫微和其他模块可以共享同一套时间口径。你可以先用真太阳时工具看修正分钟数，再打开八字排盘比较最终四柱。</p>
+          <p><a href="../true-solar-time/">真太阳时计算器 →</a> · <a href="../bazi/">免费八字排盘 →</a></p>
+        </section>
+
+        <h2>继续阅读</h2>
+        <div class="grid">
+          <a href="true-solar-time-impact.html"><strong>真太阳时什么时候会改变时柱</strong><span>看一个跨时辰边界的可复现案例</span></a>
+          <a href="late-zi-hour.html"><strong>晚子时为什么会出现换日差异</strong><span>把 23:00–01:00 的流派口径单独拆开</span></a>
+          <a href="shichen-boundary.html"><strong>出生时间边界检查</strong><span>时区、分钟误差和有效时辰如何核对</span></a>
+          <a href="bazi.html"><strong>八字排盘怎么看</strong><span>四柱、十神、藏干与计算事实</span></a>
+        </div>
+      </main>
+      <footer>命序 · 内容更新时间：2026-09-15 · 先固定时间口径，再比较命盘差异。</footer>
+    </div>
+  </body>
+</html>
